@@ -6,6 +6,8 @@
 sap.ui.define([], function() {
     "use strict";
     return {
-        
+        getNonEmpty : function(sValue) {
+        	return sValue !== "";
+        }
     };
 });

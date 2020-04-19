@@ -33,15 +33,6 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				});
 			this.byId("idInputEmailUser").setValue("");
 			this.byId("idInputPasswordUser").setValue("");
-		},
-		
-		// Triggered when the user updates his/her displayed name
-		onUpdateUserName: function () {
-			firebase.auth().currentUser.updateProfile({
-				displayName: this.byId("idUpdateUsername").getValue()
-			});
-
-			this._oUserPopup.close();
 		}
 	});
 });

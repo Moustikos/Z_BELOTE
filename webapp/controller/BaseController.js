@@ -18,6 +18,15 @@ function (Controller, UIComponent, BindFirebase, Formatter) {
 		// Initilize firebase watch functions
 		_initializeFirebaseWatch : function(that) {
 			BindFirebase._initialize(that);
+		},
+		
+		// Triggered when the user updates his/her displayed name
+		onUpdateUserName: function () {
+			firebase.auth().currentUser.updateProfile({
+				displayName: this.byId("idUpdateUsername").getValue()
+			});
+
+			this._oUserPopup.close();
 		}
 	});
 });

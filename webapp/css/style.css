@@ -1,0 +1,13 @@
+.tapisCarte {
+	background: radial-gradient(#43a047, #1b5e20);
+}
+
+.playerName {
+	color: #f0f4c3;
+}
+
+.card {
+	background-color: #f0f4c3;
+	border-radius: 6px;
+	border: 2px solid red;
+}

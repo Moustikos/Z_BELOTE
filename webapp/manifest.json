@@ -12,6 +12,12 @@
 		"sourceTemplate": {
 			"id": "ui5template.basicSAPUI5ApplicationProject",
 			"version": "1.40.12"
+		},
+		"dataSources": {
+			"score": {
+				"uri": "model/Score.json",
+				"type": "JSON"
+			}
 		}
 	},
 
@@ -58,6 +64,10 @@
 				"settings": {
 					"bundleName": "com.belote.i18n.i18n"
 				}
+			},
+			"scoreModel": {
+				"type": "sap.ui.model.json.JSONModel",
+				"dataSource": "score"
 			}
 		},
 		"resources": {

@@ -1,0 +1,104 @@
+{
+	"Atout" : {
+		"V" : {
+			"Points" : 20,
+			"Ranking" : 24
+		},
+		"9" : {
+			"Points" : 14,
+			"Ranking" : 23
+		},
+		"As" : {
+			"Points" : 11,
+			"Ranking" : 22
+		},
+		"10" : {
+			"Points" : 10,
+			"Ranking" : 21
+		},
+		"R" : {
+			"Points" : 4,
+			"Ranking" : 20
+		},
+		"D" : {
+			"Points" : 3,
+			"Ranking" : 19
+		},
+		"8" : {
+			"Points" : 0,
+			"Ranking" : 18
+		},
+		"7" : {
+			"Points" : 0,
+			"Ranking" : 17
+		}
+	},
+	"NonAtout" : {
+		"As" : {
+			"Points" : 11,
+			"Ranking" : 16
+		},
+		"10" : {
+			"Points" : 10,
+			"Ranking" : 15
+		},
+		"R" : {
+			"Points" : 4,
+			"Ranking" : 14
+		},
+		"D" : {
+			"Points" : 3,
+			"Ranking" : 13
+		},
+		"V" : {
+			"Points" : 2,
+			"Ranking" : 12
+		},
+		"9" : {
+			"Points" : 0,
+			"Ranking" : 11
+		},
+		"8" : {
+			"Points" : 0,
+			"Ranking" : 10
+		},
+		"7" : {
+			"Points" : 0,
+			"Ranking" : 9
+		}
+	},
+	"NonDemande" : {
+		"As" : {
+			"Points" : 11,
+			"Ranking" : 8
+		},
+		"10" : {
+			"Points" : 10,
+			"Ranking" : 7
+		},
+		"R" : {
+			"Points" : 4,
+			"Ranking" : 6
+		},
+		"D" : {
+			"Points" : 3,
+			"Ranking" : 5
+		},
+		"V" : {
+			"Points" : 2,
+			"Ranking" : 4
+		},
+		"9" : {
+			"Points" : 0,
+			"Ranking" : 3
+		},
+		"8" : {
+			"Points" : 0,
+			"Ranking" : 2
+		},
+		"7" : {
+			"Points" : 0,
+			"Ranking" : 1
+		}
+	}
+}

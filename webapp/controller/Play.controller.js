@@ -80,6 +80,72 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			oModel.setProperty("/ETPlayers/1/Cards", sCards);
 			
 			this._oUserCardPopup.close();
+		},
+		
+		// Update team temporary score after each set of 4 cards
+		_updateScore : function(aCards) {
+			var iScore = 0;
+			var iBestIndex = 0;
+			var iCurrentIndex, oBestCard;
+			var oScoreModel = this.getView().getModel("scoreModel");
+			var oLocalModel = this.getView().getModel("localModel");
+			
+			// Calculate score and best card
+			for (var i = 0; i < aCards.length; i++) {
+				if(aCards[i].Name.split("/")[0] === oLocalModel.getProperty("/Atout")) {
+					iCurrentIndex = oScoreModel.getProperty("/Atout/" + aCards[i].Name.split("/")[1] + "/Ranking");
+					iScore = iScore + oScoreModel.getProperty("/Atout/" + aCards[i].Name.split("/")[1] + "/Points");
+					
+					if(iCurrentIndex > iBestIndex) {
+						iBestIndex = iCurrentIndex;
+						oBestCard = aCards[i];
+					}
+				} else if(aCards[i].Name.split("/")[0] === oLocalModel.getProperty("/CouleurDemandee")) {
+					iCurrentIndex = oScoreModel.getProperty("/NonAtout/" + aCards[i].Name.split("/")[1] + "/Ranking");
+					iScore = iScore + oScoreModel.getProperty("/NonAtout/" + aCards[i].Name.split("/")[1] + "/Points");
+					
+					if(iCurrentIndex > iBestIndex) {
+						iBestIndex = iCurrentIndex;
+						oBestCard = aCards[i];
+					}
+				} else {
+					iCurrentIndex = oScoreModel.getProperty("/NonDemande/" + aCards[i].Name.split("/")[1] + "/Ranking");
+					iScore = iScore + oScoreModel.getProperty("/NonDemande/" + aCards[i].Name.split("/")[1] + "/Points");
+					
+					if(iCurrentIndex > iBestIndex) {
+						iBestIndex = iCurrentIndex;
+						oBestCard = aCards[i];
+					}
+				}
+			}
+			
+			// Update local model
+			if(oBestCard.Player === "1" || oBestCard.Player === "3") {
+				oLocalModel.setProperty("/TempScoreTeam1", oLocalModel.getProperty("/TempScoreTeam1") + iScore);
+			} else {
+				oLocalModel.setProperty("/TempScoreTeam2", oLocalModel.getProperty("/TempScoreTeam2") + iScore);
+			}
+			
+			// If no card remaining, update the model with real score
+			if(oLocalModel.getProperty("/RemainingCard") < 1) {
+				var bIsCapot = false;
+				var bIsFailed = false;
+				oLocalModel.setProperty("/RemainingCard", 8);
+				
+				if(oLocalModel.getProperty("/TempScoreTeam1") === 0) {
+					bIsCapot = true;
+					oLocalModel.setProperty("/ScoreTeam2", oLocalModel.getProperty("/ScoreTeam2") + 250);
+				}
+				
+				if(oLocalModel.getProperty("/TempScoreTeam2") === 0) {
+					bIsCapot = true;
+					oLocalModel.setProperty("/ScoreTeam1", oLocalModel.getProperty("/ScoreTeam1") + 250);
+				}
+				
+				if(!bIsCapot) {
+					
+				}
+			}
 		}
 	});
 });

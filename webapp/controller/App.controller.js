@@ -5,6 +5,7 @@ sap.ui.define([
 
 	return Controller.extend("com.belote.controller.App", {
 		onInit: function () {
+			
 		}
 	});
 });

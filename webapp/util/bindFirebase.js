@@ -13,10 +13,13 @@ sap.ui.define([], function() {
         // Called when user session changes
         onUserAuthenticationModified: function (user) {
             // Update the local model properties
-            this.getView().getModel("localModel").setProperty("/isUserRegistered", user !== null ? true : false);
+            if(this.getView().getModel("localModel")) {
+            	this.getView().getModel("localModel").setProperty("/isUserRegistered", user !== null ? true : false);
+            }
 
             // If user is recognized, ask for display name is not already mentioned or display welcome message
             if (user) {
+                this._getRouter().navTo("Play");
                 if (user && (firebase.auth().currentUser.displayName === "" || !firebase.auth().currentUser.displayName)) {
                     if (!this._oUserPopup) {
                         this._oUserPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.updateUserName", this);
@@ -25,10 +28,15 @@ sap.ui.define([], function() {
 
                     this._oUserPopup.open();
                 } else {
-                    sap.m.MessageToast.show("Content de vous revoir " + firebase.auth().currentUser.displayName, {
+                    sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("Connection.WelcomeBack", firebase.auth().currentUser.displayName), {
                         width: "40rem"
                     });
                 }
+            }
+            
+            // If user is not recognized, navigate to connection screen
+            else {
+            	this._getRouter().navTo("Connection");
             }
         }
     };

@@ -3,6 +3,6 @@
 <!-- Modification description : MOUSTIKOS - 19.04.2020 - Creation						                                      -->
 <!-- ************************************************************************************************************************ -->
 
-<mvc:View controllerName="com.belote.controller.App" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
 	<App id="app"/>
 </mvc:View>

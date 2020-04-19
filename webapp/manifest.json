@@ -77,16 +77,27 @@
 			},
 			"routes": [{
 				"pattern": "",
-				"name": "Home",
-				"target": "Home"
+				"name": "Connection",
+				"target": "Connection"
+			},{
+				"pattern": "Play",
+				"name": "Play",
+				"target": "Play"
 			}],
 			"targets": {
-				"Home": {
+				"Connection": {
 					"viewType": "XML",
 					"transition": "slide",
 					"clearControlAggregation": false,
-					"viewId": "Home",
-					"viewName": "Home"
+					"viewId": "Connection",
+					"viewName": "Connection"
+				},
+				"Play": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Play",
+					"viewName": "Play"
 				}
 			}
 		}

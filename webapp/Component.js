@@ -20,6 +20,19 @@ sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function 
 
 			// Initialize firebase connection
 			Firebase.initializeFirebase();
+			
+			// Initialize local model
+			this.setModel(new sap.ui.model.json.JSONModel({
+				"isUserRegistered": false,
+				"isAdmin" : false,
+				"playerTurn" : "1",
+				"player1Card" : "",
+				"player2Card" : "",
+				"player3Card" : "",
+				"player4Card" : "",
+				"distributor" : "1",
+				"ETPlayers" : {}
+			}), "localModel");
 		}
 	});
 });

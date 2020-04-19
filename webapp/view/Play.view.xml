@@ -1,0 +1,12 @@
+<!-- ******************************************************************************************************************* -->
+<!-- File description         : The play view is containing the playing area                                             -->
+<!-- Modification description : MOUSTIKOS - 19.04.2020 - Creation						                                 -->
+<!-- ******************************************************************************************************************* -->
+
+<mvc:View controllerName="com.belote.controller.Play" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+	<Page title="{i18n>appTitle}">
+		<content>
+			<Button text="Play" />
+		</content>
+	</Page>
+</mvc:View>

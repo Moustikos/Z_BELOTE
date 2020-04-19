@@ -1,3 +1,8 @@
+/*****************************************************************************************************************
+* File description         : The Home controller contains all functions called in Home view
+* Modification description : MOUSTIKOS - 19.04.2020 - Creation                                    
+*****************************************************************************************************************/
+
 sap.ui.define(["sap/ui/core/mvc/Controller", "com/belote/util/bindFirebase", "com/belote/util/Formatter"], function (Controller, BindFirebase, Formatter) {
 	"use strict";
 

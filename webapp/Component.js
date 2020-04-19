@@ -1,9 +1,9 @@
-sap.ui.define([
-	"sap/ui/core/UIComponent",
-	"sap/ui/Device",
-	"com/belote/model/models",
-	"com/belote/util/Firebase"
-], function (UIComponent, Device, models, Firebase) {
+/*****************************************************************************************************************
+* File description         : The component file contains the application initialization logic
+* Modification description : MOUSTIKOS - 19.04.2020 - Creation - Add firebase initialization                                 
+*****************************************************************************************************************/
+
+sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function (UIComponent, Firebase) {
 	"use strict";
 
 	return UIComponent.extend("com.belote.Component", {
@@ -12,17 +12,14 @@ sap.ui.define([
 		},
 		
 		init: function () {
-			// call the base component's init function
+			// Call the base component's init function
 			UIComponent.prototype.init.apply(this, arguments);
 
-			// enable routing
+			// Enable routing
 			this.getRouter().initialize();
 
-			// set the device model
-			this.setModel(models.createDeviceModel(), "device");
-			
-			// Set the firebase model by calling the initializeFirebase function in the Firebase.js file
-			this.setModel(Firebase.initializeFirebase(), "firebase");
+			// Initialize firebase connection
+			Firebase.initializeFirebase();
 		}
 	});
 });

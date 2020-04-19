@@ -1,3 +1,8 @@
+<!-- ************************************************************************************************************************ -->
+<!-- File description         : The app view is the main view that contains all the application and where the routing is done -->
+<!-- Modification description : MOUSTIKOS - 19.04.2020 - Creation						                                      -->
+<!-- ************************************************************************************************************************ -->
+
 <mvc:View controllerName="com.belote.controller.App" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
 	<App id="app"/>
 </mvc:View>

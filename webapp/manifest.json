@@ -27,8 +27,8 @@
 		},
 		"deviceTypes": {
 			"desktop": true,
-			"tablet": true,
-			"phone": true
+			"tablet": false,
+			"phone": false
 		}
 	},
 
@@ -50,7 +50,7 @@
 		},
 		"contentDensities": {
 			"compact": true,
-			"cozy": true
+			"cozy": false
 		},
 		"models": {
 			"i18n": {

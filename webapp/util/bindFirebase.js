@@ -1,3 +1,8 @@
+/*****************************************************************************************************************
+* File description         : The bindFirebase file is used to update local model when data are updated in firebase
+* Modification description : MOUSTIKOS - 19.04.2020 - Creation                                    
+*****************************************************************************************************************/
+
 sap.ui.define([], function() {
     "use strict";
     return {

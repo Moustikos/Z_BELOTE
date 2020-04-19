@@ -1,4 +1,9 @@
-<mvc:View controllerName="com.belote.controller.Home" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" displayBlock="true" xmlns="sap.m">
+<!-- ******************************************************************************************************************* -->
+<!-- File description         : The connection view is the first one displayed to let the user log in or register        -->
+<!-- Modification description : MOUSTIKOS - 19.04.2020 - Creation						                                 -->
+<!-- ******************************************************************************************************************* -->
+
+<mvc:View controllerName="com.belote.controller.Connection" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" displayBlock="true" xmlns="sap.m">
 	<Page>
 		<customHeader>
 			<Bar>

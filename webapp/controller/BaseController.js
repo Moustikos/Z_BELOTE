@@ -6,7 +6,7 @@
 sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "com/belote/util/bindFirebase", "com/belote/util/Formatter"],
 function (Controller, UIComponent, BindFirebase, Formatter) {
 	"use strict";
-
+// test quentin
 	return Controller.extend("com.belote.controller.BaseController", {
 		formatter: Formatter,
 		

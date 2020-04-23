@@ -11,8 +11,14 @@
 	color: #f0f4c3;
 }
 
-.card {
+.Redcard {
 	background-color: #f0f4c3;
 	border-radius: 6px;
 	border: 2px solid red;
+}
+
+.Blackcard {
+	background-color: #f0f4c3;
+	border-radius: 6px;
+	border: 2px solid black;
 }

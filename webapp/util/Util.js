@@ -50,62 +50,94 @@ sap.ui.define([], function() {
             return oEntry;
         },
         
-        _shuffleCards : function(that) {
+        _shuffleCards : function(that, bFull) {
         	// Get local model
         	var oLocalModel = that.getView().getModel("localModel");
         	
-        	// Create card array
-			var aCard = [{"Name": "Coeur-7"}, {"Name": "Coeur-8"}, {"Name": "Coeur-9"}, {"Name": "Coeur-10"}, {"Name": "Coeur-V"}, {"Name": "Coeur-D"}, {"Name": "Coeur-R"}, {"Name": "Coeur-As"},
-						 {"Name": "Carreau-7"}, {"Name": "Carreau-8"}, {"Name": "Carreau-9"}, {"Name": "Carreau-10"}, {"Name": "Carreau-V"}, {"Name": "Carreau-D"}, {"Name": "Carreau-R"}, {"Name": "Carreau-As"},
-						 {"Name": "Trèfle-7"}, {"Name": "Trèfle-8"}, {"Name": "Trèfle-9"}, {"Name": "Trèfle-10"}, {"Name": "Trèfle-V"}, {"Name": "Trèfle-D"}, {"Name": "Trèfle-R"}, {"Name": "Trèfle-As"},
-						 {"Name": "Pique-7"}, {"Name": "Pique-8"}, {"Name": "Pique-9"}, {"Name": "Pique-10"}, {"Name": "Pique-V"}, {"Name": "Pique-D"}, {"Name": "Pique-R"}, {"Name": "Pique-As"}];
-						 
-			var currentIndex = aCard.length;
-			var temporaryValue, randomIndex;
-		
-			// While there remain elements to shuffle...
-			while (0 !== currentIndex) {
-				// Pick a remaining element...
-				randomIndex = Math.floor(Math.random() * currentIndex);
-				currentIndex -= 1;
-		
-				// And swap it with the current element.
-				temporaryValue = aCard[currentIndex];
-				aCard[currentIndex] = aCard[randomIndex];
-				aCard[randomIndex] = temporaryValue;
-			}
+        	// Get playing cards or initiale the deck
+        	if(oLocalModel.getProperty("/PlayingCards") !== [] && oLocalModel.getProperty("/PlayingCards")) {
+        		aCard = oLocalModel.getProperty("/PlayingCards");
+        	} else {
+        		// Create card array
+				var aCard = [{"Name": "Coeur-7"}, {"Name": "Coeur-8"}, {"Name": "Coeur-9"}, {"Name": "Coeur-10"}, {"Name": "Coeur-V"}, {"Name": "Coeur-D"}, {"Name": "Coeur-R"}, {"Name": "Coeur-As"},
+							 {"Name": "Carreau-7"}, {"Name": "Carreau-8"}, {"Name": "Carreau-9"}, {"Name": "Carreau-10"}, {"Name": "Carreau-V"}, {"Name": "Carreau-D"}, {"Name": "Carreau-R"}, {"Name": "Carreau-As"},
+							 {"Name": "Trèfle-7"}, {"Name": "Trèfle-8"}, {"Name": "Trèfle-9"}, {"Name": "Trèfle-10"}, {"Name": "Trèfle-V"}, {"Name": "Trèfle-D"}, {"Name": "Trèfle-R"}, {"Name": "Trèfle-As"},
+							 {"Name": "Pique-7"}, {"Name": "Pique-8"}, {"Name": "Pique-9"}, {"Name": "Pique-10"}, {"Name": "Pique-V"}, {"Name": "Pique-D"}, {"Name": "Pique-R"}, {"Name": "Pique-As"}];
+							 
+				var currentIndex = aCard.length;
+				var temporaryValue, randomIndex;
 			
+				// While there remain elements to shuffle...
+				while (0 !== currentIndex) {
+					// Pick a remaining element...
+					randomIndex = Math.floor(Math.random() * currentIndex);
+					currentIndex -= 1;
+			
+					// And swap it with the current element.
+					temporaryValue = aCard[currentIndex];
+					aCard[currentIndex] = aCard[randomIndex];
+					aCard[randomIndex] = temporaryValue;
+				}
+				
+				oLocalModel.setProperty("/PlayingCards", aCard);
+        	}
+        	
+			// Start firebase updates
 			var updates = {};
 			
-			for(var i = 0; i < 8; i++) {
-				updates["/NTeams/0/NPlayers/0/NCards/" + i] = {
-					Name : aCard[i].Name
-				};
+			if(!bFull) {
+				// Three first cards
+				for(var i = 0; i < 3; i++) {
+					updates["/NTeams/0/NPlayers/0/NCards/" + i] = {
+						Name : aCard[i].Name
+					};
+				}
+				
+				for(var j = 0; j < 3; j++) {
+					updates["/NTeams/0/NPlayers/1/NCards/" + j] = {
+						Name : aCard[j+3].Name
+					};
+				}
+				
+				for(var k = 0; k < 3; k++) {
+					updates["/NTeams/1/NPlayers/0/NCards/" + k] = {
+						Name : aCard[k+6].Name
+					};
+				}
+				
+				for(var l = 0; l< 3; l++) {
+					updates["/NTeams/1/NPlayers/1/NCards/" + l] = {
+						Name : aCard[l+9].Name
+					};
+				}
+				
+				// Two second cards
+				for(var i2 = 3; i2 < 5; i2++) {
+					updates["/NTeams/0/NPlayers/0/NCards/" + i2] = {
+						Name : aCard[i2 + 9].Name
+					};
+				}
+				
+				for(var j2 = 3; j2 < 5; j2++) {
+					updates["/NTeams/0/NPlayers/1/NCards/" + j2] = {
+						Name : aCard[j2+11].Name
+					};
+				}
+				
+				for(var k2 = 3; k2 < 5; k2++) {
+					updates["/NTeams/1/NPlayers/0/NCards/" + k2] = {
+						Name : aCard[k2+13].Name
+					};
+				}
+				
+				for(var l2 = 0; l2< 3; l2++) {
+					updates["/NTeams/1/NPlayers/1/NCards/" + l2] = {
+						Name : aCard[l2+15].Name
+					};
+				}
+				
+				updates["/SuggestedCard"] = aCard[20].Name;
 			}
-			
-			for(var j = 0; j < 8; j++) {
-				updates["/NTeams/0/NPlayers/1/NCards/" + j] = {
-					Name : aCard[j+8].Name
-				};
-			}
-			
-			for(var k = 0; k < 8; k++) {
-				updates["/NTeams/1/NPlayers/0/NCards/" + k] = {
-					Name : aCard[k+16].Name
-				};
-			}
-			
-			for(var l = 0; l< 8; l++) {
-				updates["/NTeams/1/NPlayers/1/NCards/" + l] = {
-					Name : aCard[l+24].Name
-				};
-			}
-			
-			// Update player entityset
-			oLocalModel.setProperty("/PlayTable/NTeams/0/NPlayers/0/NCards", aCard.splice(0,8));
-			oLocalModel.setProperty("/PlayTable/NTeams/0/NPlayers/1/NCards", aCard.splice(9,16));
-			oLocalModel.setProperty("/PlayTable/NTeams/1/NPlayers/0/NCards", aCard.splice(17,24));
-			oLocalModel.setProperty("/PlayTable/NTeams/1/NPlayers/1/NCards", aCard.splice(25,32));
 			
 			firebase.database().ref("ETTableSet/0").update(updates);
         }

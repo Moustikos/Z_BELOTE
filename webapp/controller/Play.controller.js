@@ -2,7 +2,6 @@
 * File description         : The connection controller contains all functions called in connection view
 * Modification description : MOUSTIKOS - 19.04.2020 - Creation                                    
 *****************************************************************************************************************/
-
 sap.ui.define(["com/belote/controller/BaseController"], function (BaseController) {
 	"use strict";
 
@@ -25,11 +24,13 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         
         // Add logic to update local model
         _onTableEntityReceived : function(snapshot) {
-            this.getView().getModel("localModel").setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot));
+            var oLocalModel = this.getView().getModel("localModel");
+            oLocalModel.setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot));
             
-            if(this.isShuffleNeeded) {
+            // Only current player can shuffle cards
+            if(this.isShuffleNeeded && oLocalModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
             	this.isShuffleNeeded = false;
-            	this.util._shuffleCards(this);
+            	this.util._shuffleCards(this, false);
             }
         },
 		

@@ -16,6 +16,8 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		},
 		
 		_onRouteMatched : function() {
+			this.bindFireBase._addTableEntityListener(this);
+			
 			// Create card array
 			var aCard = [{"Name": "Coeur-7"}, {"Name": "Coeur-8"}, {"Name": "Coeur-9"}, {"Name": "Coeur-10"}, {"Name": "Coeur-V"}, {"Name": "Coeur-D"}, {"Name": "Coeur-R"}, {"Name": "Coeur-As"},
 						 {"Name": "Carreau-7"}, {"Name": "Carreau-8"}, {"Name": "Carreau-9"}, {"Name": "Carreau-10"}, {"Name": "Carreau-V"}, {"Name": "Carreau-D"}, {"Name": "Carreau-R"}, {"Name": "Carreau-As"},
@@ -59,6 +61,12 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				});
 			}
 		},
+        
+        _onTableEntityReceived : function(snapshot) {
+        	snapshot.forEach(function (oTable) {
+                return;
+            });
+        },
 		
 		onPressPlay : function() {
 			if (!this._oUserCardPopup) {

@@ -9,6 +9,7 @@ function (Controller, UIComponent, BindFirebase, Formatter) {
 // test quentin
 	return Controller.extend("com.belote.controller.BaseController", {
 		formatter: Formatter,
+		bindFireBase : BindFirebase,
 		
 		// Get router
 		_getRouter : function() {

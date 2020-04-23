@@ -91,24 +91,31 @@ sap.ui.define([], function() {
 					updates["/NTeams/0/NPlayers/0/NCards/" + i] = {
 						Name : aCard[i].Name
 					};
+					firebase.database().ref("ETTableSet/0/NTeams/0/NPlayers/0/NCards/" + (i + 5)).remove();
 				}
 				
 				for(var j = 0; j < 3; j++) {
 					updates["/NTeams/0/NPlayers/1/NCards/" + j] = {
 						Name : aCard[j+3].Name
 					};
+					
+					firebase.database().ref("ETTableSet/0/NTeams/0/NPlayers/1/NCards/" + (j + 5)).remove();
 				}
 				
 				for(var k = 0; k < 3; k++) {
 					updates["/NTeams/1/NPlayers/0/NCards/" + k] = {
 						Name : aCard[k+6].Name
 					};
+					
+					firebase.database().ref("ETTableSet/0/NTeams/1/NPlayers/0/NCards/" + (k + 5)).remove();
 				}
 				
 				for(var l = 0; l< 3; l++) {
 					updates["/NTeams/1/NPlayers/1/NCards/" + l] = {
 						Name : aCard[l+9].Name
 					};
+					
+					firebase.database().ref("ETTableSet/0/NTeams/1/NPlayers/1/NCards/" + (l + 5)).remove();
 				}
 				
 				// Two second cards
@@ -130,13 +137,14 @@ sap.ui.define([], function() {
 					};
 				}
 				
-				for(var l2 = 0; l2< 3; l2++) {
+				for(var l2 = 3; l2< 5; l2++) {
 					updates["/NTeams/1/NPlayers/1/NCards/" + l2] = {
 						Name : aCard[l2+15].Name
 					};
 				}
 				
 				updates["/SuggestedCard"] = aCard[20].Name;
+				updates["/DoneFinished"] = false;
 			}
 			
 			firebase.database().ref("ETTableSet/0").update(updates);

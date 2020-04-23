@@ -29,6 +29,7 @@
 					<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<Text text="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: '.formatter.getCardValue'}"/>
 					</HBox>
+					<Button text="{i18n>Play.Prendre}" width="96px" type="Transparent" press="onSuggestionSelected"/>
 				</VBox>
 			</VBox>
 			<VBox width="100%" height="30%" justifyContent="Center" alignContent="Center" alignItems="Center">

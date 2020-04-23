@@ -33,6 +33,14 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             	this.util._shuffleCards(this, false);
             }
         },
+        
+        onSuggestionSelected : function() {
+        	var updates = {};
+        	updates["/SuggestedCard"] = "";
+        	updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0];
+        	updates["/Preneur"] = firebase.auth().currentUser.displayName;
+        	firebase.database().ref("ETTableSet/0").update(updates);
+        },
 		
 		onPressPlay : function() {
 			if (!this._oUserCardPopup) {

@@ -4,21 +4,61 @@
 *****************************************************************************************************************/
 
 .playMat {
-	background: radial-gradient(#43a047, #1b5e20);
+    background: radial-gradient(#43a047, #1b5e20);
 }
 
 .playerName {
-	color: #f0f4c3;
+    color: #f0f4c3;
 }
 
 .Redcard {
-	background-color: #f0f4c3;
-	border-radius: 6px;
-	border: 2px solid red;
+    background-color: #f0f4c3;
+    border-radius: 6px;
+    border: 2px solid red;
 }
 
 .Blackcard {
-	background-color: #f0f4c3;
-	border-radius: 6px;
-	border: 2px solid black;
+    background-color: #f0f4c3;
+    border-radius: 6px;
+    border: 2px solid black;
+}
+
+@font-face {
+    font-family: 'icomoon';
+    src:  url('fonts/icomoon.eot?nolfzo');
+	src:  url('fonts/icomoon.eot?nolfzo#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?nolfzo') format('truetype'),
+    url('fonts/icomoon.woff?nolfzo') format('woff'),
+    url('fonts/icomoon.svg?nolfzo#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-coeur:before {
+    content: "\e9da";
+}
+
+.icon-carreau:before {
+    content: "\e919";
+}
+
+.icon-trefle:before {
+    content: "\e918";
+}
+
+.icon-pique:before {
+    content: "\e917";
 }

@@ -3,7 +3,7 @@
 		<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
 			<VBox width="100px" height="120px" visible="{parts:[{path: 'localModel>/player1Card'}], formatter: '.formatter.getNonEmpty'}">
 				<HBox width="100px" height="30px">
-					<Text text="{parts:[{path: 'localModel>/player1Card'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+					<core:Icon src="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
 				</HBox>
 				<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
 					<Text text="{parts:[{path: 'localModel>/player1Card'}], formatter: '.formatter.getCardValue'}"/>
@@ -14,7 +14,7 @@
 			<VBox width="100%" height="30%" justifyContent="Center" alignContent="Center" alignItems="Center">
 				<VBox width="100px" height="120px" visible="{parts:[{path: 'localModel>/player2Card'}], formatter: '.formatter.getNonEmpty'}">
 					<HBox width="100px" height="30px">
-						<Text text="{parts:[{path: 'localModel>/player2Card'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+						<core:Icon src="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
 					</HBox>
 					<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<Text text="{parts:[{path: 'localModel>/player2Card'}], formatter: '.formatter.getCardValue'}"/>
@@ -24,18 +24,21 @@
 			<VBox width="100%" height="30%" justifyContent="Center" alignContent="Center" alignItems="Center">
 				<VBox width="100px" height="120px" visible="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: '.formatter.getNonEmpty'}">
 					<HBox width="100px" height="30px">
-						<Text text="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+						<core:Icon src="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
 					</HBox>
 					<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<Text text="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: '.formatter.getCardValue'}"/>
 					</HBox>
-					<Button text="{i18n>Play.Prendre}" width="96px" type="Transparent" press="onSuggestionSelected"/>
+					<HBox justifyContent="Center" alignContent="Center" alignItems="Center">
+						<Button tooltip="{i18n>Play.Prendre}" icon="sap-icon://accept" type="Accept" class="sapUiTinyMarginEnd" enabled="{parts:[{path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: '.formatter.getSuggestCardEnabled'}" visible="{parts:[{path: 'localModel>/PlayTable/DistributionTour'}], formatter: '.formatter.getSuggestCardTakeVisible'}" press="onSuggestionSelected"/>
+						<Button tooltip="{i18n>Play.PasPrendre}" icon="sap-icon://decline" type="Reject" enabled="{parts:[{path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: '.formatter.getSuggestCardEnabled'}" visible="{parts:[{path: 'localModel>/PlayTable/DistributionTour'}], formatter: '.formatter.getSuggestCardTakeVisible'}" press="onSuggestionRejected"/>
+					</HBox>
 				</VBox>
 			</VBox>
 			<VBox width="100%" height="30%" justifyContent="Center" alignContent="Center" alignItems="Center">
 				<VBox width="100px" height="120px" visible="{parts:[{path: 'localModel>/player4Card'}], formatter: '.formatter.getNonEmpty'}">
 					<HBox width="100px" height="30px">
-						<Text text="{parts:[{path: 'localModel>/player4Card'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+						<core:Icon src="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
 					</HBox>
 					<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<Text text="{parts:[{path: 'localModel>/player4Card'}], formatter: '.formatter.getCardValue'}"/>
@@ -46,7 +49,7 @@
 		<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
 			<VBox width="100px" height="120px" visible="{parts:[{path: 'localModel>/player3Card'}], formatter: '.formatter.getNonEmpty'}">
 				<HBox width="100px" height="30px">
-					<Text text="{parts:[{path: 'localModel>/player3Card'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+					<core:Icon src="{parts:[{path: 'localModel>/PlayTable/SuggestedCard'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
 				</HBox>
 				<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
 					<Text text="{parts:[{path: 'localModel>/player3Card'}], formatter: '.formatter.getCardValue'}"/>

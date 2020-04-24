@@ -11,15 +11,17 @@ jQuery.sap.setObject("com.belote.util.ClassFormatter", {
     	this.getParent().getParent().removeStyleClass("Redcard");
     	this.getParent().getParent().removeStyleClass("Blackcard");
     	if(sCardName) {
-    		sReturn = sCardName.split("-")[0];
+    		sReturn = sCardName.split("-")[0].toLowerCase();
     	}
     	
-    	if(sReturn === "Carreau" || sReturn === "Coeur") {
+    	if(sReturn === "carreau" || sReturn === "coeur") {
     		this.getParent().getParent().addStyleClass("Redcard");
-    	} else if(sReturn === "Pique" || sReturn === "Trèfle") {
+    		this.setColor("red");
+    	} else if(sReturn === "pique" || sReturn === "trefle") {
     		this.getParent().getParent().addStyleClass("Blackcard");
+    		this.setColor("black");
     	}
     	
-    	return sReturn;
+    	return "sap-icon://customfont/" + sReturn;
     }
 });

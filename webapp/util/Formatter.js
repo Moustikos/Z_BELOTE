@@ -16,6 +16,19 @@ sap.ui.define([], function() {
         	}
         	
         	return sReturn;
+        },
+        
+        getSuggestCardEnabled : function(sPlayerName) {
+        	var bReturn = false;
+        	if(firebase.auth().currentUser) {
+        		bReturn = sPlayerName === firebase.auth().currentUser.displayName;
+        	}
+        	
+        	return bReturn;
+        },
+        
+        getSuggestCardTakeVisible : function(iTour) {
+        	return iTour === 1;
         }
     };
 });

@@ -41,6 +41,26 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	updates["/Preneur"] = firebase.auth().currentUser.displayName;
         	firebase.database().ref("ETTableSet/0").update(updates);
         },
+        
+        onSuggestionRejected : function() {
+        	var sUserName = firebase.auth().currentUser.displayName;
+        	var oLocalModel = this.getView().getModel("localModel");
+        	var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
+        	
+        	for (var i = 0; i < aPlayers.length; i++) {
+        		if(aPlayers[i].ID === sUserName) {
+        			var iNextPlayerId = (i + 1) % 4;
+        			var updates = {};
+        			updates["/CurrentPlayer"] = aPlayers[iNextPlayerId].ID;
+        			
+        			if(oLocalModel.getProperty("/PlayTable/Distributor") === sUserName) {
+        				updates["/DistributionTour"] = 2;
+        			}
+        			firebase.database().ref("ETTableSet/0").update(updates);
+        			break;
+        		}
+        	}
+        },
 		
 		onPressPlay : function() {
 			if (!this._oUserCardPopup) {

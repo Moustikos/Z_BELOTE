@@ -49,9 +49,10 @@ sap.ui.define([], function() {
         },
         
         // Add listener to one particular table to avoid to complex coding
-        _addUserTableEntityListener : function(that) {
+        _addUserTableEntityListener : function(that, sBindingPath) {
         	// var table = firebase.database().ref(jQuery.sap.getObject("UserTablePath"));
         	var table = firebase.database().ref("ETTableSet/0");
+        	// var table = firebase.database().ref(sNavParameter);
             table.on("value", that._onTableEntityReceived.bind(that));
         }
     };

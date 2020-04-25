@@ -94,7 +94,7 @@
 				"name": "Connection",
 				"target": "Connection"
 			}, {
-				"pattern": "Play",
+				"pattern": "Play/{teamPath}",
 				"name": "Play",
 				"target": "Play"
 			}, {

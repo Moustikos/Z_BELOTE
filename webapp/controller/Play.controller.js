@@ -14,12 +14,15 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			this._getRouter().getRoute("Play").attachPatternMatched(this._onRouteMatched, this);
 		},
 		
-		_onRouteMatched : function() {
+		_onRouteMatched : function(oEvent) {
 			//Initialize local variable
 			this.isShuffleNeeded = true;
 			
+			// Build binding path
+			var sNavParameter = oEvent.getParameter("arguments").teamPath.replace("-", "/");
+			
 			// Add static path to the table locally
-			this.bindFireBase._addUserTableEntityListener(this);
+			this.bindFireBase._addUserTableEntityListener(this, sNavParameter);
 		},
         
         // Add logic to update local model

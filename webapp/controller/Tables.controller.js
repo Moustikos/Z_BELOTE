@@ -40,13 +40,12 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 							}
 						}
 						if (iCounter === 4 && bCurrentPlayerisInTable === true) {
-							var sPath = "/ETTables/" + i;
-							jQuery.sap.setObject("UserTablePath", sPath);
 							firebase.database().ref("ETTableSet/" + i).update({
 								isFull: true
 							});
-							this._getRouter().navTo("Play");
-							return;
+							this._getRouter().navTo("Play",{
+								teamPath : "ETTableSet-" + i
+							});
 						}
 					}
 				}

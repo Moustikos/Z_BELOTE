@@ -28,9 +28,11 @@ sap.ui.define([], function() {
 
                     this._oUserPopup.open();
                 } else {
-                    sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("Connection.WelcomeBack", firebase.auth().currentUser.displayName), {
-                        width: "40rem"
-                    });
+                    if(this.getView().getModel("i18n")) {
+                    	sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("Connection.WelcomeBack", firebase.auth().currentUser.displayName), {
+	                        width: "40rem"
+	                    });
+                    }
                 }
             }
             
@@ -38,6 +40,19 @@ sap.ui.define([], function() {
             else {
             	this._getRouter().navTo("Connection");
             }
+        },
+        
+        // Add listener function to ETTableSet entityset - MOUSTIKOS - 22.04.2020
+        _addTableEntityListener : function(that) {
+        	var table = firebase.database().ref("ETTableSet");
+            table.on("value", that._onTableEntityReceived.bind(that));
+        },
+        
+        // Add listener to one particular table to avoid to complex coding
+        _addUserTableEntityListener : function(that) {
+        	// var table = firebase.database().ref(jQuery.sap.getObject("UserTablePath"));
+        	var table = firebase.database().ref("ETTableSet/0");
+            table.on("value", that._onTableEntityReceived.bind(that));
         }
     };
 });

@@ -24,16 +24,14 @@ sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function 
 			// Initialize local model
 			this.setModel(new sap.ui.model.json.JSONModel({
 				"isUserRegistered": false,
-				"isAdmin" : false,
-				"playerTurn" : "1",
-				"player1Card" : "",
-				"player2Card" : "",
-				"player3Card" : "",
-				"player4Card" : "",
-				"distributor" : "1",
-				"ETPlayers" : {},
-				"ETTables" : {}
+				"isAdmin" : false
 			}), "localModel");
+			
+			// Add custom icons
+			sap.ui.core.IconPool.addIcon('coeur', 'customfont', 'icomoon', 'e9da');
+			sap.ui.core.IconPool.addIcon('carreau', 'customfont', 'icomoon', 'e919');
+			sap.ui.core.IconPool.addIcon('trefle', 'customfont', 'icomoon', 'e918');
+			sap.ui.core.IconPool.addIcon('pique', 'customfont', 'icomoon', 'e917');
 		}
 	});
 });

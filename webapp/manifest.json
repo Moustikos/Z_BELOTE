@@ -72,7 +72,12 @@
 		"resources": {
 			"css": [{
 				"uri": "css/style.css"
-			}]
+			}],
+			"js": [
+		        {
+		          	"uri": "util/ClassFormatter.js"
+		        }
+			]
 		},
 		"routing": {
 			"config": {

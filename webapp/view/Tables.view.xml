@@ -1,0 +1,36 @@
+<!-- ******************************************************************************************************************* -->
+<!-- File description         :                                           -->
+<!-- Modification description : 					                                 -->
+<!-- ******************************************************************************************************************* -->
+<mvc:View controllerName="com.belote.controller.Tables" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+	xmlns="sap.m" xmlns:f="sap.f">
+	<Page showHeader="false">
+		<content>
+		
+			<Table id="tablesTable" inset="false" items="{localModel>/ETTables}" class="sapFDynamicPageAlignContent" width="auto">
+				<headerToolbar>
+					<OverflowToolbar>
+						<ToolbarSpacer/>
+						<OverflowToolbarButton icon="sap-icon://add" type="Transparent" press="onPressAddTableButton"/>
+					</OverflowToolbar>
+				</headerToolbar>
+				<columns>
+					<Column width="12em">
+						<Text text="Tables"/>
+					</Column>
+					<Column hAlign="End">
+						<Text text="Number of players"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Navigation" press="onPressTableListItem">
+						<cells>
+							<ObjectIdentifier title="{localModel>Name}" text="{localModel>Description}"/>
+							<ObjectNumber number="{path: 'localModel>NPlayers', formatter: '.formatter.getNumberOfPlayers'}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</Page>
+</mvc:View>

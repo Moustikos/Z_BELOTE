@@ -20,7 +20,6 @@
 			}
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -37,7 +36,6 @@
 			"phone": false
 		}
 	},
-
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
@@ -51,7 +49,8 @@
 			"libs": {
 				"sap.ui.layout": {},
 				"sap.ui.core": {},
-				"sap.m": {}
+				"sap.m": {},
+				"sap.f": {}
 			}
 		},
 		"contentDensities": {
@@ -73,12 +72,7 @@
 		"resources": {
 			"css": [{
 				"uri": "css/style.css"
-			}],
-			"js": [
-		        {
-		          	"uri": "util/ClassFormatter.js"
-		        }
-			]
+			}]
 		},
 		"routing": {
 			"config": {
@@ -94,10 +88,18 @@
 				"pattern": "",
 				"name": "Connection",
 				"target": "Connection"
-			},{
+			}, {
 				"pattern": "Play",
 				"name": "Play",
 				"target": "Play"
+			}, {
+				"pattern": "Tables",
+				"name": "Tables",
+				"target": "Tables"
+			}, {
+				"pattern": "TableDetails",
+				"name": "TableDetails",
+				"target": "TableDetails"
 			}],
 			"targets": {
 				"Connection": {
@@ -113,6 +115,22 @@
 					"clearControlAggregation": false,
 					"viewId": "Play",
 					"viewName": "Play"
+				},
+				"Tables": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Tables",
+					"viewName": "Tables"
+					
+				},
+				"TableDetails": {
+					"viewType": "XML",
+					"transition": "slide",
+					"viewName": "TableDetails",
+					"clearControlAggregation": false,
+					"viewId": "TableDetails"
+					
 				}
 			}
 		}

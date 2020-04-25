@@ -8,21 +8,21 @@
 		<content>
 			<HBox width="100%" height="100%">
 				<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-					<Text text="{localModel>/PlayTable/NPlayers/0/ID}" class="playerName"/>
+					<Text text="{localModel>/ETPlayers/1/Name}" class="playerName"/>
 				</VBox>
 				<VBox width="50%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
 					<VBox width="100%" height="20%" justifyContent="Center" alignContent="Center" alignItems="Center">
-						<Text text="{localModel>/PlayTable/NPlayers/1/ID}" class="playerName"/>
+						<Text text="{localModel>/ETPlayers/2/Name}" class="playerName"/>
 					</VBox>
 					<VBox width="100%" height="80%" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<core:Fragment fragmentName="com.belote.fragment.playCard" type="XML" />
 					</VBox>
 					<VBox width="100%" height="20%" justifyContent="Center" alignContent="Center" alignItems="Center">
-						<Text text="{localModel>/PlayTable/NPlayers/2/ID}" class="playerName"/>
+						<Text text="{localModel>/ETPlayers/4/Name}" class="playerName"/>
 					</VBox>
 				</VBox>
 				<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-					<Text text="{localModel>/PlayTable/NPlayers/3/ID}" class="playerName"/>
+					<Text text="{localModel>/ETPlayers/3/Name}" class="playerName"/>
 				</VBox>
 			</HBox>
 		</content>

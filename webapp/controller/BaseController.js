@@ -3,14 +3,12 @@
 * Modification description : MOUSTIKOS - 19.04.2020 - Creation                                    
 *****************************************************************************************************************/
 
-sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "com/belote/util/bindFirebase", "com/belote/util/Formatter", "com/belote/util/Util"],
-function (Controller, UIComponent, BindFirebase, Formatter, Util) {
+sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "com/belote/util/bindFirebase", "com/belote/util/Formatter"],
+function (Controller, UIComponent, BindFirebase, Formatter) {
 	"use strict";
 // test quentin
 	return Controller.extend("com.belote.controller.BaseController", {
 		formatter: Formatter,
-		util : Util,
-		bindFireBase : BindFirebase,
 		
 		// Get router
 		_getRouter : function() {

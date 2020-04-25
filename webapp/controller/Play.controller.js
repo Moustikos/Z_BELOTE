@@ -185,7 +185,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			}
 		},
 		bidon:function(puduc) {
-			var remi = puduc;
+			var quentin = puduc;
 		}
 	});
 });

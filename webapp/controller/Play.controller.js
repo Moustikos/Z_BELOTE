@@ -86,7 +86,6 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 	        				updates["/DistributionTour"] = 1;
 	        				updates["/Distributor"] = aPlayers[iNextPlayerId].ID;
 	        				updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].ID;
-	        				this.util._shuffleCards(this, false);
 	        			}
 	        			firebase.database().ref("ETTableSet/0").update(updates);
 	        			break;

@@ -12,9 +12,14 @@
 		"sourceTemplate": {
 			"id": "ui5template.basicSAPUI5ApplicationProject",
 			"version": "1.40.12"
+		},
+		"dataSources": {
+			"score": {
+				"uri": "model/Score.json",
+				"type": "JSON"
+			}
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -27,11 +32,10 @@
 		},
 		"deviceTypes": {
 			"desktop": true,
-			"tablet": true,
-			"phone": true
+			"tablet": false,
+			"phone": false
 		}
 	},
-
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
@@ -45,12 +49,13 @@
 			"libs": {
 				"sap.ui.layout": {},
 				"sap.ui.core": {},
-				"sap.m": {}
+				"sap.m": {},
+				"sap.f": {}
 			}
 		},
 		"contentDensities": {
 			"compact": true,
-			"cozy": true
+			"cozy": false
 		},
 		"models": {
 			"i18n": {
@@ -58,12 +63,21 @@
 				"settings": {
 					"bundleName": "com.belote.i18n.i18n"
 				}
+			},
+			"scoreModel": {
+				"type": "sap.ui.model.json.JSONModel",
+				"dataSource": "score"
 			}
 		},
 		"resources": {
 			"css": [{
 				"uri": "css/style.css"
-			}]
+			}],
+			"js": [
+		        {
+		          	"uri": "util/ClassFormatter.js"
+		        }
+			]
 		},
 		"routing": {
 			"config": {
@@ -77,16 +91,51 @@
 			},
 			"routes": [{
 				"pattern": "",
-				"name": "Home",
-				"target": "Home"
+				"name": "Connection",
+				"target": "Connection"
+			}, {
+				"pattern": "Play/{teamPath}",
+				"name": "Play",
+				"target": "Play"
+			}, {
+				"pattern": "Tables",
+				"name": "Tables",
+				"target": "Tables"
+			}, {
+				"pattern": "TableDetails",
+				"name": "TableDetails",
+				"target": "TableDetails"
 			}],
 			"targets": {
-				"Home": {
+				"Connection": {
 					"viewType": "XML",
 					"transition": "slide",
 					"clearControlAggregation": false,
-					"viewId": "Home",
-					"viewName": "Home"
+					"viewId": "Connection",
+					"viewName": "Connection"
+				},
+				"Play": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Play",
+					"viewName": "Play"
+				},
+				"Tables": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Tables",
+					"viewName": "Tables"
+					
+				},
+				"TableDetails": {
+					"viewType": "XML",
+					"transition": "slide",
+					"viewName": "TableDetails",
+					"clearControlAggregation": false,
+					"viewId": "TableDetails"
+					
 				}
 			}
 		}

@@ -1,12 +1,18 @@
+<!-- ***************************************************************************************************************** -->
+<!-- File description         : The index file is the only HTML file that wraps the entire application                 -->
+<!-- Modification description : MOUSTIKOS - 19.04.2020 - Creation - Add firebase dependencies - Use OpenUI5 resources  -->
+<!-- ***************************************************************************************************************** -->
+
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
 		<title>Belote</title>
 		<script id="sap-ui-bootstrap"
-			src="resources/sap-ui-core.js"
-			data-sap-ui-theme="sap_fiori_3"
+			src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js"
+			data-sap-ui-theme="sap_belize_plus"
 			data-sap-ui-resourceroots='{"com.belote": "./"}'
 			data-sap-ui-compatVersion="edge"
 			data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
@@ -14,7 +20,7 @@
 			data-sap-ui-frameOptions="trusted">
 		</script>
 		
-		<!--Add firebase dependencies-->
+		<!-- MOUSTIKOS - 19.04.2020 - Add firebase dependencies-->
 		<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-firestore.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-auth.js"></script>

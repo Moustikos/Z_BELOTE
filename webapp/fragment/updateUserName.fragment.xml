@@ -1,10 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-    <Dialog title="Update my user name" contentWidth="400px" draggable="true" resizable="true">
+    <Dialog title="{i18n>UpdateUserName}" contentWidth="400px" draggable="true" resizable="true">
         <content>
         	<Input id="idUpdateUsername" />
         </content>
         <buttons>
-			<Button text="Update my user name" press="onUpdateUserName"/>
+			<Button text="{i18n>UpdateUserName}" press="onUpdateUserName"/>
 		</buttons>
     </Dialog>
 </core:FragmentDefinition>

@@ -1,9 +1,9 @@
-sap.ui.define([
-	"sap/ui/core/UIComponent",
-	"sap/ui/Device",
-	"com/belote/model/models",
-	"com/belote/util/Firebase"
-], function (UIComponent, Device, models, Firebase) {
+/*****************************************************************************************************************
+* File description         : The component file contains the application initialization logic
+* Modification description : MOUSTIKOS - 19.04.2020 - Creation - Add firebase initialization                                 
+*****************************************************************************************************************/
+
+sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function (UIComponent, Firebase) {
 	"use strict";
 
 	return UIComponent.extend("com.belote.Component", {
@@ -12,17 +12,26 @@ sap.ui.define([
 		},
 		
 		init: function () {
-			// call the base component's init function
+			// Call the base component's init function
 			UIComponent.prototype.init.apply(this, arguments);
 
-			// enable routing
+			// Enable routing
 			this.getRouter().initialize();
 
-			// set the device model
-			this.setModel(models.createDeviceModel(), "device");
+			// Initialize firebase connection
+			Firebase.initializeFirebase();
 			
-			// Set the firebase model by calling the initializeFirebase function in the Firebase.js file
-			this.setModel(Firebase.initializeFirebase(), "firebase");
+			// Initialize local model
+			this.setModel(new sap.ui.model.json.JSONModel({
+				"isUserRegistered": false,
+				"isAdmin" : false
+			}), "localModel");
+			
+			// Add custom icons
+			sap.ui.core.IconPool.addIcon('coeur', 'customfont', 'icomoon', 'e9da');
+			sap.ui.core.IconPool.addIcon('carreau', 'customfont', 'icomoon', 'e919');
+			sap.ui.core.IconPool.addIcon('trefle', 'customfont', 'icomoon', 'e918');
+			sap.ui.core.IconPool.addIcon('pique', 'customfont', 'icomoon', 'e917');
 		}
 	});
 });

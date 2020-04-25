@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog title="Create a new belote table" contentWidth="400px" draggable="true" resizable="true">
+		<content>
+			<Label text="Table name" labelFor="idNewTableName"/>
+			<Input id="idNewTableName" placeholder="Enter table name"/>
+			<Label text="Table descritpion" labelFor="idNewTableNameDesc"/>
+			<Input id="idNewTableNameDesc" placeholder="Enter description"/>
+		</content>
+		<buttons>
+			<Button text="Create" press="onPressCreateNewTable"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

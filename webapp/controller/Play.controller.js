@@ -62,7 +62,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         			break;
         		}
         	}
-        },
+        }, 
         
         // Triggered when the user clicks custom atout
         onPressCustomAsset : function(oEvent) {
@@ -178,6 +178,9 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 					
 				}
 			}
+		},
+		bidon:function(puduc) {
+			var remi = puduc;
 		}
 	});
 });

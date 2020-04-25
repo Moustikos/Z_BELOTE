@@ -64,6 +64,11 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	}
         },
         
+        // Test rémi
+        onTest : function(oEVent) {
+        	return;
+        },
+        
         // Triggered when the user clicks custom atout
         onPressCustomAsset : function(oEvent) {
         	var sUserName = firebase.auth().currentUser.displayName;

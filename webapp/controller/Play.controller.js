@@ -37,7 +37,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         onSuggestionSelected : function() {
         	var updates = {};
         	updates["/SuggestedCard"] = "";
-        	updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0];
+        	updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
         	updates["/Preneur"] = firebase.auth().currentUser.displayName;
         	firebase.database().ref("ETTableSet/0").update(updates);
         },
@@ -59,6 +59,33 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         			firebase.database().ref("ETTableSet/0").update(updates);
         			break;
         		}
+        	}
+        },
+        
+        onPressCustomAsset : function(oEvent) {
+        	var sUserName = firebase.auth().currentUser.displayName;
+        	var aSplit = oEvent.getSource().getIcon().split("/");
+        	var sChoice = aSplit[aSplit.length - 1];
+        	var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
+        	
+        	var updates = {};
+        	if(sChoice === "decline") {
+        		for (var i = 0; i < aPlayers.length; i++) {
+	        		if(aPlayers[i].ID === sUserName) {
+	        			var iNextPlayerId = (i + 1) % 4;
+	        			var updates = {};
+	        			updates["/CurrentPlayer"] = aPlayers[iNextPlayerId].ID;
+	        			
+	        			if(oLocalModel.getProperty("/PlayTable/Distributor") === sUserName) {
+	        				updates["/DistributionTour"] = 1;
+	        				updates["/Distributor"] = aPlayers[iNextPlayerId].ID;
+	        				updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].ID;
+	        				this.util._shuffleCards(this, false);
+	        			}
+	        			firebase.database().ref("ETTableSet/0").update(updates);
+	        			break;
+	        		}
+	        	}
         	}
         },
 		

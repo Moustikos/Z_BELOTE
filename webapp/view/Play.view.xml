@@ -23,10 +23,6 @@
 				</VBox>
 				<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
 					<Text text="{localModel>/PlayTable/NPlayers/3/ID}" class="playerName"/>
-					<Button icon="sap-icon://customfont/coeur" type="Reject"/>
-					<Button icon="sap-icon://customfont/carreau"/>
-					<Button icon="sap-icon://customfont/trefle"/>
-					<Button icon="sap-icon://customfont/pique"/>
 				</VBox>
 			</HBox>
 		</content>

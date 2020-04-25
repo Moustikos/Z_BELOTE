@@ -29,6 +29,10 @@ sap.ui.define([], function() {
         
         getSuggestCardTakeVisible : function(iTour) {
         	return iTour === 1;
+        },
+        
+        getCustomColorTakeVisible : function(iTour) {
+        	return iTour === 2;
         }
     };
 });

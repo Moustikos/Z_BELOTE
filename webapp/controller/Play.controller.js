@@ -34,6 +34,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             }
         },
         
+        // Triggered if user accepts the suggested card
         onSuggestionSelected : function() {
         	var updates = {};
         	updates["/SuggestedCard"] = "";
@@ -42,6 +43,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	firebase.database().ref("ETTableSet/0").update(updates);
         },
         
+        // Triggered if the user rejects the suggestion card
         onSuggestionRejected : function() {
         	var sUserName = firebase.auth().currentUser.displayName;
         	var oLocalModel = this.getView().getModel("localModel");
@@ -62,6 +64,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	}
         },
         
+        // Triggered when the user clicks custom atout
         onPressCustomAsset : function(oEvent) {
         	var sUserName = firebase.auth().currentUser.displayName;
         	var aSplit = oEvent.getSource().getIcon().split("/");

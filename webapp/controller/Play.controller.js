@@ -15,9 +15,6 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		},
 		
 		_onRouteMatched : function(oEvent) {
-			//Initialize local variable
-			this.isShuffleNeeded = true;
-			
 			// Build binding path
 			this._tablePath = oEvent.getParameter("arguments").teamPath.replace("-", "/");
 			
@@ -31,9 +28,8 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             oLocalModel.setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot));
             
             // Only current player can shuffle cards
-            if(this.isShuffleNeeded && oLocalModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
-            	this.isShuffleNeeded = false;
-            	this.util._shuffleCards(this, false);
+            if(oLocalModel.getProperty("/PlayTable/IsShuffleNeeded") && oLocalModel.getProperty("/PlayTable/Distributor") === firebase.auth().currentUser.displayName) {
+            	this.util._shuffleCards(this);
             }
         },
         
@@ -167,6 +163,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 	        				updates["/DistributionTour"] = 1;
 	        				updates["/Distributor"] = aPlayers[iNextPlayerId].ID;
 	        				updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].ID;
+	        				updates["/IsShuffleNeeded"] = true;
 	        			}
 	        			firebase.database().ref(this._tablePath).update(updates);
 	        			break;

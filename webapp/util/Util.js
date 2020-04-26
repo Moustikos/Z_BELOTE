@@ -46,6 +46,10 @@ sap.ui.define([], function() {
 				 	else if(oProperty.key === "NTeams") {
 				 		oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1]];
 				 	}
+				 	
+				 	else if(oProperty.key === "NRemainingCards") {
+				 		oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1], oProperty.toJSON()[2], oProperty.toJSON()[3], oProperty.toJSON()[4], oProperty.toJSON()[5], oProperty.toJSON()[6], oProperty.toJSON()[7], oProperty.toJSON()[8], oProperty.toJSON()[9], oProperty.toJSON()[10]];
+				 	}
 				 }
             });
             
@@ -93,7 +97,7 @@ sap.ui.define([], function() {
 					updates["/NPlayers/0/NCards/" + i] = {
 						Name : aCard[i].Name
 					};
-					firebase.database().ref("ETTableSet/0/NPlayers/0/NCards/" + (i + 5)).remove();
+					firebase.database().ref(that._tablePath + "/NPlayers/0/NCards/" + (i + 5)).remove();
 				}
 				
 				for(var j = 0; j < 3; j++) {
@@ -101,7 +105,7 @@ sap.ui.define([], function() {
 						Name : aCard[j+3].Name
 					};
 					
-					firebase.database().ref("ETTableSet/0/NPlayers/1/NCards/" + (j + 5)).remove();
+					firebase.database().ref(that._tablePath +  "/NPlayers/1/NCards/" + (j + 5)).remove();
 				}
 				
 				for(var k = 0; k < 3; k++) {
@@ -109,7 +113,7 @@ sap.ui.define([], function() {
 						Name : aCard[k+6].Name
 					};
 					
-					firebase.database().ref("ETTableSet/0/NPlayers/2/NCards/" + (k + 5)).remove();
+					firebase.database().ref(that._tablePath + "/NPlayers/2/NCards/" + (k + 5)).remove();
 				}
 				
 				for(var l = 0; l< 3; l++) {
@@ -117,7 +121,7 @@ sap.ui.define([], function() {
 						Name : aCard[l+9].Name
 					};
 					
-					firebase.database().ref("ETTableSet/0/NPlayers/3/NCards/" + (l + 5)).remove();
+					firebase.database().ref(that._tablePath + "/NPlayers/3/NCards/" + (l + 5)).remove();
 				}
 				
 				// Two second cards
@@ -145,11 +149,17 @@ sap.ui.define([], function() {
 					};
 				}
 				
+				for (var r = 0; r < 11; r++) {
+					updates["/NRemainingCards/" + r] = {
+						Name : aCard[r + 21].Name
+					};
+				}
+				
 				updates["/SuggestedCard"] = aCard[20].Name;
 				updates["/DoneFinished"] = false;
 			}
 			
-			firebase.database().ref("ETTableSet/0").update(updates);
+			firebase.database().ref(that._tablePath).update(updates);
         }
     };
 });

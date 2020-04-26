@@ -8,7 +8,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 	return BaseController.extend("com.belote.controller.Play", {
 		onInit: function () {
 			// Attach functions to entityset changes
-			this._initializeFirebaseWatch(this);
+			// this._initializeFirebaseWatch(this);
 			
 			// Add onRouteMathed
 			this._getRouter().getRoute("Play").attachPatternMatched(this._onRouteMatched, this);
@@ -19,10 +19,10 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			this.isShuffleNeeded = true;
 			
 			// Build binding path
-			var sNavParameter = oEvent.getParameter("arguments").teamPath.replace("-", "/");
+			this._tablePath = oEvent.getParameter("arguments").teamPath.replace("-", "/");
 			
 			// Add static path to the table locally
-			this.bindFireBase._addUserTableEntityListener(this, sNavParameter);
+			this.bindFireBase._addUserTableEntityListener(this);
 		},
         
         // Add logic to update local model
@@ -43,7 +43,87 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	updates["/SuggestedCard"] = "";
         	updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
         	updates["/Preneur"] = firebase.auth().currentUser.displayName;
-        	firebase.database().ref("ETTableSet/0").update(updates);
+        	this._distributeRemainingCards(updates);
+        	firebase.database().ref(this._tablePath).update(updates);
+        },
+        
+        // Distribute remaining cards
+        _distributeRemainingCards : function(updates) {
+        	var sUserName = firebase.auth().currentUser.displayName;
+        	var oLocalModel = this.getView().getModel("localModel");
+        	var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
+        	var aRemainingCards = oLocalModel.getProperty("/PlayTable/NRemainingCards");
+        	var sCurrentPlayer = oLocalModel.getProperty("/PlayTable/CurrentPlayer");
+        	var sSuggestedCard = oLocalModel.getProperty("/PlayTable/SuggestedCard");
+        	var iCurrentPlayerIndex, iPreneur;
+        	var iRemainingCardIndex = 0;
+        	var aSortedPlayers = [];
+        	
+        	for (var i = 0; i < aPlayers.length; i++) {
+        		if(aPlayers[i].ID === sCurrentPlayer) {
+        			iCurrentPlayerIndex = i;
+        			break;
+        		}
+        	}
+        	
+        	aSortedPlayers[0] = {
+        		Player: aPlayers[iCurrentPlayerIndex],
+        		Index : iCurrentPlayerIndex
+        	};
+        	
+        	aSortedPlayers[1] = {
+        		Player: aPlayers[(iCurrentPlayerIndex + 1) % 4],
+        		Index : (iCurrentPlayerIndex + 1) % 4
+        	};
+        	
+        	aSortedPlayers[2] = {
+        		Player: aPlayers[(iCurrentPlayerIndex + 2) % 4],
+        		Index : (iCurrentPlayerIndex + 2) % 4
+        	};
+        	
+        	aSortedPlayers[3] = {
+        		Player: aPlayers[(iCurrentPlayerIndex + 3) % 4],
+        		Index : (iCurrentPlayerIndex + 3) % 4
+        	};
+        	
+        	for (var j = 0; j < aSortedPlayers.length; j++) {
+        		if(aSortedPlayers[j].Player.ID === sUserName) {
+        			updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 5] = {
+						Name : sSuggestedCard
+					};
+					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 6] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name
+					};
+					
+					iRemainingCardIndex = iRemainingCardIndex + 1;
+					
+					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 7] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name
+					};
+					
+					iRemainingCardIndex = iRemainingCardIndex + 1;
+        		}
+        		
+        		else {
+        			updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 5] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name
+					};
+					
+					iRemainingCardIndex = iRemainingCardIndex + 1;
+					
+					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 6] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name
+					};
+					
+					iRemainingCardIndex = iRemainingCardIndex + 1;
+					
+					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 7] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name
+					};
+					
+					iRemainingCardIndex = iRemainingCardIndex + 1;
+        		}
+        	}
         },
         
         // Triggered if the user rejects the suggestion card
@@ -61,7 +141,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         			if(oLocalModel.getProperty("/PlayTable/Distributor") === sUserName) {
         				updates["/DistributionTour"] = 2;
         			}
-        			firebase.database().ref("ETTableSet/0").update(updates);
+        			firebase.database().ref(this._tablePath).update(updates);
         			break;
         		}
         	}
@@ -72,6 +152,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	var sUserName = firebase.auth().currentUser.displayName;
         	var aSplit = oEvent.getSource().getIcon().split("/");
         	var sChoice = aSplit[aSplit.length - 1];
+        	var oLocalModel = this.getView().getModel("localModel");
         	var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
         	
         	var updates = {};
@@ -87,10 +168,18 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 	        				updates["/Distributor"] = aPlayers[iNextPlayerId].ID;
 	        				updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].ID;
 	        			}
-	        			firebase.database().ref("ETTableSet/0").update(updates);
+	        			firebase.database().ref(this._tablePath).update(updates);
 	        			break;
 	        		}
 	        	}
+        	}
+        	
+        	else {
+	        	updates["/SuggestedCard"] = "";
+	        	updates["/Atout"] = sChoice.toLowerCase();
+	        	updates["/Preneur"] = firebase.auth().currentUser.displayName;
+	        	this._distributeRemainingCards(updates);
+	        	firebase.database().ref(this._tablePath).update(updates);
         	}
         },
 		

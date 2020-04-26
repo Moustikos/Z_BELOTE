@@ -31,6 +31,15 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             if(oLocalModel.getProperty("/PlayTable/IsShuffleNeeded") && oLocalModel.getProperty("/PlayTable/Distributor") === firebase.auth().currentUser.displayName) {
             	this.util._shuffleCards(this);
             }
+            
+            else if(oLocalModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
+            	if (!this._oUserCardPopup) {
+	                this._oUserCardPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCard", this);
+	                this.getView().addDependent(this._oUserCardPopup);
+	            }
+	
+	            this._oUserCardPopup.open();
+            }
         },
         
         // Triggered if user accepts the suggested card
@@ -39,6 +48,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	updates["/SuggestedCard"] = "";
         	updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
         	updates["/Preneur"] = firebase.auth().currentUser.displayName;
+        	updates["/DoneFinished"] = true;
         	this._distributeRemainingCards(updates);
         	firebase.database().ref(this._tablePath).update(updates);
         },
@@ -179,15 +189,6 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 	        	firebase.database().ref(this._tablePath).update(updates);
         	}
         },
-		
-		onPressPlay : function() {
-			if (!this._oUserCardPopup) {
-                this._oUserCardPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCard", this);
-                this.getView().addDependent(this._oUserCardPopup);
-            }
-
-            this._oUserCardPopup.open();
-		},
 		
 		onSelectCard : function(oEvent) {
 			var oModel = this.getView().getModel("localModel");

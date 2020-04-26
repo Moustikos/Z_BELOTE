@@ -155,6 +155,7 @@ sap.ui.define([], function() {
 			}
 			
 			updates["/SuggestedCard"] = aCard[20].Name;
+			updates["/DoneFinished"] = false;
 			updates["/IsShuffleNeeded"] = false;
 			
 			firebase.database().ref(that._tablePath).update(updates);

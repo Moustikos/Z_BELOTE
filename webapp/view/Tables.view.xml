@@ -4,13 +4,14 @@
 <!-- ******************************************************************************************************************* -->
 <mvc:View controllerName="com.belote.controller.Tables" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
 	xmlns="sap.m" xmlns:f="sap.f">
-	<Page showHeader="false">
+	<Page showHeader="true">
 		<content>
 		
 			<Table id="tablesTable" inset="false" items="{localModel>/ETTables}" class="sapFDynamicPageAlignContent" width="auto">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer/>
+						<Text text="Create a new table"></Text>
 						<OverflowToolbarButton icon="sap-icon://add" type="Transparent" press="onPressAddTableButton"/>
 					</OverflowToolbar>
 				</headerToolbar>

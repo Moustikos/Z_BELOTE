@@ -43,8 +43,8 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 							firebase.database().ref("ETTableSet/" + i).update({
 								isFull: true
 							});
-							this._getRouter().navTo("Play",{
-								teamPath : "ETTableSet-" + i
+							this._getRouter().navTo("Play", {
+								teamPath: "ETTableSet-" + i
 							});
 						}
 					}
@@ -63,7 +63,15 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		onPressCreateNewTable: function () {
 			var sNewTableName = this.byId("idNewTableName").getValue();
 			var sNewTableDesc = this.byId("idNewTableNameDesc").getValue();
+			if (!sNewTableName) {
+				sap.m.MessageToast.show("Please enter at least a table name");
+				return;
+			}
 			this.addNewTable(sNewTableName, sNewTableDesc);
+			this._oCreateTablePopup.close();
+		},
+
+		onPressCancelNewTable: function () {
 			this._oCreateTablePopup.close();
 		},
 
@@ -121,7 +129,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var iPlayerID;
 			for (let j = 0; j < aAssignedPlayers.length; j++) {
 				if (aAssignedPlayers[j] === sPlayerName) {
-					alert("You are already assigned to a table !")
+					sap.m.MessageToast.show("You are already assigned to a table !");
 					return;
 				}
 			}
@@ -159,7 +167,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var iPlayerID;
 			for (let j = 0; j < aAssignedPlayers.length; j++) {
 				if (aAssignedPlayers[j] === sPlayerName) {
-					alert("You are already assigned to a table !")
+					sap.m.MessageToast.show("You are already assigned to a table !");
 					return;
 				}
 			}

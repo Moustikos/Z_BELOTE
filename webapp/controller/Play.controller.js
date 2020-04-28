@@ -33,12 +33,12 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             }
             
             else if(oLocalModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
-            	if (!this._oUserCardPopup) {
-	                this._oUserCardPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCard", this);
-	                this.getView().addDependent(this._oUserCardPopup);
-	            }
+            	// if (!this._oUserCardPopup) {
+	            //     this._oUserCardPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCard", this);
+	            //     this.getView().addDependent(this._oUserCardPopup);
+	            // }
 	
-	            this._oUserCardPopup.open();
+	            // this._oUserCardPopup.open();
             }
         },
         

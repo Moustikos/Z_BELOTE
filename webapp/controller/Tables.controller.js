@@ -40,11 +40,13 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 							}
 						}
 						if (iCounter === 4 && bCurrentPlayerisInTable === true) {
+							firebase.database().ref("ETTableSet").off();
 							firebase.database().ref("ETTableSet/" + i).update({
 								isFull: true,
 								CurrentPlayer: aTables[i].NPlayers[1].Name,
 								Distributor: aTables[i].NPlayers[0].Name
 							});
+							
 							this._getRouter().navTo("Play", {
 								teamPath: "ETTableSet-" + i
 							});

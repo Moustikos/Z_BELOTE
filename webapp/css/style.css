@@ -63,7 +63,7 @@
     content: "\e917";
 }
 
-.sapMLIBShowSeparator>td {
+#idScoreTable-tblBody>tr>td {
     border-top: 1px solid #e5e5e5;
     border-left: 1px solid #e5e5e5;
     border-right: 1px solid #e5e5e5;

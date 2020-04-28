@@ -2,7 +2,7 @@
 	<Popover title="Info" class="sapUiResponsivePadding--header sapUiResponsivePadding--footer" placement="Bottom">
 		<HBox>
 			<VBox>
-				<Table width="300px" id="idProductsTable" inset="true">
+				<Table class="custom-sapMLIBShowSeparator" width="300px" id="idScoreTable" inset="true">
 					<columns>
 						<Column width ="100px">
 							<Text text="Team"/>

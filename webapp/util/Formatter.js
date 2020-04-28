@@ -58,13 +58,22 @@ sap.ui.define([], function () {
 				break;
 			}
 		},
-		
-		getAtoutIconColor: function(sAtout) {
-		return sAtout === "coeur" || sAtout === "carreau" ? "red" : "black";
+
+		getAtoutIconColor: function (sAtout) {
+			return sAtout === "coeur" || sAtout === "carreau" ? "red" : "black";
+		},
+
+		getScore: function (iScore) {
+			return iScore !== undefined ? iScore : 0;
 		},
 
 		getAtoutVisible: function (sAtout) {
 			return sAtout === "" ? false : true;
+		},
+
+		getTableListItemVisible: function (oModel) {
+			console.log(oModel);
+			return oModel === undefined ? false : true;
 		},
 
 		getJoinButtonTeam1Enabled: function (NPlayers) {

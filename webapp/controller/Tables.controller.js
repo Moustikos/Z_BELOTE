@@ -17,7 +17,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var that = this;
 			var aTables;
 			firebase.database().ref("ETTableSet").on("value", function (snapshot) {
-				aTables = (snapshot.val());
+				aTables = snapshot.val();
 				oModel.setProperty("/ETTables", aTables);
 				that.checkIfTableIsFull(oModel);
 			});

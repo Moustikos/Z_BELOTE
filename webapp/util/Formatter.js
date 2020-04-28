@@ -39,7 +39,27 @@ sap.ui.define([], function () {
 			return Player ? true : false;
 		},
 
-		getJoinButtonTeam1Enabled: function (NPlayers) {
+		getAtoutIcon: function (sAtout) {
+			switch (sAtout) {
+			case "trefle":
+				return "sap-icon://customfont/trefle";
+				break;
+			case "coeur":
+				return "sap-icon://customfont/coeur";
+				break;
+			case "pique":
+				return "sap-icon://customfont/pique";
+				break;
+			case "carreau":
+				return "sap-icon://customfont/carreau";
+				break;
+			default:
+				return ""
+				break;
+			}
+		},
+
+			getJoinButtonTeam1Enabled: function (NPlayers) {
 			if (NPlayers) {
 				var aTeam1Players = [];
 				for (let i = 0; i < NPlayers.length; i++) {

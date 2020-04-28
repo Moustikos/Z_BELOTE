@@ -66,7 +66,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	var aSortedPlayers = [];
         	
         	for (var i = 0; i < aPlayers.length; i++) {
-        		if(aPlayers[i].ID === sCurrentPlayer) {
+        		if(aPlayers[i].Name === sCurrentPlayer) {
         			iCurrentPlayerIndex = i;
         			break;
         		}
@@ -93,7 +93,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	};
         	
         	for (var j = 0; j < aSortedPlayers.length; j++) {
-        		if(aSortedPlayers[j].Player.ID === sUserName) {
+        		if(aSortedPlayers[j].Player.Name === sUserName) {
         			updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 5] = {
 						Name : sSuggestedCard
 					};
@@ -139,10 +139,10 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
         	
         	for (var i = 0; i < aPlayers.length; i++) {
-        		if(aPlayers[i].ID === sUserName) {
+        		if(aPlayers[i].Name === sUserName) {
         			var iNextPlayerId = (i + 1) % 4;
         			var updates = {};
-        			updates["/CurrentPlayer"] = aPlayers[iNextPlayerId].ID;
+        			updates["/CurrentPlayer"] = aPlayers[iNextPlayerId].Name;
         			
         			if(oLocalModel.getProperty("/PlayTable/Distributor") === sUserName) {
         				updates["/DistributionTour"] = 2;
@@ -164,15 +164,15 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
         	var updates = {};
         	if(sChoice === "decline") {
         		for (var i = 0; i < aPlayers.length; i++) {
-	        		if(aPlayers[i].ID === sUserName) {
+	        		if(aPlayers[i].Name === sUserName) {
 	        			var iNextPlayerId = (i + 1) % 4;
 	        			var updates = {};
-	        			updates["/CurrentPlayer"] = aPlayers[iNextPlayerId].ID;
+	        			updates["/CurrentPlayer"] = aPlayers[iNextPlayerId].Name;
 	        			
 	        			if(oLocalModel.getProperty("/PlayTable/Distributor") === sUserName) {
 	        				updates["/DistributionTour"] = 1;
-	        				updates["/Distributor"] = aPlayers[iNextPlayerId].ID;
-	        				updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].ID;
+	        				updates["/Distributor"] = aPlayers[iNextPlayerId].Name;
+	        				updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].Name;
 	        				updates["/IsShuffleNeeded"] = true;
 	        			}
 	        			firebase.database().ref(this._tablePath).update(updates);

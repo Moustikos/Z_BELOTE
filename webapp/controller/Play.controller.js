@@ -33,13 +33,36 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             }
             
             else if(oLocalModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
-            	if (!this._oUserCardPopup) {
-	                this._oUserCardPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCard", this);
-	                this.getView().addDependent(this._oUserCardPopup);
-	            }
-	
-	            this._oUserCardPopup.open();
+            	// this._openChooseCard();
             }
+        },
+        
+        _openChooseCard : function() {
+        	var oItemTemplate = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCardVBox", this);
+        	var sUserName = firebase.auth().currentUser.displayName;
+        	var oLocalModel = this.getView().getModel("localModel");
+        	var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
+        	var sPath = "/PlayTable/NPlayers/";
+        	
+        	if (!this._oUserCardPopup) {
+                this._oUserCardPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCard", this);
+                this.getView().addDependent(this._oUserCardPopup);
+            }
+            
+            for (var i = 0; i < aPlayers.length; i++) {
+        		if(aPlayers[i].Name === sUserName) {
+        			sPath = sPath + i + "/NCards";
+        		}
+        	}
+            
+            this.byId("idHBoxChooseCard").bindAggregation("items", {
+				path: sPath,
+				model: "localModel",
+				template: oItemTemplate,
+				templateShareable: true
+			});
+
+            this._oUserCardPopup.open();
         },
         
         // Triggered if user accepts the suggested card

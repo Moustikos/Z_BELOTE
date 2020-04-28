@@ -1,17 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
     <Dialog title="Selectionner la carte à jouer">
         <content>
-        	<HBox items="{localModel>/ETPlayers/1/Cards}" class="sapUiTinyMargin">
-        		<VBox width="100px" height="120px" class="card sapUiTinyMargin">
-					<HBox width="100px" height="30px">
-						<Text text="{localModel>Name}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-					</HBox>
-					<HBox width="100px" height="46px" justifyContent="Center" alignContent="Center" alignItems="Center">
-						<Text text="{localModel>Name}"/>
-					</HBox>
-					<Button text="Jouer" width="96px" type="Transparent" press="onSelectCard"/>
-				</VBox>
-        	</HBox>
+        	<HBox id="idHBoxChooseCard" class="sapUiTinyMargin"/>
         </content>
     </Dialog>
 </core:FragmentDefinition>

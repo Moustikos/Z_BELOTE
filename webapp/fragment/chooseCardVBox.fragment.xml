@@ -1,0 +1,12 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
+		<VBox width="100px" height="120px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
+			<HBox width="100px" height="30px">
+				<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+			</HBox>
+			<HBox width="100px" height="90px" justifyContent="Center" alignContent="Center" alignItems="Center">
+				<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
+			</HBox>
+		</VBox>
+	</VBox>
+</core:FragmentDefinition>

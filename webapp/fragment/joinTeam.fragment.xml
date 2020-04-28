@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.f" xmlns:card="sap.f.cards">
-	<Dialog title="{Name}" contentWidth="400px" draggable="true" resizable="true" id="idWaitingRoomDialog">
+	<Dialog title="{Name}" contentWidth="400px" draggable="true" resizable="true" id="idJoinTeamDialog">
 		<content>
 			<f:Card class="sapUiMediumMargin" width="300px">
 				<f:header>

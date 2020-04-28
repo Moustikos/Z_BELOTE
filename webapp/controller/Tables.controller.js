@@ -90,19 +90,19 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var iTableId = oEvent.getSource().getBindingContextPath().split('/')[oEvent.getSource().getBindingContextPath().split('/').length -
 				1];
 			var sBindingPath = oEvent.getSource().getBindingContextPath();
-			if (!this._oWaitingRoomPopup) {
-				this._oWaitingRoomPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.waitingRoom", this);
-				this.getView().addDependent(this._oWaitingRoomPopup);
-				this._oWaitingRoomPopup.setModel(oModel);
-				this._oWaitingRoomPopup.bindElement(sBindingPath);
+			if (!this._oJoinTeamPopup) {
+				this._oJoinTeamPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.joinTeam", this);
+				this.getView().addDependent(this._oJoinTeamPopup);
+				this._oJoinTeamPopup.setModel(oModel);
+				this._oJoinTeamPopup.bindElement(sBindingPath);
 			}
-			this._oWaitingRoomPopup.open();
+			this._oJoinTeamPopup.open();
 		},
 
 		onPressCloseTable: function () {
-			this._oWaitingRoomPopup.close();
-			this._oWaitingRoomPopup.destroy();
-			this._oWaitingRoomPopup = undefined;
+			this._oJoinTeamPopup.close();
+			this._oJoinTeamPopup.destroy();
+			this._oJoinTeamPopup = undefined;
 		},
 
 		getPlayersAssignedToATable: function () {
@@ -137,7 +137,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				iSecondPlayerID = 3
 				break;
 			}
-			const sTablePath = this._oWaitingRoomPopup.getBindingContext().sPath
+			const sTablePath = this._oJoinTeamPopup.getBindingContext().sPath
 			const oTable = this.getView().getModel("localModel").getProperty(sTablePath);
 			const aAssignedPlayers = this.getPlayersAssignedToATable();
 			var aTeamPlayers = [];

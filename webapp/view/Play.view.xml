@@ -9,6 +9,9 @@
 				<contentLeft>
 					<Button icon="sap-icon://message-information" press="handleScorePopoverPress"></Button>
 				</contentLeft>
+				<contentMiddle>
+					<Title text='{localModel>/PlayTable/Name}'></Title>
+				</contentMiddle>
 				<contentRight>
 					<HBox visible="{path : 'localModel>/PlayTable/Atout', formatter: '.formatter.getAtoutVisible'}">
 						<Text text="Atout : " class="sapUiTinyMarginEnd"></Text>

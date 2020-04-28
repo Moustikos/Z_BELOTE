@@ -3,7 +3,7 @@
 		<content>
 			<f:Card class="sapUiMediumMargin" width="300px">
 				<f:header>
-					<card:Header title="Team 1"/>
+					<card:Header title="Team 1" iconSrc="sap-icon://collaborate"/>
 				</f:header>
 				<f:content>
 					<VBox justifyContent="SpaceBetween" width="100%">
@@ -26,7 +26,7 @@
 							</HBox>
 						</HBox>
 						<HBox justifyContent="Center">
-							<Button icon="sap-icon://begin" text="Join" press="onJoinTeam1"
+							<Button id="idJoinTeam1Button" icon="sap-icon://begin" text="Join" press="onJoinTeam"
 								enabled="{path: 'NPlayers', formatter: '.formatter.getJoinButtonTeam1Enabled'}"/>
 						</HBox>
 					</VBox>
@@ -34,7 +34,7 @@
 			</f:Card>
 			<f:Card class="sapUiMediumMargin" width="300px">
 				<f:header>
-					<card:Header title="Team 2"/>
+					<card:Header title="Team 2" iconSrc="sap-icon://collaborate"/>
 				</f:header>
 				<f:content>
 					<VBox justifyContent="SpaceBetween" width="100%">
@@ -53,11 +53,11 @@
 								<VBox justifyContent="Center">
 									<Title level="H3" text="{NPlayers/3/Name}"/>
 								</VBox>
-								<Button icon="sap-icon://less" press="onLeaveTeam" visible="{path: 'NPlayers/3', formatter: '.formatter.getLeaveButtonVisible'}"/>
+								<Button id="idJoinTeam2Button" icon="sap-icon://less" press="onLeaveTeam" visible="{path: 'NPlayers/3', formatter: '.formatter.getLeaveButtonVisible'}"/>
 							</HBox>
 						</HBox>
 						<HBox justifyContent="Center">
-							<Button icon="sap-icon://begin" text="Join" press="onJoinTeam2"
+							<Button icon="sap-icon://begin" text="Join" press="onJoinTeam"
 								enabled="{path: 'NPlayers', formatter: '.formatter.getJoinButtonTeam2Enabled'}"/>
 						</HBox>
 					</VBox>

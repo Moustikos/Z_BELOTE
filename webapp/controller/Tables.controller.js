@@ -112,7 +112,10 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				if (aTables[i].NPlayers) {
 					for (let j = 0; j < aTables[i].NPlayers.length; j++) {
 						if (aTables[i].NPlayers[j] && aTables[i].NPlayers[j].Name) {
-							aPlayersAssignedToATable.push(aTables[i].NPlayers[j].Name);
+							aPlayersAssignedToATable.push({
+								playerName: aTables[i].NPlayers[j].Name,
+								tableName: aTables[i].Name
+							});
 						}
 					}
 				}
@@ -120,7 +123,20 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			return aPlayersAssignedToATable;
 		},
 
-		onJoinTeam1: function () {
+		onJoinTeam: function (oEvent) {
+			const iTeamNumber = oEvent.getSource().getId().indexOf("idJoinTeam1Button") < 0 ? 2 : 1;
+			var iFirstPlayerID;
+			var iSecondPlayerID;
+			switch (iTeamNumber) {
+			case 1:
+				iFirstPlayerID = 0;
+				iSecondPlayerID = 2;
+				break;
+			case 2:
+				iFirstPlayerID = 1;
+				iSecondPlayerID = 3
+				break;
+			}
 			const sTablePath = this._oWaitingRoomPopup.getBindingContext().sPath
 			const oTable = this.getView().getModel("localModel").getProperty(sTablePath);
 			const aAssignedPlayers = this.getPlayersAssignedToATable();
@@ -128,74 +144,36 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			const sPlayerName = firebase.auth().currentUser.displayName;
 			var iPlayerID;
 			for (let j = 0; j < aAssignedPlayers.length; j++) {
-				if (aAssignedPlayers[j] === sPlayerName) {
-					sap.m.MessageToast.show("You are already assigned to a table !");
+				if (aAssignedPlayers[j].playerName === sPlayerName) {
+					sap.m.MessageToast.show("You are already assigned to table " + aAssignedPlayers[j].tableName);
 					return;
 				}
 			}
 			if (oTable.NPlayers) {
 				for (let i = 0; i < oTable.NPlayers.length; i++) {
 					if (oTable.NPlayers[i]) {
-						if (oTable.NPlayers[i].ID === 0 || oTable.NPlayers[i].ID === 2) {
+						if (oTable.NPlayers[i].ID === iFirstPlayerID || oTable.NPlayers[i].ID === iSecondPlayerID) {
 							aTeamPlayers.push(oTable.NPlayers[i]);
 						}
 					}
 				}
 				switch (aTeamPlayers.length) {
 				case 0:
-					iPlayerID = 0;
+					iPlayerID = iFirstPlayerID;
 					break;
 				case 1:
-					iPlayerID = aTeamPlayers[0].ID === 0 ? 2 : 0;
+					iPlayerID = aTeamPlayers[0].ID === iFirstPlayerID ? iSecondPlayerID : iFirstPlayerID;
 					break;
 				}
 			} else {
-				iPlayerID = 0;
+				iPlayerID = iFirstPlayerID;
 			}
 			firebase.database().ref("ETTableSet/" + oTable.ID + "/NPlayers/" + iPlayerID).set({
 				Name: sPlayerName,
 				ID: iPlayerID
 			});
 		},
-
-		onJoinTeam2: function () {
-			const sTablePath = this._oWaitingRoomPopup.getBindingContext().sPath
-			const oTable = this.getView().getModel("localModel").getProperty(sTablePath);
-			var aTeamPlayers = [];
-			const aAssignedPlayers = this.getPlayersAssignedToATable();
-			const sPlayerName = firebase.auth().currentUser.displayName;
-			var iPlayerID;
-			for (let j = 0; j < aAssignedPlayers.length; j++) {
-				if (aAssignedPlayers[j] === sPlayerName) {
-					sap.m.MessageToast.show("You are already assigned to a table !");
-					return;
-				}
-			}
-			if (oTable.NPlayers) {
-				for (let i = 0; i < oTable.NPlayers.length; i++) {
-					if (oTable.NPlayers[i]) {
-						if (oTable.NPlayers[i].ID === 1 || oTable.NPlayers[i].ID === 3) {
-							aTeamPlayers.push(oTable.NPlayers[i]);
-						}
-					}
-				}
-				switch (aTeamPlayers.length) {
-				case 0:
-					iPlayerID = 1;
-					break;
-				case 1:
-					iPlayerID = aTeamPlayers[0].ID === 1 ? 3 : 1;
-					break;
-				}
-			} else {
-				iPlayerID = 1;
-			}
-			firebase.database().ref("ETTableSet/" + oTable.ID + "/NPlayers/" + iPlayerID).set({
-				Name: sPlayerName,
-				ID: iPlayerID
-			});
-		},
-
+		
 		onLeaveTeam: function () {
 			const aTables = this.getView().getModel("localModel").getProperty("/ETTables");
 			const sPlayerName = firebase.auth().currentUser.displayName;

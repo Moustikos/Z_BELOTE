@@ -22,25 +22,33 @@ sap.ui.define([], function() {
 					 	var aCardsPlayer3 = [];
 					 	var aCardsPlayer4 = [];
 					 	
-					 	for(var i = 0; i < Object.keys(oEntry[oProperty.key][0].NCards).length; i++) {
-					 		aCardsPlayer1.push(oEntry[oProperty.key][0].NCards[Object.keys(oEntry[oProperty.key][0].NCards)[i]]);
+					 	if(oEntry[oProperty.key][0].NCards) {
+					 		for(var i = 0; i < Object.keys(oEntry[oProperty.key][0].NCards).length; i++) {
+						 		aCardsPlayer1.push(oEntry[oProperty.key][0].NCards[Object.keys(oEntry[oProperty.key][0].NCards)[i]]);
+						 	}
+						 	oEntry[oProperty.key][0].NCards = aCardsPlayer1;
 					 	}
-					 	oEntry[oProperty.key][0].NCards = aCardsPlayer1;
+					 	
+				 		if(oEntry[oProperty.key][1].NCards) {
+				 			for(var j = 0; j < Object.keys(oEntry[oProperty.key][1].NCards).length; j++) {
+						 		aCardsPlayer2.push(oEntry[oProperty.key][1].NCards[Object.keys(oEntry[oProperty.key][1].NCards)[j]]);
+						 	}
+						 	oEntry[oProperty.key][1].NCards = aCardsPlayer2;
+				 		}
 				 		
-				 		for(var j = 0; j < Object.keys(oEntry[oProperty.key][1].NCards).length; j++) {
-					 		aCardsPlayer2.push(oEntry[oProperty.key][1].NCards[Object.keys(oEntry[oProperty.key][1].NCards)[j]]);
+					 	if(oEntry[oProperty.key][2].NCards) {
+					 		for(var k = 0; k < Object.keys(oEntry[oProperty.key][2].NCards).length; k++) {
+						 		aCardsPlayer3.push(oEntry[oProperty.key][2].NCards[Object.keys(oEntry[oProperty.key][2].NCards)[k]]);
+						 	}
+						 	oEntry[oProperty.key][2].NCards = aCardsPlayer3;
 					 	}
-					 	oEntry[oProperty.key][1].NCards = aCardsPlayer2;
 					 	
-					 	for(var k = 0; k < Object.keys(oEntry[oProperty.key][2].NCards).length; k++) {
-					 		aCardsPlayer3.push(oEntry[oProperty.key][2].NCards[Object.keys(oEntry[oProperty.key][2].NCards)[k]]);
+					 	if(oEntry[oProperty.key][3].NCards) {
+					 		for(var l = 0; l< Object.keys(oEntry[oProperty.key][3].NCards).length; l++) {
+						 		aCardsPlayer4.push(oEntry[oProperty.key][3].NCards[Object.keys(oEntry[oProperty.key][3].NCards)[l]]);
+						 	}
+						 	oEntry[oProperty.key][3].NCards = aCardsPlayer4;
 					 	}
-					 	oEntry[oProperty.key][2].NCards = aCardsPlayer3;
-					 	
-					 	for(var l = 0; l< Object.keys(oEntry[oProperty.key][3].NCards).length; l++) {
-					 		aCardsPlayer4.push(oEntry[oProperty.key][3].NCards[Object.keys(oEntry[oProperty.key][3].NCards)[l]]);
-					 	}
-					 	oEntry[oProperty.key][3].NCards = aCardsPlayer4;
 				 	}
 				 	
 				 	else if(oProperty.key === "NTeams") {

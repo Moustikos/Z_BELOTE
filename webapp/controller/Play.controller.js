@@ -323,8 +323,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					Score: iTeam2NewScore,
 					TempScore: 0
 				});
-
-			
+				
 				//clear current fold and perform a new done
 				var that = this;
 				setTimeout(function () {

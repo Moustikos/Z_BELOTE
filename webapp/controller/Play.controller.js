@@ -302,22 +302,30 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			});
 			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/TempScore", iNewScore);
 
-			//update global scrore in case of last fold
-
+			//update global scrore in case of final fold
 			if (iRemaningCardsBeforeThisTurn === 1) {
+				var iTeam1AdditionalPoints = 0;
+				var iTeam2AdditionalPoints = 0;
+				// dix de dèr
+				iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0
+				iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0
+				//belote et rebelotes ---> to be defined
+				
 				var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
 				var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
 				iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
 				iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
-				var iTeam1NewScore = iTeam1Score + iTeam1TempScore;
-				var iTeam2NewScore = iTeam2Score + iTeam2TempScore;
+				var iTeam1NewScore = iTeam1Score + iTeam1TempScore + iTeam1AdditionalPoints;
+				var iTeam2NewScore = iTeam2Score + iTeam2TempScore + iTeam2AdditionalPoints;
+				
+				
 				firebase.database().ref(this._tablePath + "/NTeams/0").update({
 					Score: iTeam1NewScore
 				});
 				firebase.database().ref(this._tablePath + "/NTeams/1").update({
 					Score: iTeam2NewScore
 				});
-
+				
 			}
 
 		},

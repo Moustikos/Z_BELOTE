@@ -78,7 +78,7 @@ sap.ui.define([], function () {
 		getJoinButtonTeam1Enabled: function (NPlayers) {
 			if (NPlayers) {
 				var aTeam1Players = [];
-				for (let i = 0; i < NPlayers.length; i++) {
+				for (var i = 0; i < NPlayers.length; i++) {
 					if (NPlayers[i] && (NPlayers[i].ID === 0 || NPlayers[i].ID === 2)) {
 						aTeam1Players.push(NPlayers[i]);
 					}
@@ -92,7 +92,7 @@ sap.ui.define([], function () {
 		getJoinButtonTeam2Enabled: function (NPlayers) {
 			if (NPlayers) {
 				var aTeam1Players = [];
-				for (let i = 0; i < NPlayers.length; i++) {
+				for (var i = 0; i < NPlayers.length; i++) {
 					if (NPlayers[i] && (NPlayers[i].ID === 1 || NPlayers[i].ID === 3)) {
 						aTeam1Players.push(NPlayers[i]);
 					}
@@ -104,16 +104,16 @@ sap.ui.define([], function () {
 		},
 
 		getLeaveButtonVisible: function (Player) {
-			const sPlayerName = firebase.auth().currentUser.displayName;
+			var sPlayerName = firebase.auth().currentUser.displayName;
 			return Player && Player.Name === sPlayerName ? true : false;
 		},
 
 		getNumberOfPlayers: function (NPlayers) {
 			var iCounter = 0;
 			if (NPlayers) {
-				for (let i = 0; i < NPlayers.length; i++) {
+				for (var i = 0; i < NPlayers.length; i++) {
 					if (NPlayers[i]) {
-						iCounter++
+						iCounter++;
 					}
 				}
 			}

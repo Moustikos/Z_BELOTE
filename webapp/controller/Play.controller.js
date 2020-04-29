@@ -2,7 +2,7 @@
 * File description         : The connection controller contains all functions called in connection view
 * Modification description : MOUSTIKOS - 19.04.2020 - Creation                                    
 *****************************************************************************************************************/
-sap.ui.define(["com/belote/controller/BaseController"], function (BaseController) {
+sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], function (BaseController, Fragment) {
 	"use strict";
 
 	return BaseController.extend("com.belote.controller.Play", {
@@ -219,6 +219,29 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			this._oUserCardPopup.close();
 		},
 		
+		handleScorePopoverPress: function(oEvent) {
+			var oLocalModel = this.getView().getModel("localModel");
+				var oButton = oEvent.getSource();
+			// create popover
+			if (!this._oPopover) {
+				Fragment.load({
+					name: "com.belote.fragment.scorePopOver",
+					controller: this
+				}).then(function(pPopover) {
+					this._oPopover = pPopover;
+					this.getView().addDependent(this._oPopover);
+					this._oPopover.setModel(oLocalModel);
+					this._oPopover.bindElement("/PlayTable");
+					this._oPopover.openBy(oButton);
+				}.bind(this));
+			} else {
+				this._oPopover.openBy(oButton);
+			}
+		},
+		
+		handleCloseScorePress: function() {
+			this._oPopover.close();
+		},
 		// Update team temporary score after each set of 4 cards
 		_updateScore : function(aCards) {
 			var iScore = 0;

@@ -23,7 +23,8 @@
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Navigation" press="onPressTableListItem">
+					<ColumnListItem type="Navigation" press="onPressTableListItem" 
+					visible="{path: 'localModel>ID', formatter: '.formatter.getTableListItemVisible'}" >
 						<cells>
 							<ObjectIdentifier title="{localModel>Name}" text="{localModel>Description}"/>
 							<ObjectNumber number="{path: 'localModel>NPlayers', formatter: '.formatter.getNumberOfPlayers'}"/>

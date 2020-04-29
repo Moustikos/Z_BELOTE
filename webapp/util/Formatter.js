@@ -59,7 +59,24 @@ sap.ui.define([], function () {
 			}
 		},
 
-			getJoinButtonTeam1Enabled: function (NPlayers) {
+		getAtoutIconColor: function (sAtout) {
+			return sAtout === "coeur" || sAtout === "carreau" ? "red" : "black";
+		},
+
+		getScore: function (iScore) {
+			return iScore !== undefined ? iScore : 0;
+		},
+
+		getAtoutVisible: function (sAtout) {
+			return sAtout === "" ? false : true;
+		},
+
+		getTableListItemVisible: function (oModel) {
+			console.log(oModel);
+			return oModel === undefined ? false : true;
+		},
+
+		getJoinButtonTeam1Enabled: function (NPlayers) {
 			if (NPlayers) {
 				var aTeam1Players = [];
 				for (let i = 0; i < NPlayers.length; i++) {

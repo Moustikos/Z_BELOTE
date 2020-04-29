@@ -72,7 +72,6 @@ sap.ui.define([], function () {
 		},
 
 		getTableListItemVisible: function (oModel) {
-			console.log(oModel);
 			return oModel === undefined ? false : true;
 		},
 

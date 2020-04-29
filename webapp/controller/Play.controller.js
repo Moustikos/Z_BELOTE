@@ -198,17 +198,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			} else {
 				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NotYourTurn"));
 			}
-			
-			
-			// var sBindingContext = oEvent.getSource().getBindingContext("localModel").getPath();
-			// oModel.setProperty("/player1Card", oModel.getProperty(sBindingContext + "/Name"));
-			
-			// var sIndex = parseInt(sBindingContext.split("/")[sBindingContext.split("/").length - 1], 10);
-			// var sCards = oModel.getProperty("/ETPlayers/1/Cards");
-			// sCards.splice(sIndex, 1);
-			// oModel.setProperty("/ETPlayers/1/Cards", sCards);
-			
-			// this._oUserCardPopup.close();
 		},
 		
 		handleScorePopoverPress: function(oEvent) {

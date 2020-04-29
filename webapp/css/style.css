@@ -17,6 +17,10 @@
     border: 2px solid red;
 }
 
+.red {
+	background-color: red;
+}
+
 .Blackcard {
     background-color: #f0f4c3;
     border-radius: 6px;

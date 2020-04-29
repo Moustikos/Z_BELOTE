@@ -7,9 +7,6 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 
 	return BaseController.extend("com.belote.controller.Play", {
 		onInit: function () {
-			// Attach functions to entityset changes
-			// this._initializeFirebaseWatch(this);
-			
 			// Add onRouteMathed
 			this._getRouter().getRoute("Play").attachPatternMatched(this._onRouteMatched, this);
 		},
@@ -30,10 +27,6 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
             // Only current player can shuffle cards
             if(oLocalModel.getProperty("/PlayTable/IsShuffleNeeded") && oLocalModel.getProperty("/PlayTable/Distributor") === firebase.auth().currentUser.displayName) {
             	this.util._shuffleCards(this);
-            }
-            
-            else if(oLocalModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
-            	// this._openChooseCard();
             }
         },
         

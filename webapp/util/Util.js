@@ -21,6 +21,8 @@ sap.ui.define([], function() {
 					 	var aCardsPlayer2 = [];
 					 	var aCardsPlayer3 = [];
 					 	var aCardsPlayer4 = [];
+					 	var aNOrderedPlayers = [];
+					 	var iCurrentPlayerIndex; 
 					 	
 					 	if(oEntry[oProperty.key][0].NCards) {
 					 		for(var i = 0; i < Object.keys(oEntry[oProperty.key][0].NCards).length; i++) {
@@ -49,6 +51,19 @@ sap.ui.define([], function() {
 						 	}
 						 	oEntry[oProperty.key][3].NCards = aCardsPlayer4;
 					 	}
+					 	
+					 	for(var p = 0; p < oEntry.NPlayers.length; p++) {
+					 		if(oEntry.NPlayers[p].Name === firebase.auth().currentUser.displayName) {
+					 			iCurrentPlayerIndex = p;
+					 			break;
+					 		}
+					 	}
+					 	
+					 	aNOrderedPlayers[0] = oEntry.NPlayers[p];
+					 	aNOrderedPlayers[1] = oEntry.NPlayers[(p + 1) % 4];
+					 	aNOrderedPlayers[2] = oEntry.NPlayers[(p + 2) % 4];
+					 	aNOrderedPlayers[3] = oEntry.NPlayers[(p + 3) % 4];
+					 	oEntry["NOrdererPlayers"] = aNOrderedPlayers;
 				 	}
 				 	
 				 	else if(oProperty.key === "NTeams") {

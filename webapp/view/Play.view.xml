@@ -11,73 +11,34 @@
 		<content>
 			<HBox width="100%" height="100%">
 				<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-					<Text text="{localModel>/PlayTable/NPlayers/0/Name}" class="playerName"/>
-					<HBox items="{localModel>/PlayTable/NPlayers/0/NCards}">
-						<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-							<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
-								<HBox width="50px" height="15px" justifyContent="SpaceBetween">
-									<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-									<core:Icon src="sap-icon://accept" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
-								</HBox>
-								<HBox width="50px" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">
-									<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
-								</HBox>
-							</VBox>
-						</VBox>
-					</HBox>
+					<Text text="{localModel>/PlayTable/NOrdererPlayers/1/Name}" class="playerName"/>
 				</VBox>
 				<VBox width="50%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
 					<VBox width="100%" height="20%" justifyContent="Center" alignContent="Center" alignItems="Center">
-						<Text text="{localModel>/PlayTable/NPlayers/1/Name}" class="playerName"/>
-						<HBox items="{localModel>/PlayTable/NPlayers/1/NCards}">
-						<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-							<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
-								<HBox width="50px" height="15px">
-									<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-									<core:Icon src="sap-icon://accept" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
-								</HBox>
-								<HBox width="50px" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">
-									<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
-								</HBox>
-							</VBox>
-						</VBox>
-					</HBox>
+						<Text text="{localModel>/PlayTable/NOrdererPlayers/2/Name}" class="playerName"/>
 					</VBox>
 					<VBox width="100%" height="80%" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<core:Fragment fragmentName="com.belote.fragment.playCard" type="XML" />
 					</VBox>
 					<VBox width="100%" height="20%" justifyContent="Center" alignContent="Center" alignItems="Center">
-						<Text text="{localModel>/PlayTable/NPlayers/3/Name}" class="playerName"/>
-						<HBox items="{localModel>/PlayTable/NPlayers/3/NCards}">
-						<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-							<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
-								<HBox width="50px" height="15px">
-									<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-									<core:Icon src="sap-icon://accept" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
-								</HBox>
-								<HBox width="50px" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">
-									<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
-								</HBox>
+						<Text text="{localModel>/PlayTable/NOrdererPlayers/0/Name}" class="playerName"/>
+						<HBox items="{localModel>/PlayTable/NOrdererPlayers/0/NCards}" justifyContent="Center" alignContent="Center" alignItems="Center">
+							<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
+								<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
+									<HBox width="50px" height="15px">
+										<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
+										<core:Icon src="sap-icon://accept" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
+									</HBox>
+									<HBox width="50px" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">
+										<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
+									</HBox>
+								</VBox>
 							</VBox>
-						</VBox>
-					</HBox>
+						</HBox>
 					</VBox>
 				</VBox>
 				<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-					<Text text="{localModel>/PlayTable/NPlayers/2/Name}" class="playerName"/>
-					<HBox items="{localModel>/PlayTable/NPlayers/2/NCards}">
-						<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-							<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
-								<HBox width="50px" height="15px">
-									<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-									<core:Icon src="sap-icon://accept" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
-								</HBox>
-								<HBox width="50px" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">
-									<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
-								</HBox>
-							</VBox>
-						</VBox>
-					</HBox>
+					<Text text="{localModel>/PlayTable/NOrdererPlayers/3/Name}" class="playerName"/>
 				</VBox>
 			</HBox>
 		</content>

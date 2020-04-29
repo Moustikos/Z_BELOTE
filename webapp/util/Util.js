@@ -6,8 +6,9 @@
 sap.ui.define([], function() {
     "use strict";
     return {
-        _convertFirebaseToJSON : function(snapshot) {
+        _convertFirebaseToJSON : function(snapshot, oController) {
         	var oEntry = {};
+        	var that = this;
         	
         	// Convert object property into array for binding purpose
         	snapshot.forEach(function (oProperty) {
@@ -28,28 +29,28 @@ sap.ui.define([], function() {
 					 		for(var i = 0; i < Object.keys(oEntry[oProperty.key][0].NCards).length; i++) {
 						 		aCardsPlayer1.push(oEntry[oProperty.key][0].NCards[Object.keys(oEntry[oProperty.key][0].NCards)[i]]);
 						 	}
-						 	oEntry[oProperty.key][0].NCards = aCardsPlayer1;
+						 	oEntry[oProperty.key][0].NCards = that._sortCards(aCardsPlayer1, oController);
 					 	}
 					 	
 				 		if(oEntry[oProperty.key][1].NCards) {
 				 			for(var j = 0; j < Object.keys(oEntry[oProperty.key][1].NCards).length; j++) {
 						 		aCardsPlayer2.push(oEntry[oProperty.key][1].NCards[Object.keys(oEntry[oProperty.key][1].NCards)[j]]);
 						 	}
-						 	oEntry[oProperty.key][1].NCards = aCardsPlayer2;
+						 	oEntry[oProperty.key][1].NCards = that._sortCards(aCardsPlayer2, oController);
 				 		}
 				 		
 					 	if(oEntry[oProperty.key][2].NCards) {
 					 		for(var k = 0; k < Object.keys(oEntry[oProperty.key][2].NCards).length; k++) {
 						 		aCardsPlayer3.push(oEntry[oProperty.key][2].NCards[Object.keys(oEntry[oProperty.key][2].NCards)[k]]);
 						 	}
-						 	oEntry[oProperty.key][2].NCards = aCardsPlayer3;
+						 	oEntry[oProperty.key][2].NCards = that._sortCards(aCardsPlayer3, oController);
 					 	}
 					 	
 					 	if(oEntry[oProperty.key][3].NCards) {
 					 		for(var l = 0; l< Object.keys(oEntry[oProperty.key][3].NCards).length; l++) {
 						 		aCardsPlayer4.push(oEntry[oProperty.key][3].NCards[Object.keys(oEntry[oProperty.key][3].NCards)[l]]);
 						 	}
-						 	oEntry[oProperty.key][3].NCards = aCardsPlayer4;
+						 	oEntry[oProperty.key][3].NCards = that._sortCards(aCardsPlayer4, oController);
 					 	}
 					 	
 					 	for(var p = 0; p < oEntry.NPlayers.length; p++) {
@@ -182,6 +183,36 @@ sap.ui.define([], function() {
 			updates["/IsShuffleNeeded"] = false;
 			
 			firebase.database().ref(that._tablePath).update(updates);
+        },
+        
+        _sortCards : function(aCards, oController) {
+        	var aCoeur = [];
+        	var aCarreau = [];
+        	var aTrefle = [];
+        	var aPique = [];
+        	
+        	for (var i = 0; i < aCards.length; i++) {
+        		if(aCards[i].Name.toLowerCase().startsWith('coeur')) {
+        			aCoeur.push(aCards[i]);
+        		} else if (aCards[i].Name.toLowerCase().startsWith('carreau')) {
+        			aCarreau.push(aCards[i]);
+        		} else if (aCards[i].Name.toLowerCase().startsWith('trefle')) {
+        			aTrefle.push(aCards[i]);
+        		} else if (aCards[i].Name.toLowerCase().startsWith('pique')) {
+        			aPique.push(aCards[i]);
+        		}
+        	}
+        	aCoeur.sort(this._sortComparator.bind(oController));
+        	aCarreau.sort(this._sortComparator.bind(oController));
+        	aTrefle.sort(this._sortComparator.bind(oController));
+        	aPique.sort(this._sortComparator.bind(oController));
+        	
+        	return aCoeur.concat(aCarreau, aTrefle, aPique);
+        },
+        
+        _sortComparator : function(a, b) {
+        	var oScoreModel = this.getView().getModel("scoreModel");
+        	return oScoreModel.getProperty("/NonAtout/" + b.Name.split("-")[1]).Ranking - oScoreModel.getProperty("/NonAtout/" + a.Name.split("-")[1]).Ranking;
         }
     };
 });

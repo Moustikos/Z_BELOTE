@@ -22,7 +22,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
         // Add logic to update local model
         _onTableEntityReceived : function(snapshot) {
             var oLocalModel = this.getView().getModel("localModel");
-            oLocalModel.setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot));
+            oLocalModel.setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot, this));
             
             // Only current player can shuffle cards
             if(oLocalModel.getProperty("/PlayTable/IsShuffleNeeded") && oLocalModel.getProperty("/PlayTable/Distributor") === firebase.auth().currentUser.displayName) {

@@ -77,70 +77,49 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
         	var aRemainingCards = oLocalModel.getProperty("/PlayTable/NRemainingCards");
         	var sCurrentPlayer = oLocalModel.getProperty("/PlayTable/CurrentPlayer");
         	var sSuggestedCard = oLocalModel.getProperty("/PlayTable/SuggestedCard");
-        	var iCurrentPlayerIndex, iPreneur;
+        	var aSortedPlayers = oLocalModel.getProperty("/PlayTable/NOrdererPlayers");
+        	var iPreneur;
         	var iRemainingCardIndex = 0;
-        	var aSortedPlayers = [];
-        	
-        	for (var i = 0; i < aPlayers.length; i++) {
-        		if(aPlayers[i].Name === sCurrentPlayer) {
-        			iCurrentPlayerIndex = i;
-        			break;
-        		}
-        	}
-        	
-        	aSortedPlayers[0] = {
-        		Player: aPlayers[iCurrentPlayerIndex],
-        		Index : iCurrentPlayerIndex
-        	};
-        	
-        	aSortedPlayers[1] = {
-        		Player: aPlayers[(iCurrentPlayerIndex + 1) % 4],
-        		Index : (iCurrentPlayerIndex + 1) % 4
-        	};
-        	
-        	aSortedPlayers[2] = {
-        		Player: aPlayers[(iCurrentPlayerIndex + 2) % 4],
-        		Index : (iCurrentPlayerIndex + 2) % 4
-        	};
-        	
-        	aSortedPlayers[3] = {
-        		Player: aPlayers[(iCurrentPlayerIndex + 3) % 4],
-        		Index : (iCurrentPlayerIndex + 3) % 4
-        	};
         	
         	for (var j = 0; j < aSortedPlayers.length; j++) {
-        		if(aSortedPlayers[j].Player.Name === sUserName) {
-        			updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 5] = {
-						Name : sSuggestedCard
+        		if(aSortedPlayers[j].Name === sUserName) {
+        			updates["/NPlayers/" + aSortedPlayers[j].ID + "/NCards/" + 5] = {
+						Name : sSuggestedCard,
+						ID : 5
 					};
-					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 6] = {
-						Name : aRemainingCards[iRemainingCardIndex].Name
+					updates["/NPlayers/" + aSortedPlayers[j].ID + "/NCards/" + 6] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name,
+						ID : 6
 					};
 					
 					iRemainingCardIndex = iRemainingCardIndex + 1;
 					
-					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 7] = {
-						Name : aRemainingCards[iRemainingCardIndex].Name
+					updates["/NPlayers/" + aSortedPlayers[j].ID + "/NCards/" + 7] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name,
+						ID : 7
 					};
 					
 					iRemainingCardIndex = iRemainingCardIndex + 1;
         		}
         		
         		else {
-        			updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 5] = {
-						Name : aRemainingCards[iRemainingCardIndex].Name
+        			updates["/NPlayers/" + aSortedPlayers[j].ID + "/NCards/" + 5] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name,
+						ID : 5
 					};
 					
 					iRemainingCardIndex = iRemainingCardIndex + 1;
 					
-					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 6] = {
-						Name : aRemainingCards[iRemainingCardIndex].Name
+					updates["/NPlayers/" + aSortedPlayers[j].ID + "/NCards/" + 6] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name,
+						ID : 6
 					};
 					
 					iRemainingCardIndex = iRemainingCardIndex + 1;
 					
-					updates["/NPlayers/" + aSortedPlayers[j].Index + "/NCards/" + 7] = {
-						Name : aRemainingCards[iRemainingCardIndex].Name
+					updates["/NPlayers/" + aSortedPlayers[j].ID + "/NCards/" + 7] = {
+						Name : aRemainingCards[iRemainingCardIndex].Name,
+						ID : 7
 					};
 					
 					iRemainingCardIndex = iRemainingCardIndex + 1;
@@ -208,15 +187,28 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 		
 		onSelectCard : function(oEvent) {
 			var oModel = this.getView().getModel("localModel");
-			var sBindingContext = oEvent.getSource().getBindingContext("localModel").getPath();
-			oModel.setProperty("/player1Card", oModel.getProperty(sBindingContext + "/Name"));
 			
-			var sIndex = parseInt(sBindingContext.split("/")[sBindingContext.split("/").length - 1], 10);
-			var sCards = oModel.getProperty("/ETPlayers/1/Cards");
-			sCards.splice(sIndex, 1);
-			oModel.setProperty("/ETPlayers/1/Cards", sCards);
+			if(oModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
+				var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
+				var updates = {};
+    			updates["/Player" + iPlayerIndex + "Card"] = oModel.getProperty(oEvent.getSource().getBindingContext("localModel").getPath()).Name;
+    			updates["/CurrentPlayer"] = oModel.getProperty("/PlayTable/NOrdererPlayers/1/Name");
+    			firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex + "/NCards/" + oModel.getProperty(oEvent.getSource().getBindingContext("localModel").getPath()).ID).remove();
+    			firebase.database().ref(this._tablePath).update(updates);
+			} else {
+				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NotYourTurn"));
+			}
 			
-			this._oUserCardPopup.close();
+			
+			// var sBindingContext = oEvent.getSource().getBindingContext("localModel").getPath();
+			// oModel.setProperty("/player1Card", oModel.getProperty(sBindingContext + "/Name"));
+			
+			// var sIndex = parseInt(sBindingContext.split("/")[sBindingContext.split("/").length - 1], 10);
+			// var sCards = oModel.getProperty("/ETPlayers/1/Cards");
+			// sCards.splice(sIndex, 1);
+			// oModel.setProperty("/ETPlayers/1/Cards", sCards);
+			
+			// this._oUserCardPopup.close();
 		},
 		
 		handleScorePopoverPress: function(oEvent) {

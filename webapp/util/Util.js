@@ -65,6 +65,7 @@ sap.ui.define([], function() {
 					 	aNOrderedPlayers[2] = oEntry.NPlayers[(p + 2) % 4];
 					 	aNOrderedPlayers[3] = oEntry.NPlayers[(p + 3) % 4];
 					 	oEntry["NOrdererPlayers"] = aNOrderedPlayers;
+					 	oEntry["OrderedPlayerIndex"] = p;
 				 	}
 				 	
 				 	else if(oProperty.key === "NTeams") {
@@ -76,6 +77,11 @@ sap.ui.define([], function() {
 				 	}
 				 }
             });
+            
+            oEntry["Player0Card"] = oEntry["Player" + oEntry["OrderedPlayerIndex"] + "Card"];
+		 	oEntry["Player1Card"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] + 1) + "Card"];
+		 	oEntry["Player2Card"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] + 2) + "Card"];
+		 	oEntry["Player3Card"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] + 3) + "Card"];
             
             return oEntry;
         },
@@ -118,14 +124,16 @@ sap.ui.define([], function() {
 			// Three first cards
 			for(var i = 0; i < 3; i++) {
 				updates["/NPlayers/0/NCards/" + i] = {
-					Name : aCard[i].Name
+					Name : aCard[i].Name,
+					ID : i
 				};
 				firebase.database().ref(that._tablePath + "/NPlayers/0/NCards/" + (i + 5)).remove();
 			}
 			
 			for(var j = 0; j < 3; j++) {
 				updates["/NPlayers/1/NCards/" + j] = {
-					Name : aCard[j+3].Name
+					Name : aCard[j+3].Name,
+					ID : j
 				};
 				
 				firebase.database().ref(that._tablePath +  "/NPlayers/1/NCards/" + (j + 5)).remove();
@@ -133,7 +141,8 @@ sap.ui.define([], function() {
 			
 			for(var k = 0; k < 3; k++) {
 				updates["/NPlayers/2/NCards/" + k] = {
-					Name : aCard[k+6].Name
+					Name : aCard[k+6].Name,
+					ID : k
 				};
 				
 				firebase.database().ref(that._tablePath + "/NPlayers/2/NCards/" + (k + 5)).remove();
@@ -141,7 +150,8 @@ sap.ui.define([], function() {
 			
 			for(var l = 0; l< 3; l++) {
 				updates["/NPlayers/3/NCards/" + l] = {
-					Name : aCard[l+9].Name
+					Name : aCard[l+9].Name,
+					ID : l
 				};
 				
 				firebase.database().ref(that._tablePath + "/NPlayers/3/NCards/" + (l + 5)).remove();
@@ -150,25 +160,29 @@ sap.ui.define([], function() {
 			// Two second cards
 			for(var i2 = 3; i2 < 5; i2++) {
 				updates["/NPlayers/0/NCards/" + i2] = {
-					Name : aCard[i2 + 9].Name
+					Name : aCard[i2 + 9].Name,
+					ID : i2
 				};
 			}
 			
 			for(var j2 = 3; j2 < 5; j2++) {
 				updates["/NPlayers/1/NCards/" + j2] = {
-					Name : aCard[j2+11].Name
+					Name : aCard[j2+11].Name,
+					ID : j2
 				};
 			}
 			
 			for(var k2 = 3; k2 < 5; k2++) {
 				updates["/NPlayers/2/NCards/" + k2] = {
-					Name : aCard[k2+13].Name
+					Name : aCard[k2+13].Name,
+					ID : k2
 				};
 			}
 			
 			for(var l2 = 3; l2< 5; l2++) {
 				updates["/NPlayers/3/NCards/" + l2] = {
-					Name : aCard[l2+15].Name
+					Name : aCard[l2+15].Name,
+					ID : l2
 				};
 			}
 			

@@ -75,6 +75,10 @@ sap.ui.define([], function() {
 				 	else if(oProperty.key === "NRemainingCards") {
 				 		oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1], oProperty.toJSON()[2], oProperty.toJSON()[3], oProperty.toJSON()[4], oProperty.toJSON()[5], oProperty.toJSON()[6], oProperty.toJSON()[7], oProperty.toJSON()[8], oProperty.toJSON()[9], oProperty.toJSON()[10]];
 				 	}
+				 	
+				 	else if (oProperty.key === "MasterPlayer") {
+					 	oEntry[oProperty.key] = oProperty.toJSON();
+				 	}
 				 }
             });
             
@@ -227,6 +231,26 @@ sap.ui.define([], function() {
         _sortComparator : function(a, b) {
         	var oScoreModel = this.getView().getModel("scoreModel");
         	return oScoreModel.getProperty("/NonAtout/" + b.Name.split("-")[1]).Ranking - oScoreModel.getProperty("/NonAtout/" + a.Name.split("-")[1]).Ranking;
+        },
+        
+        _getCardValue: function(sCard){
+        	return sCard.split("-")[1];
+        },
+        
+        _getCardSymbol: function(sCard){
+        	return sCard.split("-")[0];
+        },
+        
+        _sortByRanking: function(a, b) {
+        	return b.ranking - a.ranking;
+        },
+        
+        _getPlayerNameByID: function (iPlayerID, NPlayers) {
+        	for (var i = 0; i < NPlayers.length; i++ ) {
+        		if (NPlayers[i].ID === iPlayerID) {
+        			return NPlayers[i].Name;
+        		}
+        	}
         }
     };
 });

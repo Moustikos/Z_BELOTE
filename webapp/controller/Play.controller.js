@@ -194,10 +194,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 				//clear table in case of new turn
 				if (sPlayerName === oMasterPlayer.Name) {
-					firebase.database().ref(this._tablePath + "/Player0Card").remove();
-					firebase.database().ref(this._tablePath + "/Player1Card").remove();
-					firebase.database().ref(this._tablePath + "/Player2Card").remove();
-					firebase.database().ref(this._tablePath + "/Player3Card").remove();
+					this.clearTable();
 				}
 
 				updates["/Player" + iPlayerIndex + "Card"] = sCardName;
@@ -309,25 +306,41 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				// dix de dèr
 				iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0
 				iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0
-				//belote et rebelotes ---> to be defined
-				
+					//belote et rebelotes ---> to be defined
+
 				var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
 				var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
 				iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
 				iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
 				var iTeam1NewScore = iTeam1Score + iTeam1TempScore + iTeam1AdditionalPoints;
 				var iTeam2NewScore = iTeam2Score + iTeam2TempScore + iTeam2AdditionalPoints;
-				
-				
+
 				firebase.database().ref(this._tablePath + "/NTeams/0").update({
-					Score: iTeam1NewScore
+					Score: iTeam1NewScore,
+					TempScore: 0
 				});
 				firebase.database().ref(this._tablePath + "/NTeams/1").update({
-					Score: iTeam2NewScore
+					Score: iTeam2NewScore,
+					TempScore: 0
 				});
-				
-			}
 
+			
+				//clear current fold and perform a new done
+				var that = this;
+				setTimeout(function () {
+					that.clearTable();
+					firebase.database().ref(this._tablePath).update({
+					IsShuffleNeeded: true
+				});
+				}, 3000)
+			}
+		},
+
+		clearTable: function () {
+			firebase.database().ref(this._tablePath + "/Player0Card").remove();
+			firebase.database().ref(this._tablePath + "/Player1Card").remove();
+			firebase.database().ref(this._tablePath + "/Player2Card").remove();
+			firebase.database().ref(this._tablePath + "/Player3Card").remove();
 		},
 
 		handleScorePopoverPress: function (oEvent) {

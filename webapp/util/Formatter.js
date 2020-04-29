@@ -54,7 +54,7 @@ sap.ui.define([], function () {
 				return "sap-icon://customfont/carreau";
 				break;
 			default:
-				return ""
+				return "sap-icon://customfont/carreau"
 				break;
 			}
 		},

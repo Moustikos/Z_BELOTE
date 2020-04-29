@@ -184,6 +184,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		onSelectCard: function (oEvent) {
 			var oModel = this.getView().getModel("localModel");
+			var iRemaningCardsBeforeThisTurn = oModel.getProperty('/PlayTable/NOrdererPlayers/0/NCards').length
 			var oMasterPlayer = oModel.getProperty("/PlayTable/MasterPlayer");
 			var sPlayerName = firebase.auth().currentUser.displayName;
 			if (oModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
@@ -191,8 +192,8 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				var sCardName = oModel.getProperty(oEvent.getSource().getBindingContext("localModel").getPath()).Name;
 				var updates = {};
 
+				//clear table in case of new turn
 				if (sPlayerName === oMasterPlayer.Name) {
-					//clear table
 					firebase.database().ref(this._tablePath + "/Player0Card").remove();
 					firebase.database().ref(this._tablePath + "/Player1Card").remove();
 					firebase.database().ref(this._tablePath + "/Player2Card").remove();
@@ -206,24 +207,24 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				firebase.database().ref(this._tablePath).update(updates);
 
 				//define the master
-				var sRequestedColor;
 				var sRequestor = oModel.getProperty("/PlayTable/Requestor");
 				if (sPlayerName === sRequestor) {
-					sRequestedColor = this.util._getCardSymbol(sCardName);
+					var sRequestedColor = this.util._getCardSymbol(sCardName);
 					firebase.database().ref(this._tablePath).update({
 						RequestedColor: sRequestedColor
 					});
 					oModel.setProperty("/PlayTable/RequestedColor", sRequestedColor);
 				}
 				oModel.setProperty("/PlayTable/Player" + iPlayerIndex + "Card", sCardName);
-				this.setMasterPlayer();
+
+				this.setMasterPlayer(iRemaningCardsBeforeThisTurn);
 			} else {
 				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NotYourTurn"));
 			}
 
 		},
 
-		setMasterPlayer: function () {
+		setMasterPlayer: function (iRemaningCardsBeforeThisTurn) {
 			var oModel = this.getView().getModel("localModel");
 			var sAtout = oModel.getProperty("/PlayTable/Atout");
 			var sRequestedColor = oModel.getProperty("/PlayTable/RequestedColor");
@@ -256,32 +257,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					});
 				}
 			}
-			// check cards played and whether atout has been played
-			// var bIsAtoutPlayed = false;
-			// for (var j = 0; j < aCurrentPlis.length; j++) {
-			// 	var sCardValue = this.util._getCardValue(aCurrentPlis[j]);
-			// 	var sCardSymbol = this.util._getCardSymbol(aCurrentPlis[j]);
-			// 	var iCardRanking = 0;
-			// 	var iCardPoints = 0;
-			// 	if (sCardSymbol.toUpperCase() === sAtout.toUpperCase()) {
-			// 		bIsAtoutPlayed = true;
-			// 		iCardRanking = oScoreModel.getProperty("/Atout/" + sCardValue + "/Ranking");
-			// 		iCardPoints = oScoreModel.getProperty("/Atout/" + sCardValue + "/Points")
-			// 	} else if (sCardSymbol === sRequestedColor) {
-			// 		iCardRanking = oScoreModel.getProperty("/NonAtout/" + sCardValue + "/Ranking");
-			// 		iCardPoints = oScoreModel.getProperty("/NonAtout/" + sCardValue + "/Points");
-			// 	} else {
-			// 		iCardPoints = oScoreModel.getProperty("/NonDemande/" + sCardValue + "/Points");
-			// 	}
 
-			// 	aCardsPlayed.push({
-			// 		cardName: aCurrentPlis[j],
-			// 		playerIndex: i,
-			// 		ranking: iCardRanking,
-			// 		points: iCardPoints
-			// 	});
-			// }
-			
 			//sort by descending ranking
 			aCardsPlayed.sort(this.util._sortByRanking);
 			oMasterPlayer.index = aCardsPlayed[0].playerIndex;
@@ -293,14 +269,57 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 			// end of fold
 			if (aCardsPlayed.length === 4) {
-				var sCurrentPlayer = oMasterPlayer.Name;
-				firebase.database().ref(this._tablePath).update({
-					CurrentPlayer: sCurrentPlayer
-				});
-				firebase.database().ref(this._tablePath).update({
-					Requestor: sCurrentPlayer
-				});
+				this.handleEndOfFold(oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn)
 			}
+		},
+
+		handleEndOfFold: function (oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn) {
+			// update current player
+			var sCurrentPlayer = oMasterPlayer.Name;
+			firebase.database().ref(this._tablePath).update({
+				CurrentPlayer: sCurrentPlayer
+			});
+			firebase.database().ref(this._tablePath).update({
+				Requestor: sCurrentPlayer
+			});
+
+			//save fold
+			firebase.database().ref(this._tablePath).update({
+				LastFold: aCardsPlayed
+			});
+
+			//update temporary score
+			var iScore = 0;
+			var iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
+			var iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
+			for (var i = 0; i < aCardsPlayed.length; i++) {
+				iScore += aCardsPlayed[i].points;
+			}
+			var iWinningTeam = oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 0 : 1;
+			var iNewScore = iWinningTeam === 0 ? iTeam1TempScore + iScore : iTeam2TempScore + iScore;
+			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
+				TempScore: iNewScore
+			});
+			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/TempScore", iNewScore);
+
+			//update global scrore in case of last fold
+
+			if (iRemaningCardsBeforeThisTurn === 1) {
+				var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
+				var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
+				iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
+				iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
+				var iTeam1NewScore = iTeam1Score + iTeam1TempScore;
+				var iTeam2NewScore = iTeam2Score + iTeam2TempScore;
+				firebase.database().ref(this._tablePath + "/NTeams/0").update({
+					Score: iTeam1NewScore
+				});
+				firebase.database().ref(this._tablePath + "/NTeams/1").update({
+					Score: iTeam2NewScore
+				});
+
+			}
+
 		},
 
 		handleScorePopoverPress: function (oEvent) {

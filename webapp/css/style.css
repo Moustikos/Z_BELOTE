@@ -17,8 +17,12 @@
     border: 2px solid red;
 }
 
-.red {
-	background-color: red;
+.Redcard .sapMNCIconImage {
+    color: red;
+}
+
+.Blackcard .sapMNCIconImage {
+    color: black;
 }
 
 .Blackcard {
@@ -61,6 +65,15 @@
 
 .icon-trefle:before {
     content: "\e918";
+}
+
+.sapMGTHdrContent {
+	display: none;
+}
+
+.sapMGT.OneByOne {
+    width: 6rem;
+    height: 6.5rem;
 }
 
 .icon-pique:before {

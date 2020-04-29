@@ -42,16 +42,21 @@
 					<VBox width="100%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
 						<Text text="{localModel>/PlayTable/NOrdererPlayers/0/Name}" class="playerName sapUiTinyMarginBottom"/>
 						<HBox items="{localModel>/PlayTable/NOrdererPlayers/0/NCards}" justifyContent="Center" alignContent="Center" alignItems="Center" width="100%">
-							<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center" class="sapUiTinyMarginEnd">
-								<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">
-									<HBox width="100%" height="15px">
-										<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-									</HBox>
-									<HBox width="100%" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">
-										<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>
-									</HBox>
-								</VBox>
-							</VBox>
+							<!--<VBox width="10%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center" class="sapUiTinyMarginEnd">-->
+							<!--	<VBox width="100px" height="60px" visible="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getNonEmpty'}">-->
+							<!--		<HBox width="100%" height="15px">-->
+							<!--			<core:Icon src="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>-->
+							<!--		</HBox>-->
+							<!--		<HBox width="100%" height="45px" justifyContent="Center" alignContent="Center" alignItems="Center">-->
+							<!--			<Text text="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}"/>-->
+							<!--		</HBox>-->
+							<!--	</VBox>-->
+							<!--</VBox>-->
+							<GenericTile press="press" class="sapUiTinyMarginEnd">
+								<TileContent>
+									<NumericContent value="{parts:[{path: 'localModel>Name'}], formatter: '.formatter.getCardValue'}" icon="{parts:[{path: 'localModel>Name'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" withMargin="false" />
+								</TileContent>
+							</GenericTile>
 						</HBox>
 					</VBox>
 				</HBox>

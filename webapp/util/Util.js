@@ -78,10 +78,10 @@ sap.ui.define([], function() {
 				 }
             });
             
-            oEntry["Player0Card"] = oEntry["Player" + oEntry["OrderedPlayerIndex"] + "Card"];
-		 	oEntry["Player1Card"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] + 1) + "Card"];
-		 	oEntry["Player2Card"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] + 2) + "Card"];
-		 	oEntry["Player3Card"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] + 3) + "Card"];
+            oEntry["Player0CardLocal"] = oEntry["Player" + (oEntry["OrderedPlayerIndex"] % 4) + "Card"];
+		 	oEntry["Player1CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 1) % 4) + "Card"];
+		 	oEntry["Player2CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 2) % 4) + "Card"];
+		 	oEntry["Player3CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 3) % 4) + "Card"];
             
             return oEntry;
         },

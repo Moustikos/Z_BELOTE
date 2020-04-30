@@ -427,8 +427,8 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 						CurrentPlayer: sNewCurrentPlayerID,
 						IsShuffleNeeded: true,
 						DoneFinished: false,
-						DistributionTour: 1, 
-						Atout : ""
+						DistributionTour: 1,
+						Atout: ""
 					});
 				}, 3000);
 			}
@@ -441,14 +441,13 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 			}
 		},
+
 		clearDoneData: function () {
 			// remove belote
 			for (var i = 0; i < 4; i++) {
 				firebase.database().ref(this._tablePath + "/NPlayers/" + i + "/BelotePossible").remove();
 				firebase.database().ref(this._tablePath + "/NPlayers/" + i + "/BeloteAnnounced").remove();
 			}
-			firebase.database().ref(this._tablePath + "/NTeams/0/NFolds").remove();
-			firebase.database().ref(this._tablePath + "/NTeams/1/NFolds").remove();
 			firebase.database().ref(this._tablePath + "/NLastFold").remove();
 
 		},
@@ -460,7 +459,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var bIsRoy = false;
 			var bIsQueen = false
 			var bIsBelotePossible = oModel.getProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BelotePossible");
-
 			if (bIsBelotePossible === undefined) {
 				aPlayerCards.forEach(
 					function (oCard) {
@@ -479,7 +477,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					BelotePossible: bIsBelotePossible
 				});
 			}
-
 			return bIsBelotePossible;
 		},
 

@@ -1,38 +1,50 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:smartTable="sap.ui.comp.smarttable">
-	<Popover title="Info" class="sapUiResponsivePadding--header sapUiResponsivePadding--footer" placement="Bottom">
-		<HBox>
-			<VBox>
-				<Table class="custom-sapMLIBShowSeparator" width="300px" id="idScoreTable" inset="true">
-					<columns>
-						<Column width ="100px">
-							<Text text="Team"/>
-						</Column>
-						<Column width ="100px">
-							<Text text="Score"/>
-						</Column>
-					</columns>
-					<items>
-						<ColumnListItem>
-							<cells>
-								<Text text="Team 1"/>
-								<Text text="{NTeams/0/Score}"/>
-							</cells>
-						</ColumnListItem>
-						<ColumnListItem>
-							<cells>
-								<Text text="Team 2"/>
-								<Text text="{NTeams/1/Score}"/>
-							</cells>
-						</ColumnListItem>
-					</items>
-				</Table>
-			</VBox>
-		</HBox>
-		<footer>
-			<OverflowToolbar>
-				<ToolbarSpacer/>
-				<Button id="close" text="Close" press="handleCloseScorePress"/>
-			</OverflowToolbar>
-		</footer>
+	<Popover placement="Bottom" showHeader="false">
+		<IconTabBar>
+			<items>
+				<IconTabFilter text="{i18n>Score}" key="Scores">
+					<HBox>
+						<VBox>
+							<Table class="custom-sapMLIBShowSeparator" width="300px" id="idScoreTable">
+								<columns>
+									<Column width ="100px">
+										<Text text="Team"/>
+									</Column>
+									<Column width ="100px">
+										<Text text="Score"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<Text text="Team 1"/>
+											<Text text="{NTeams/0/Score}"/>
+										</cells>
+									</ColumnListItem>
+									<ColumnListItem>
+										<cells>
+											<Text text="Team 2"/>
+											<Text text="{NTeams/1/Score}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+					</HBox>
+				</IconTabFilter>
+				<IconTabFilter text="{i18n>LastFold}" key="Pli">
+					<HBox items="{localModel>/PlayTable/LastFold}">
+						<VBox alignContent="Center" alignItems="Center" justifyContent="Center" class="sapUiTinyMarginEnd">
+							<Label text="{parts:[{path: 'localModel>playerIndex'}], formatter: '.formatter.getPlayerNameFromIndex'}" />
+							<GenericTile tooltip="{path: 'localModel>cardName'}">
+								<TileContent>
+									<NumericContent tooltip="{path: 'localModel>cardName'}" value="{parts:[{path: 'localModel>cardName'}], formatter: '.formatter.getCardValue'}" icon="{parts:[{path: 'localModel>cardName'}], formatter: 'com.belote.util.ClassFormatter.getCardColor'}" withMargin="false" />
+								</TileContent>
+							</GenericTile>
+						</VBox>
+					</HBox>
+				</IconTabFilter>
+			</items>
+		</IconTabBar>
 	</Popover>
 </core:FragmentDefinition>

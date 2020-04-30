@@ -362,9 +362,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			}
 		},
 
-		handleCloseScorePress: function () {
-			this._oPopover.close();
-		},
 		// Update team temporary score after each set of 4 cards
 		_updateScore: function (aCards) {
 			var iScore = 0;

@@ -118,6 +118,10 @@ sap.ui.define([], function () {
 				}
 			}
 			return iCounter;
+		},
+		
+		getPlayerNameFromIndex : function(iIndex) {
+			return this.util._getPlayerNameByID(iIndex, this.getView().getModel("localModel").getProperty("/PlayTable/NPlayers"));          
 		}
 	};
 });

@@ -319,7 +319,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			for (var j = 0; j < aCardsPlayed.length; j++) {
 				NFoldsWinningTeam.push(aCardsPlayed[j]);
 			}
-		
+
 			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
 				NFolds: NFoldsWinningTeam
 			});
@@ -414,6 +414,8 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				var iDistributorID = this.util._getPlayerIdByName(sDistributor, NPlayers);
 				var iNewDistributorID = (iDistributorID + 1) % 4;
 				var sNewDistributorName = this.util._getPlayerNameByID(iNewDistributorID, NPlayers);
+				var iNewCurrentPlayerID = (iNewDistributorID + 1) % 4;
+				var sNewCurrentPlayerID = this.util._getPlayerNameByID(iNewCurrentPlayerID, NPlayers);
 
 				//clear current fold and perform a new done
 				var that = this;
@@ -421,7 +423,12 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					that.clearTable();
 					that.clearDoneData();
 					firebase.database().ref(that._tablePath).update({
-						Distributor: sNewDistributorName
+						Distributor: sNewDistributorName,
+						CurrentPlayer: sNewCurrentPlayerID,
+						IsShuffleNeeded: true,
+						DoneFinished: false,
+						DistributionTour: 1, 
+						Atout : ""
 					});
 				}, 3000);
 			}
@@ -443,6 +450,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			firebase.database().ref(this._tablePath + "/NTeams/0/NFolds").remove();
 			firebase.database().ref(this._tablePath + "/NTeams/1/NFolds").remove();
 			firebase.database().ref(this._tablePath + "/NLastFold").remove();
+
 		},
 
 		isBelotePossible: function (iPlayerIndex) {

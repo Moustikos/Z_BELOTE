@@ -251,6 +251,17 @@ sap.ui.define([], function() {
         			return NPlayers[i].Name;
         		}
         	}
+        },
+        
+        _getPlayerIdByName: function (sPlayerName, NPlayers){
+        		for (var i = 0; i < NPlayers.length; i++ ) {
+        		if (NPlayers[i].Name === sPlayerName) {
+        			return NPlayers[i].ID;
+        		}
+        	}
+        },
+        _getTeamIdByPlayerId: function(iPlayerID) {
+        return iPlayerID === 0 || iPlayerID === 2 ? 0 : 1;
         }
     };
 });

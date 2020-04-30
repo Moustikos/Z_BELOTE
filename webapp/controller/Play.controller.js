@@ -282,7 +282,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 			//save fold
 			firebase.database().ref(this._tablePath).update({
-				LastFold: aCardsPlayed
+				NLastFold: aCardsPlayed
 			});
 
 			//update temporary score
@@ -325,12 +325,12 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				});
 				
 				//clear current fold and perform a new done
-				var that = this;
+			
 				setTimeout(function () {
-					that.clearTable();
+					this.clearTable();
 					firebase.database().ref(this._tablePath).update({
 					IsShuffleNeeded: true
-				});
+				}.bind(this));
 				}, 3000)
 			}
 		},

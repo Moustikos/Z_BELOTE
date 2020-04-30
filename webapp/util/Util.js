@@ -80,7 +80,7 @@ sap.ui.define([], function() {
 					 	oEntry[oProperty.key] = oProperty.toJSON();
 				 	}
 				 	
-				 	else if (oProperty.key === "LastFold") {
+				 	else if (oProperty.key === "NLastFold") {
 					 	oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1], oProperty.toJSON()[2], oProperty.toJSON()[3]];
 				 	}
 				 }

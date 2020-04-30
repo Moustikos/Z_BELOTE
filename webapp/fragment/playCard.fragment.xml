@@ -28,7 +28,7 @@
 						<Button tooltip="{i18n>Play.PasPrendre}" icon="sap-icon://decline" type="Reject" enabled="{parts:[{path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: '.formatter.getSuggestCardEnabled'}" visible="{parts:[{path: 'localModel>/PlayTable/DistributionTour'}], formatter: '.formatter.getSuggestCardTakeVisible'}" press="onSuggestionRejected"/>
 					</HBox>
 				</VBox>
-				<HBox justifyContent="Center" alignContent="Center" alignItems="Center" visible="{parts:[{path: 'localModel>/PlayTable/DistributionTour'}], formatter: '.formatter.getCustomColorTakeVisible'}">
+				<HBox justifyContent="Center" alignContent="Center" alignItems="Center" visible="{parts:[{path: 'localModel>/PlayTable/DistributionTour'}, {path: 'localModel>/PlayTable/DoneFinished'}], formatter: '.formatter.getCustomColorTakeVisible'}">
 					<Button icon="sap-icon://customfont/coeur" type="Reject" class="sapUiTinyMarginEnd" enabled="{parts:[{path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: '.formatter.getSuggestCardEnabled'}" press="onPressCustomAsset"/>
 					<Button icon="sap-icon://customfont/carreau" type="Reject" class="sapUiTinyMarginEnd" enabled="{parts:[{path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: '.formatter.getSuggestCardEnabled'}" press="onPressCustomAsset"/>
 					<Button icon="sap-icon://customfont/trefle" class="sapUiTinyMarginEnd" enabled="{parts:[{path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: '.formatter.getSuggestCardEnabled'}" press="onPressCustomAsset"/>

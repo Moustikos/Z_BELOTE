@@ -31,8 +31,8 @@ sap.ui.define([], function () {
 			return iTour === 1;
 		},
 
-		getCustomColorTakeVisible: function (iTour) {
-			return iTour === 2;
+		getCustomColorTakeVisible: function (iTour, bDoneFinished) {
+			return (iTour === 2 && bDoneFinished === true) ;
 		},
 
 		getPlayerVisible: function (Player) {

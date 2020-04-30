@@ -168,6 +168,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 							updates["/Distributor"] = aPlayers[iNextPlayerId].Name;
 							updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].Name;
 							updates["/IsShuffleNeeded"] = true;
+							updates["/DoneFinished"] = false;
 						}
 						firebase.database().ref(this._tablePath).update(updates);
 						break;
@@ -177,6 +178,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				updates["/SuggestedCard"] = "";
 				updates["/Atout"] = sChoice.toLowerCase();
 				updates["/Preneur"] = firebase.auth().currentUser.displayName;
+				updates["/DoneFinished"] = true;
 				this._distributeRemainingCards(updates);
 				firebase.database().ref(this._tablePath).update(updates);
 			}

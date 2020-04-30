@@ -33,7 +33,7 @@
 					</HBox>
 				</IconTabFilter>
 				<IconTabFilter text="{i18n>LastFold}" key="Pli">
-					<HBox items="{localModel>/PlayTable/LastFold}">
+					<HBox items="{localModel>/PlayTable/NLastFold}">
 						<VBox alignContent="Center" alignItems="Center" justifyContent="Center" class="sapUiTinyMarginEnd">
 							<Label text="{parts:[{path: 'localModel>playerIndex'}], formatter: '.formatter.getPlayerNameFromIndex'}" />
 							<GenericTile tooltip="{path: 'localModel>cardName'}">

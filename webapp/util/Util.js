@@ -79,6 +79,10 @@ sap.ui.define([], function() {
 				 	else if (oProperty.key === "MasterPlayer") {
 					 	oEntry[oProperty.key] = oProperty.toJSON();
 				 	}
+				 	
+				 	else if (oProperty.key === "LastFold") {
+					 	oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1], oProperty.toJSON()[2], oProperty.toJSON()[3]];
+				 	}
 				 }
             });
             

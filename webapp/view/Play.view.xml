@@ -41,7 +41,7 @@
 				</HBox>
 				<HBox width="100%" height="30%">
 					<VBox width="100%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">
-						<Text text="{localModel>/PlayTable/NOrdererPlayers/0/Name}" class="playerName sapUiTinyMarginBottom"/>
+						<Text text="{parts:[{path: 'localModel>/PlayTable/NOrdererPlayers/0/Name'}, {path: 'localModel>/PlayTable/CurrentPlayer'}], formatter: 'com.belote.util.ClassFormatter.getCurrentPlayerNameAnimation'}" class="playerName sapUiTinyMarginBottom"/>
 						<HBox items="{localModel>/PlayTable/NOrdererPlayers/0/NCards}" justifyContent="Center" alignContent="Center" alignItems="Center" width="100%">
 							<GenericTile press="onSelectCard" class="sapUiTinyMarginEnd" tooltip="{path: 'localModel>Name'}">
 								<TileContent>

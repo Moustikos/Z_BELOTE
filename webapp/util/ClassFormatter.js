@@ -21,5 +21,14 @@ jQuery.sap.setObject("com.belote.util.ClassFormatter", {
     	}
     	
     	return "sap-icon://customfont/" + sReturn;
+    },
+    
+    getCurrentPlayerNameAnimation : function(sName, sCurrentPlayer) {
+    	if(sName === sCurrentPlayer) {
+			this.addStyleClass("currentPlayer");
+    	} else {
+    		this.removeStyleClass("currentPlayer");
+    	}
+    	return sName;
     }
 });

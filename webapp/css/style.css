@@ -9,6 +9,25 @@
 
 .playerName {
     color: #f0f4c3;
+    font-size: 1.5rem;
+}
+
+.currentPlayer {
+    animation: currentPlayer 1s infinite;
+}
+
+@keyframes currentPlayer{
+	0% {
+		color: red;
+	}
+	
+	50% {
+		color: #f0f4c3;
+	}
+	
+	100% {
+		color: red;
+	}
 }
 
 .Redcard {

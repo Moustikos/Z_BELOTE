@@ -319,7 +319,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			for (var j = 0; j < aCardsPlayed.length; j++) {
 				NFoldsWinningTeam.push(aCardsPlayed[j]);
 			}
-		
+
 			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
 				NFolds: NFoldsWinningTeam
 			});
@@ -424,10 +424,11 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					that.clearDoneData();
 					firebase.database().ref(that._tablePath).update({
 						Distributor: sNewDistributorName,
-						CurrentPlayer : sNewCurrentPlayerID,
-						IsShuffleNeeded : true,
-						DoneFinished : false,
-						DistributionTour : 1
+						CurrentPlayer: sNewCurrentPlayerID,
+						IsShuffleNeeded: true,
+						DoneFinished: false,
+						DistributionTour: 1, 
+						Atout : ""
 					});
 				}, 3000);
 			}
@@ -449,7 +450,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			firebase.database().ref(this._tablePath + "/NTeams/0/NFolds").remove();
 			firebase.database().ref(this._tablePath + "/NTeams/1/NFolds").remove();
 			firebase.database().ref(this._tablePath + "/NLastFold").remove();
-			
+
 		},
 
 		isBelotePossible: function (iPlayerIndex) {

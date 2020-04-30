@@ -1,16 +1,16 @@
-<!-- ******************************************************************************************************************* -->
-<!-- File description         :                                           -->
-<!-- Modification description : 					                                 -->
-<!-- ******************************************************************************************************************* -->
+<!-- ************************************************************************************************************************* -->
+<!-- File description         : The Table view contains list of table and possibility to create a new one and to join a team   -->
+<!-- Modification description : Quentin 28.04.2020                             				                                   -->
+<!-- ************************************************************************************************************************* -->
 <mvc:View controllerName="com.belote.controller.Tables" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
 	xmlns="sap.m" xmlns:f="sap.f">
-	<Page showHeader="false">
+	<Page showHeader="true" title="Choose a belote table or create a new one">
 		<content>
-		
 			<Table id="tablesTable" inset="false" items="{localModel>/ETTables}" class="sapFDynamicPageAlignContent" width="auto">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer/>
+						<Text text="Create a new table"></Text>
 						<OverflowToolbarButton icon="sap-icon://add" type="Transparent" press="onPressAddTableButton"/>
 					</OverflowToolbar>
 				</headerToolbar>
@@ -23,7 +23,8 @@
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Navigation" press="onPressTableListItem">
+					<ColumnListItem type="Navigation" press="onPressTableListItem" 
+					visible="{path: 'localModel>ID', formatter: '.formatter.getTableListItemVisible'}" >
 						<cells>
 							<ObjectIdentifier title="{localModel>Name}" text="{localModel>Description}"/>
 							<ObjectNumber number="{path: 'localModel>NPlayers', formatter: '.formatter.getNumberOfPlayers'}"/>

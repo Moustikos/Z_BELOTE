@@ -39,10 +39,46 @@ sap.ui.define([], function () {
 			return Player ? true : false;
 		},
 
+		getAtoutIcon: function (sAtout) {
+			switch (sAtout) {
+			case "trefle":
+				return "sap-icon://customfont/trefle";
+				break;
+			case "coeur":
+				return "sap-icon://customfont/coeur";
+				break;
+			case "pique":
+				return "sap-icon://customfont/pique";
+				break;
+			case "carreau":
+				return "sap-icon://customfont/carreau";
+				break;
+			default:
+				return "sap-icon://customfont/carreau"
+				break;
+			}
+		},
+
+		getAtoutIconColor: function (sAtout) {
+			return sAtout === "coeur" || sAtout === "carreau" ? "red" : "black";
+		},
+
+		getScore: function (iScore) {
+			return iScore !== undefined ? iScore : 0;
+		},
+
+		getAtoutVisible: function (sAtout) {
+			return sAtout === "" ? false : true;
+		},
+
+		getTableListItemVisible: function (oModel) {
+			return oModel === undefined ? false : true;
+		},
+
 		getJoinButtonTeam1Enabled: function (NPlayers) {
 			if (NPlayers) {
 				var aTeam1Players = [];
-				for (let i = 0; i < NPlayers.length; i++) {
+				for (var i = 0; i < NPlayers.length; i++) {
 					if (NPlayers[i] && (NPlayers[i].ID === 0 || NPlayers[i].ID === 2)) {
 						aTeam1Players.push(NPlayers[i]);
 					}
@@ -56,7 +92,7 @@ sap.ui.define([], function () {
 		getJoinButtonTeam2Enabled: function (NPlayers) {
 			if (NPlayers) {
 				var aTeam1Players = [];
-				for (let i = 0; i < NPlayers.length; i++) {
+				for (var i = 0; i < NPlayers.length; i++) {
 					if (NPlayers[i] && (NPlayers[i].ID === 1 || NPlayers[i].ID === 3)) {
 						aTeam1Players.push(NPlayers[i]);
 					}
@@ -68,16 +104,16 @@ sap.ui.define([], function () {
 		},
 
 		getLeaveButtonVisible: function (Player) {
-			const sPlayerName = firebase.auth().currentUser.displayName;
+			var sPlayerName = firebase.auth().currentUser.displayName;
 			return Player && Player.Name === sPlayerName ? true : false;
 		},
 
 		getNumberOfPlayers: function (NPlayers) {
 			var iCounter = 0;
 			if (NPlayers) {
-				for (let i = 0; i < NPlayers.length; i++) {
+				for (var i = 0; i < NPlayers.length; i++) {
 					if (NPlayers[i]) {
-						iCounter++
+						iCounter++;
 					}
 				}
 			}

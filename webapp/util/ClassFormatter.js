@@ -16,10 +16,8 @@ jQuery.sap.setObject("com.belote.util.ClassFormatter", {
     	
     	if(sReturn === "carreau" || sReturn === "coeur") {
     		this.getParent().getParent().addStyleClass("Redcard");
-    		this.setColor("red");
     	} else if(sReturn === "pique" || sReturn === "trefle") {
     		this.getParent().getParent().addStyleClass("Blackcard");
-    		this.setColor("black");
     	}
     	
     	return "sap-icon://customfont/" + sReturn;

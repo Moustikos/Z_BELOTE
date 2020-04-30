@@ -17,6 +17,14 @@
     border: 2px solid red;
 }
 
+.Redcard .sapMNCIconImage {
+    color: red;
+}
+
+.Blackcard .sapMNCIconImage {
+    color: black;
+}
+
 .Blackcard {
     background-color: #f0f4c3;
     border-radius: 6px;
@@ -59,6 +67,22 @@
     content: "\e918";
 }
 
+.sapMGTHdrContent {
+	display: none;
+}
+
+.sapMGT.OneByOne {
+    width: 6rem;
+    height: 6.5rem;
+}
+
 .icon-pique:before {
     content: "\e917";
 }
+
+#idScoreTable-tblBody>tr>td {
+    border-top: 1px solid #e5e5e5;
+    border-left: 1px solid #e5e5e5;
+    border-right: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    

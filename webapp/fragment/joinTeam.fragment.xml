@@ -1,0 +1,71 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.f" xmlns:card="sap.f.cards">
+	<Dialog title="{Name}" contentWidth="400px" draggable="true" resizable="true" id="idJoinTeamDialog">
+		<content>
+			<f:Card class="sapUiMediumMargin" width="300px">
+				<f:header>
+					<card:Header title="Team 1" iconSrc="sap-icon://collaborate"/>
+				</f:header>
+				<f:content>
+					<VBox justifyContent="SpaceBetween" width="100%">
+						<HBox justifyContent="SpaceBetween" width="100%">
+							<HBox class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" justifyContent="SpaceBetween" width="100%"
+								visible="{path: 'NPlayers/0', formatter: '.formatter.getPlayerVisible'}">
+								<VBox justifyContent="Center">
+									<Title level="H3" text="{NPlayers/0/Name}"/>
+								</VBox>
+								<Button icon="sap-icon://less" press="onLeaveTeam" visible="{path: 'NPlayers/0', formatter: '.formatter.getLeaveButtonVisible'}"/>
+							</HBox>
+						</HBox>
+						<HBox justifyContent="SpaceBetween" width="100%">
+							<HBox class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" justifyContent="SpaceBetween" width="100%"
+								visible="{path: 'NPlayers/2', formatter: '.formatter.getPlayerVisible'}">
+								<VBox justifyContent="Center">
+									<Title level="H3" text="{NPlayers/2/Name}"/>
+								</VBox>
+								<Button icon="sap-icon://less" press="onLeaveTeam" visible="{path: 'NPlayers/2', formatter: '.formatter.getLeaveButtonVisible'}"/>
+							</HBox>
+						</HBox>
+						<HBox justifyContent="Center">
+							<Button id="idJoinTeam1Button" icon="sap-icon://begin" text="Join" press="onJoinTeam"
+								enabled="{path: 'NPlayers', formatter: '.formatter.getJoinButtonTeam1Enabled'}"/>
+						</HBox>
+					</VBox>
+				</f:content>
+			</f:Card>
+			<f:Card class="sapUiMediumMargin" width="300px">
+				<f:header>
+					<card:Header title="Team 2" iconSrc="sap-icon://collaborate"/>
+				</f:header>
+				<f:content>
+					<VBox justifyContent="SpaceBetween" width="100%">
+						<HBox justifyContent="SpaceBetween" width="100%">
+							<HBox class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" justifyContent="SpaceBetween" width="100%"
+								visible="{path: 'NPlayers/1', formatter: '.formatter.getPlayerVisible'}">
+								<VBox justifyContent="Center">
+									<Title level="H3" text="{NPlayers/1/Name}"/>
+								</VBox>
+								<Button icon="sap-icon://less" press="onLeaveTeam" visible="{path: 'NPlayers/1', formatter: '.formatter.getLeaveButtonVisible'}"/>
+							</HBox>
+						</HBox>
+						<HBox justifyContent="SpaceBetween" width="100%">
+							<HBox class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom" justifyContent="SpaceBetween" width="100%"
+								visible="{path: 'NPlayers/3', formatter: '.formatter.getPlayerVisible'}">
+								<VBox justifyContent="Center">
+									<Title level="H3" text="{NPlayers/3/Name}"/>
+								</VBox>
+								<Button id="idJoinTeam2Button" icon="sap-icon://less" press="onLeaveTeam" visible="{path: 'NPlayers/3', formatter: '.formatter.getLeaveButtonVisible'}"/>
+							</HBox>
+						</HBox>
+						<HBox justifyContent="Center">
+							<Button icon="sap-icon://begin" text="Join" press="onJoinTeam"
+								enabled="{path: 'NPlayers', formatter: '.formatter.getJoinButtonTeam2Enabled'}"/>
+						</HBox>
+					</VBox>
+				</f:content>
+			</f:Card>
+		</content>
+		<buttons>
+			<Button text="Close" press="onPressCloseTable"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

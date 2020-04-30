@@ -208,8 +208,14 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 						this.util._getCardValue(sCardName) === "D")) {
 					if (bIsBelotePossible && !bIsBeloteAnnouced) {
 						// tigger popup to choose to announce belote
+						if (!this._oAnnounceBelotePopup) {
+							this._oAnnounceBelotePopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.announceBelote", this);
+							this.getView().addDependent(this._oAnnounceBelotePopup);
+						}
+						this._oAnnounceBelotePopup.open();
 					} else if (bIsBeloteAnnouced) {
 						// trigger snackbar to announce rebelote
+						sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("Rebelote"));
 					}
 				}
 
@@ -478,6 +484,31 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				});
 			}
 			return bIsBelotePossible;
+		},
+
+		onPressYesAnnounceBelote: function () {
+			var oModel = this.getView().getModel("localModel");
+			var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
+			firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex).update({
+				BeloteAnnouced: true
+			});
+			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced", true);
+			sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("Belote"));
+			this._oAnnounceBelotePopup.close();
+			this._oAnnounceBelotePopup.destroy();
+			this._oAnnounceBelotePopup = undefined;
+		},
+
+		onPressNoAnnounceBelote: function () {
+			var oModel = this.getView().getModel("localModel");
+			var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
+			firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex).update({
+				BeloteAnnouced: false
+			});
+			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced", false);
+			this._oAnnounceBelotePopup.close();
+			this._oAnnounceBelotePopup.destroy();
+			this._oAnnounceBelotePopup = undefined;
 		},
 
 		handleScorePopoverPress: function (oEvent) {

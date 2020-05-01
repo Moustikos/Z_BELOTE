@@ -90,7 +90,38 @@ sap.ui.define([], function() {
 		 	oEntry["Player1CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 1) % 4) + "Card"];
 		 	oEntry["Player2CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 2) % 4) + "Card"];
 		 	oEntry["Player3CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 3) % 4) + "Card"];
+		 	
+		 	// Handle deck join
+		 	var aFoldTeam1 = [];
+		 	var aFoldTeam2 = [];
+		 	var aFullDeck = [];
+		 	
+		 	if(oEntry.NTeams[0].NFolds) {
+		 		var aKeysNFolds1 = Object.keys(oEntry.NTeams[0].NFolds);
+		 		for( var f1 = 0; f1 < aKeysNFolds1.length; f1++) {
+		 			aFoldTeam1.push({
+		 				"Name" : oEntry.NTeams[0].NFolds[aKeysNFolds1[f1]].cardName
+		 			});
+		 		}
+		 	}
+		 	
+		 	if(oEntry.NTeams[1].NFolds) {
+		 		var aKeysNFolds2 = Object.keys(oEntry.NTeams[1].NFolds);
+		 		for( var f2 = 0; f2 < aKeysNFolds1.length; f2++) {
+		 			aFoldTeam1.push({
+		 				"Name" : oEntry.NTeams[0].NFolds[aKeysNFolds2[f2]].cardName
+		 			});
+		 		}
+		 	}
             
+            aFullDeck = aFoldTeam1.concat(aFoldTeam2);
+            
+            // Handle coupe
+            if(oEntry.IndexCoupe) {
+            	aFullDeck = aFullDeck.slice(IndexCoupe).concat(aFullDeck.slice(0, IndexCoupe));
+            }
+            
+            oEntry["NPlayingCards"] = aFullDeck;
             return oEntry;
         },
         
@@ -99,8 +130,8 @@ sap.ui.define([], function() {
         	var oLocalModel = that.getView().getModel("localModel");
         	
         	// Get playing cards or initiale the deck
-        	if(oLocalModel.getProperty("/PlayingCards") !== [] && oLocalModel.getProperty("/PlayingCards")) {
-        		aCard = oLocalModel.getProperty("/PlayingCards");
+        	if(oLocalModel.getProperty("/NPlayingCards") && oLocalModel.getProperty("/NPlayingCards") !== []) {
+        		aCard = oLocalModel.getProperty("/NPlayingCards");
         	} else {
         		// Create card array
 				var aCard = [{"Name": "Coeur-7"}, {"Name": "Coeur-8"}, {"Name": "Coeur-9"}, {"Name": "Coeur-10"}, {"Name": "Coeur-V"}, {"Name": "Coeur-D"}, {"Name": "Coeur-R"}, {"Name": "Coeur-As"},
@@ -202,6 +233,7 @@ sap.ui.define([], function() {
 			
 			updates["/SuggestedCard"] = aCard[20].Name;
 			updates["/DoneFinished"] = false;
+			updates["/IndexCoupe"] = "";
 			updates["/IsShuffleNeeded"] = false;
 			
 			firebase.database().ref(that._tablePath).update(updates);

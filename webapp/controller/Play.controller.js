@@ -428,6 +428,8 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				setTimeout(function () {
 					that.clearTable();
 					that.clearDoneData();
+					
+					// Ici il faut proposer un slider au DIstributor actuel pour lui demander de couper avant de mettre le reste à jour
 					firebase.database().ref(that._tablePath).update({
 						Distributor: sNewDistributorName,
 						CurrentPlayer: sNewCurrentPlayerID,

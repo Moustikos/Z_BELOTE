@@ -3,7 +3,7 @@
 * Modification description : MOUSTIKOS - 19.04.2020 - Creation - Add firebase initialization                                 
 *****************************************************************************************************************/
 
-sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function (UIComponent, Firebase) {
+sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase", "com/belote/model/models"], function (UIComponent, Firebase, models) {
 	"use strict";
 
 	return UIComponent.extend("com.belote.Component", {
@@ -17,6 +17,9 @@ sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function 
 
 			// Enable routing
 			this.getRouter().initialize();
+			
+			// Set the device model
+			this.setModel(models.createDeviceModel(), "device");
 
 			// Initialize firebase connection
 			Firebase.initializeFirebase();
@@ -32,6 +35,10 @@ sap.ui.define(["sap/ui/core/UIComponent", "com/belote/util/Firebase"], function 
 			sap.ui.core.IconPool.addIcon('carreau', 'customfont', 'icomoon', 'e919');
 			sap.ui.core.IconPool.addIcon('trefle', 'customfont', 'icomoon', 'e918');
 			sap.ui.core.IconPool.addIcon('pique', 'customfont', 'icomoon', 'e917');
+			
+			sap.ui.Device.orientation.attachHandler(function(evt) {
+		      this.getModel("device").setProperty("/orientation/portrait", !evt.landscape);
+			}.bind(this));
 		}
 	});
 });

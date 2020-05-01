@@ -122,6 +122,10 @@ sap.ui.define([], function () {
 		
 		getPlayerNameFromIndex : function(iIndex) {
 			return this.util._getPlayerNameByID(iIndex, this.getView().getModel("localModel").getProperty("/PlayTable/NPlayers"));          
+		},
+		
+		getWarningMessageVisible : function(bIsPhone, bIsPortrait) {
+			return bIsPhone && bIsPortrait;
 		}
 	};
 });

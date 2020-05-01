@@ -22,6 +22,7 @@
 			</Bar>
 		</customHeader>
 		<content>
+			<MessageStrip text="{i18n>WarningDeviceOrientation}" type="Warning" visible="{parts:[{path: 'device>/system/phone'}, {path: 'device>/orientation/portrait'}], formatter: '.formatter.getWarningMessageVisible'}"/>
 			<VBox width="100%" height="100%">
 				<HBox width="100%" height="70%">
 					<VBox width="25%" height="100%" justifyContent="Center" alignContent="Center" alignItems="Center">

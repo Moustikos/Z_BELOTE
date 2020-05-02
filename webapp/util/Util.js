@@ -314,6 +314,7 @@ sap.ui.define([], function () {
 			updates["/DoneFinished"] = false;
 			updates["/IndexCoupe"] = "";
 			updates["/IsShuffleNeeded"] = false;
+			updates["/DoneFailed"] = false;
 
 			firebase.database().ref(that._tablePath).update(updates);
 		},

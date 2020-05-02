@@ -46,7 +46,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 									CurrentPlayer: aTables[i].NPlayers[1].Name,
 									Distributor: aTables[i].NPlayers[0].Name,
 									Requestor: aTables[i].NPlayers[1].Name, 
-									NTeams : {0: {}, 1: {}
+									NTeams : {0: {}, 1: {}}
 								});
 								firebase.database().ref("ETTableSet/" + i + "/MasterPlayer").update({
 									Name: aTables[i].NPlayers[1].Name,

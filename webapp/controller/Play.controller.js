@@ -325,7 +325,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 			//Save fold
 			var NFoldsWinningTeam = [];
-			var aPreviousFolds = oModel.getProperty("/PlayTable/NTeams/" + iWinningTeam + "/Folds");
+			var aPreviousFolds = oModel.getProperty("/PlayTable/NTeams/" + iWinningTeam + "/NFolds");
 			if (aPreviousFolds !== undefined) {
 				for (var i = 0; i < aPreviousFolds.length; i++) {
 					NFoldsWinningTeam.push(aPreviousFolds[i]);

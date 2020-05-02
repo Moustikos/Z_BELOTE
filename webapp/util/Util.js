@@ -86,6 +86,19 @@ sap.ui.define([], function () {
 			oEntry["Player2CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 2) % 4) + "Card"];
 			oEntry["Player3CardLocal"] = oEntry["Player" + ((oEntry["OrderedPlayerIndex"] + 3) % 4) + "Card"];
 
+			return oEntry;
+		},
+
+		_shuffleCards: function (that) {
+			// Get local model
+			var oLocalModel = that.getView().getModel("localModel");
+			return;
+
+
+
+
+
+
 			// Handle deck join
 			var aFoldTeam1 = [];
 			var aFoldTeam2 = [];
@@ -117,12 +130,22 @@ sap.ui.define([], function () {
 			}
 
 			oEntry["NPlayingCards"] = aFullDeck;
-			return oEntry;
-		},
 
-		_shuffleCards: function (that) {
-			// Get local model
-			var oLocalModel = that.getView().getModel("localModel");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 			// Get playing cards or initiale the deck
 			if (oLocalModel.getProperty("/NPlayingCards") && oLocalModel.getProperty("/NPlayingCards") !== []) {

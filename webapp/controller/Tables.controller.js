@@ -45,8 +45,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 									isFull: true,
 									CurrentPlayer: aTables[i].NPlayers[1].Name,
 									Distributor: aTables[i].NPlayers[0].Name,
-									Requestor: aTables[i].NPlayers[1].Name, 
-									NTeams : {0: {}, 1: {}}
+									Requestor: aTables[i].NPlayers[1].Name
 								});
 								firebase.database().ref("ETTableSet/" + i + "/MasterPlayer").update({
 									Name: aTables[i].NPlayers[1].Name,
@@ -89,6 +88,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 
 		addNewTable: function (sNewTableName, sNewTableDesc, iScoreLimit) {
 			var aTables = this.getView().getModel("localModel").getProperty("/ETTables");
+			var aNTeams = [0, 1];
 			var iNewTableKey = aTables.indexOf(aTables[aTables.length - 1]) + 1;
 			firebase.database().ref("ETTableSet/" + iNewTableKey).set({
 				Name: sNewTableName,
@@ -101,7 +101,8 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				Distributor: "",
 				IsShuffleNeeded: true,
 				Preneur: "",
-				SuggestedCard: ""
+				SuggestedCard: "",
+				NTeams : aNTeams
 			});
 		},
 

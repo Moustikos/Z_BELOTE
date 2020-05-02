@@ -194,6 +194,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 							updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].Name;
 							updates["/IsShuffleNeeded"] = true;
 							updates["/DoneFinished"] = false;
+							updates["/DoneFailed"] = true;
 						}
 						firebase.database().ref(this._tablePath).update(updates);
 						break;

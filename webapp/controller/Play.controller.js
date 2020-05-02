@@ -521,7 +521,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex).update({
 				BeloteAnnouced: true
 			});
-			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced", true);
+			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnounced", true);
 			this.util._sendMessageToPlayers(this.getView().getModel("i18n").getProperty("Belote"), this._tablePath);
 			this._oAnnounceBelotePopup.close();
 			this._oAnnounceBelotePopup.destroy();

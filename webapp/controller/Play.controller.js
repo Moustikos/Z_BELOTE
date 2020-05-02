@@ -31,6 +31,17 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			}
 		},
 
+		_onMessageEntityReceived: function (snapshot) {
+			var oMessage = snapshot.val();
+			var sSender = oMessage.sender;
+			var sText = oMessage.text;
+			var bDisplayIt = oMessage.displayIt;
+
+			if (bDisplayIt) {
+				sap.m.MessageToast.show(sSender + " say : " + sText);
+			}
+		},
+
 		_openChooseCard: function () {
 			var oItemTemplate = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.chooseCardVBox", this);
 			var sUserName = firebase.auth().currentUser.displayName;
@@ -206,7 +217,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				var bIsBeloteAnnouced = oModel.getProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced");
 				if ((this.util._getCardSymbol(sCardName).toUpperCase() === sAtout.toUpperCase()) && (this.util._getCardValue(sCardName) === "R" ||
 						this.util._getCardValue(sCardName) === "D")) {
-					if (bIsBelotePossible && !bIsBeloteAnnouced) {
+					if (bIsBelotePossible && bIsBeloteAnnouced === undefined) {
 						// tigger popup to choose to announce belote
 						if (!this._oAnnounceBelotePopup) {
 							this._oAnnounceBelotePopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.announceBelote", this);
@@ -215,7 +226,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 						this._oAnnounceBelotePopup.open();
 					} else if (bIsBeloteAnnouced) {
 						// trigger snackbar to announce rebelote
-						sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("Rebelote"));
+						this.util._sendMessageToPlayers(this.getView().getModel("i18n").getProperty("Rebelote"), this._tablePath);
 					}
 				}
 
@@ -325,7 +336,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			for (var j = 0; j < aCardsPlayed.length; j++) {
 				NFoldsWinningTeam.push(aCardsPlayed[j]);
 			}
-
 			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
 				NFolds: NFoldsWinningTeam
 			});
@@ -428,8 +438,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				setTimeout(function () {
 					that.clearTable();
 					that.clearDoneData();
-					
-					// Ici il faut proposer un slider au DIstributor actuel pour lui demander de couper avant de mettre le reste à jour
 					firebase.database().ref(that._tablePath).update({
 						Distributor: sNewDistributorName,
 						CurrentPlayer: sNewCurrentPlayerID,
@@ -495,7 +503,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				BeloteAnnouced: true
 			});
 			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced", true);
-			sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("Belote"));
+			this.util._sendMessageToPlayers(this.getView().getModel("i18n").getProperty("Belote"), this._tablePath);
 			this._oAnnounceBelotePopup.close();
 			this._oAnnounceBelotePopup.destroy();
 			this._oAnnounceBelotePopup = undefined;

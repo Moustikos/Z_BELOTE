@@ -74,11 +74,12 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		onPressCreateNewTable: function () {
 			var sNewTableName = this.byId("idNewTableName").getValue();
 			var sNewTableDesc = this.byId("idNewTableNameDesc").getValue();
+			var iScoreLimit = this.byId("idNewTableScoreLimit").getValue();
 			if (!sNewTableName) {
 				sap.m.MessageToast.show("Please enter at least a table name");
 				return;
 			}
-			this.addNewTable(sNewTableName, sNewTableDesc);
+			this.addNewTable(sNewTableName, sNewTableDesc, iScoreLimit);
 			this._oCreateTablePopup.close();
 		},
 
@@ -86,12 +87,13 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			this._oCreateTablePopup.close();
 		},
 
-		addNewTable: function (sNewTableName, sNewTableDesc) {
+		addNewTable: function (sNewTableName, sNewTableDesc, iScoreLimit) {
 			var aTables = this.getView().getModel("localModel").getProperty("/ETTables");
 			var iNewTableKey = aTables.indexOf(aTables[aTables.length - 1]) + 1;
 			firebase.database().ref("ETTableSet/" + iNewTableKey).set({
 				Name: sNewTableName,
 				ID: iNewTableKey,
+				ScoreLimit : iScoreLimit,
 				Description: sNewTableDesc,
 				Atout: "",
 				CurrentPlayer: "",

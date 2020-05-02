@@ -73,7 +73,9 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		onPressCreateNewTable: function () {
 			var sNewTableName = this.byId("idNewTableName").getValue();
 			var sNewTableDesc = this.byId("idNewTableNameDesc").getValue();
-			var iScoreLimit = parseInt(this.byId("idNewTableScoreLimit").getValue(), 10);
+			var sScoreLimit = this.byId("idNewTableScoreLimit").getValue();
+			var iScoreLimit = sScoreLimit !== "" ? parseInt(sScoreLimit, 10) : 1000;
+			
 			if (!sNewTableName) {
 				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NoTableName"));
 				return;

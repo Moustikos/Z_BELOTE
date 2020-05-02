@@ -350,23 +350,23 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				TempScore: iNewScore
 			});
 			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/TempScore", iNewScore);
-			
+
 			//Check if the card selected is the last one
 			if (iRemaningCardsBeforeThisTurn === 1) {
 				this.handleEndOfDone(oModel, oMasterPlayer);
 			}
 		},
-		
+
 		// Triggered when the last card is selected
 		handleEndOfDone: function (oModel, oMasterPlayer) {
 			var NPlayers = oModel.getProperty("/PlayTable/NPlayers");
 			var sPreneur = oModel.getProperty("/PlayTable/Preneur");
-			var	iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
+			var iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
 			var iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
 			var iPreneurTeamID = this.util._getTeamIdByPlayerId(this.util._getPlayerIdByName(sPreneur, NPlayers));
 			var iTeam1AdditionalPoints = 0;
 			var iTeam2AdditionalPoints = 0;
-			
+
 			// dix de dèr
 			iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0;
 			iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0;
@@ -379,7 +379,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 			// Contrat 
 			var iContrat = isBeloteAnnoucedByTeam1 || isBeloteAnnoucedByTeam2 ? 91 : 81;
-		
+
 			//TempScore
 			iTeam1TempScore += iTeam1AdditionalPoints;
 			iTeam2TempScore += iTeam2AdditionalPoints;
@@ -430,16 +430,21 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				Score: iTeam2NewScore,
 				TempScore: 0
 			});
-		
+
 			//Check score limit
 			var iScoreLimit = oModel.getProperty("/PlayTable/ScoreLimit")
 			var bGameOver = (iTeam1NewScore >= iScoreLimit || iTeam2NewScore >= iScoreLimit) && iTeam1NewScore !== iTeam2NewScore ? true :
 				false;
+
+		
 			if (bGameOver) {
+				// handle end of game
 				var iWinnerTeam = iTeam1NewScore > iTeam2NewScore ? 0 : 1;
 				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1));
 				this.util._sendMessageToPlayers(sMessage, this._tablePath);
-
+				
+				
+			} else {
 				// Define next distributor
 				var sDistributor = oModel.getProperty("/PlayTable/Distributor");
 				var iDistributorID = this.util._getPlayerIdByName(sDistributor, NPlayers);

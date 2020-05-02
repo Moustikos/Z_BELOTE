@@ -73,8 +73,20 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		// Triggered if user accepts the suggested card
 		onSuggestionSelected: function () {
+			var aData = this.getView().getModel("localModel").getProperty("/PlayTable");
+			var sDistributor = aData.Distributor;
+			var iCurrentPlayerIndex;
+			
+			for(var i = 0; i < aData.NPlayers.length; i++) {
+				if(aData.NPlayers[i].Name === sDistributor) {
+					iCurrentPlayerIndex = (aData.NPlayers[i].ID + 1) % 4;
+					break;
+				}
+			}
+			
 			var updates = {};
 			updates["/SuggestedCard"] = "";
+			updates["/CurrentPlayer"] = aData.NPlayers[iCurrentPlayerIndex].Name;
 			updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
 			updates["/Preneur"] = firebase.auth().currentUser.displayName;
 			updates["/DoneFinished"] = true;
@@ -166,6 +178,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var sChoice = aSplit[aSplit.length - 1];
 			var oLocalModel = this.getView().getModel("localModel");
 			var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
+			var sDistributor = oLocalModel.getProperty("/PlayTable/Distributor");
 
 			var updates = {};
 			if (sChoice === "decline") {
@@ -187,6 +200,16 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					}
 				}
 			} else {
+				var iCurrentPlayerIndex;
+				
+				for(var i = 0; i < aPlayers.length; i++) {
+					if(aPlayers[i].Name === sDistributor) {
+						iCurrentPlayerIndex = (aPlayers[i].ID + 1) % 4;
+						break;
+					}
+				}
+			
+				updates["/CurrentPlayer"] = aPlayers[iCurrentPlayerIndex].Name;
 				updates["/SuggestedCard"] = "";
 				updates["/Atout"] = sChoice.toLowerCase();
 				updates["/Preneur"] = firebase.auth().currentUser.displayName;

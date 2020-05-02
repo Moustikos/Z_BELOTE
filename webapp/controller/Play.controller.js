@@ -424,6 +424,15 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					Score: iTeam2NewScore,
 					TempScore: 0
 				});
+				//Check score limit
+				var iScoreLimit = oModel.getProperty("/PlayTable/ScoreLimit")
+				var bGameOver = (iTeam1NewScore >= iScoreLimit || iTeam2NewScore >= iScoreLimit) && iTeam1NewScore !== iTeam2NewScore ? true : false;
+				if (bGameOver) {
+				var iWinnerTeam = iTeam1NewScore > iTeam2NewScore ? 0 : 1;
+				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1);
+				this.util._sendMessageToPlayers(sMessage, this._tablePath) {
+				}
+				
 
 				// Define next distributor
 				var sDistributor = oModel.getProperty("/PlayTable/Distributor");

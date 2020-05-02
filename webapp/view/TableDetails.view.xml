@@ -1,7 +1,0 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.belote.controller.TableDetails">
-	<!--<Page title="Title">-->
-	<!--	<content>-->
-	<!--		<Text text="test"></Text>-->
-	<!--	</content>-->
-	<!--</Page>-->
-</mvc:View>

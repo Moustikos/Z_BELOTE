@@ -33,12 +33,13 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		_onMessageEntityReceived: function (snapshot) {
 			var oMessage = snapshot.val();
-			var sSender = oMessage.sender;
-			var sText = oMessage.text;
-			var bDisplayIt = oMessage.displayIt;
-
-			if (bDisplayIt) {
-				sap.m.MessageToast.show(sSender + " say : " + sText);
+			if (oMessage) {
+				var sSender = oMessage.sender;
+				var sText = oMessage.text;
+				var bDisplayIt = oMessage.displayIt;
+				if (bDisplayIt) {
+					sap.m.MessageToast.show(sSender + " say : " + sText);
+				}
 			}
 		},
 
@@ -436,14 +437,12 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var bGameOver = (iTeam1NewScore >= iScoreLimit || iTeam2NewScore >= iScoreLimit) && iTeam1NewScore !== iTeam2NewScore ? true :
 				false;
 
-		
 			if (bGameOver) {
 				// handle end of game
 				var iWinnerTeam = iTeam1NewScore > iTeam2NewScore ? 0 : 1;
 				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1));
 				this.util._sendMessageToPlayers(sMessage, this._tablePath);
-				
-				
+
 			} else {
 				// Define next distributor
 				var sDistributor = oModel.getProperty("/PlayTable/Distributor");

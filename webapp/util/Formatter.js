@@ -32,7 +32,7 @@ sap.ui.define([], function () {
 		},
 
 		getCustomColorTakeVisible: function (iTour, bDoneFinished) {
-			return (iTour === 2 && bDoneFinished === true) ;
+			return (iTour === 2 && bDoneFinished === false) ;
 		},
 
 		getPlayerVisible: function (Player) {

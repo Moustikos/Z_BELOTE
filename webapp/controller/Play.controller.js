@@ -326,18 +326,21 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			//Save fold
 			var NFoldsWinningTeam = [];
 			var aPreviousFolds = oModel.getProperty("/PlayTable/NTeams/" + iWinningTeam + "/NFolds");
-			if (aPreviousFolds !== undefined) {
-				for (var i = 0; i < aPreviousFolds.length; i++) {
-					NFoldsWinningTeam.push(aPreviousFolds[i]);
-				}
-			}
+			
 			for (var j = 0; j < aCardsPlayed.length; j++) {
 				NFoldsWinningTeam.push(aCardsPlayed[j]);
 			}
+			// add previous folds
+			if (aPreviousFolds !== undefined) {
+				for (var key in aPreviousFolds) {
+					NFoldsWinningTeam.push(aPreviousFolds[key]);
+				}
+			}
+
 			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
 				NFolds: NFoldsWinningTeam
 			});
-			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/Folds", NFoldsWinningTeam);
+			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/NFolds/", NFoldsWinningTeam);
 
 			//update temporary score
 			var iScore = 0;

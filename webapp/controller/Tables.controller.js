@@ -27,7 +27,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var iCounter;
 			var bCurrentPlayerisInTable = false;
 			var sPlayerName = firebase.auth().currentUser.displayName;
-			for (var i = 0; i < aTables.length; i++) {
+			for (var i in aTables) {
 				if (aTables[i]) {
 					if (aTables[i].NPlayers) {
 						iCounter = 0;

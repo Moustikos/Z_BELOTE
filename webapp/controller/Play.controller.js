@@ -308,9 +308,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		handleEndOfFold: function (oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn) {
 			// update current player
-			var NPlayers = oModel.getProperty("/PlayTable/NPlayers");
-			var sPreneur = oModel.getProperty("/PlayTable/Preneur");
-			var iPreneurTeamID = this.util._getTeamIdByPlayerId(this.util._getPlayerIdByName(sPreneur, NPlayers));
 			var sCurrentPlayer = oMasterPlayer.Name;
 			var iWinningTeam = oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 0 : 1;
 			firebase.database().ref(this._tablePath).update({
@@ -348,91 +345,100 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			for (var i = 0; i < aCardsPlayed.length; i++) {
 				iScore += aCardsPlayed[i].points;
 			}
-
 			var iNewScore = iWinningTeam === 0 ? iTeam1TempScore + iScore : iTeam2TempScore + iScore;
 			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
 				TempScore: iNewScore
 			});
 			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/TempScore", iNewScore);
-			//refresh tempScore
-			iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
-			iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
-
-			//update global scrore in case of final fold
+			
+			//Check if the card selected is the last one
 			if (iRemaningCardsBeforeThisTurn === 1) {
-				var iTeam1AdditionalPoints = 0;
-				var iTeam2AdditionalPoints = 0;
-				// dix de dèr
-				iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0;
-				iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0;
+				this.handleEndOfDone(oModel, oMasterPlayer);
+			}
+		},
+		
+		// Triggered when the last card is selected
+		handleEndOfDone: function (oModel, oMasterPlayer) {
+			var NPlayers = oModel.getProperty("/PlayTable/NPlayers");
+			var sPreneur = oModel.getProperty("/PlayTable/Preneur");
+			var	iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
+			var iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
+			var iPreneurTeamID = this.util._getTeamIdByPlayerId(this.util._getPlayerIdByName(sPreneur, NPlayers));
+			var iTeam1AdditionalPoints = 0;
+			var iTeam2AdditionalPoints = 0;
+			
+			// dix de dèr
+			iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0;
+			iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0;
 
-				//belote et rebelotes 
-				var isBeloteAnnoucedByTeam1 = oModel.getProperty("/PlayTable/NPlayers/0/BeloteAnnouced") || oModel.getProperty(
-					"/PlayTable/NPlayers/2/BeloteAnnouced") ? true : false;
-				var isBeloteAnnoucedByTeam2 = oModel.getProperty("/PlayTable/NPlayers/1/BeloteAnnouced") || oModel.getProperty(
-					"/PlayTable/NPlayers/3/BeloteAnnouced") ? true : false;
+			//belote et rebelotes 
+			var isBeloteAnnoucedByTeam1 = oModel.getProperty("/PlayTable/NPlayers/0/BeloteAnnouced") || oModel.getProperty(
+				"/PlayTable/NPlayers/2/BeloteAnnouced") ? true : false;
+			var isBeloteAnnoucedByTeam2 = oModel.getProperty("/PlayTable/NPlayers/1/BeloteAnnouced") || oModel.getProperty(
+				"/PlayTable/NPlayers/3/BeloteAnnouced") ? true : false;
 
-				// Contrat 
-				var iContrat = isBeloteAnnoucedByTeam1 || isBeloteAnnoucedByTeam2 ? 91 : 81;
-				//TempScore
-				iTeam1TempScore += iTeam1AdditionalPoints;
-				iTeam2TempScore += iTeam2AdditionalPoints;
+			// Contrat 
+			var iContrat = isBeloteAnnoucedByTeam1 || isBeloteAnnoucedByTeam2 ? 91 : 81;
+		
+			//TempScore
+			iTeam1TempScore += iTeam1AdditionalPoints;
+			iTeam2TempScore += iTeam2AdditionalPoints;
 
-				// Dedans
-				var bTeam1Dedans = false;
-				var bTeam2Dedans = false;
-				if (iPreneurTeamID === 0) {
-					bTeam1Dedans = iTeam1TempScore < iContrat ? true : false;
-				} else {
-					bTeam2Dedans = iTeam2TempScore < iContrat ? true : false;
-				}
-				if (bTeam1Dedans) {
-					iTeam1TempScore = 0;
-					iTeam2TempScore = 162;
-				} else if (bTeam2Dedans) {
-					iTeam1TempScore = 162;
-					iTeam2TempScore = 0;
-				}
+			// Dedans
+			var bTeam1Dedans = false;
+			var bTeam2Dedans = false;
+			if (iPreneurTeamID === 0) {
+				bTeam1Dedans = iTeam1TempScore < iContrat ? true : false;
+			} else {
+				bTeam2Dedans = iTeam2TempScore < iContrat ? true : false;
+			}
+			if (bTeam1Dedans) {
+				iTeam1TempScore = 0;
+				iTeam2TempScore = 162;
+			} else if (bTeam2Dedans) {
+				iTeam1TempScore = 162;
+				iTeam2TempScore = 0;
+			}
 
-				//Capot
-				var NFoldsTeam1 = oModel.getProperty("/PlayTable/NTeams/0/NFolds");
-				var NFoldsTeam2 = oModel.getProperty("/PlayTable/NTeams/1/NFolds");
-				var bIsTeam1Capot = NFoldsTeam1 === undefined ? true : false;
-				var bIsTeam2Capot = NFoldsTeam2 === undefined ? true : false;
+			//Capot
+			var NFoldsTeam1 = oModel.getProperty("/PlayTable/NTeams/0/NFolds");
+			var NFoldsTeam2 = oModel.getProperty("/PlayTable/NTeams/1/NFolds");
+			var bIsTeam1Capot = NFoldsTeam1 === undefined ? true : false;
+			var bIsTeam2Capot = NFoldsTeam2 === undefined ? true : false;
 
-				if (bIsTeam1Capot) {
-					iTeam1TempScore = 0;
-					iTeam2TempScore = 250;
-				} else if (bIsTeam2Capot) {
-					iTeam1TempScore = 250;
-					iTeam2TempScore = 0;
-				}
+			if (bIsTeam1Capot) {
+				iTeam1TempScore = 0;
+				iTeam2TempScore = 250;
+			} else if (bIsTeam2Capot) {
+				iTeam1TempScore = 250;
+				iTeam2TempScore = 0;
+			}
 
-				//add belote points
-				iTeam1TempScore += isBeloteAnnoucedByTeam1 ? 20 : 0;
-				iTeam2TempScore += isBeloteAnnoucedByTeam2 ? 20 : 0;
-				var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
-				var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
-				var iTeam1NewScore = iTeam1Score + iTeam1TempScore;
-				var iTeam2NewScore = iTeam2Score + iTeam2TempScore;
+			//add belote points
+			iTeam1TempScore += isBeloteAnnoucedByTeam1 ? 20 : 0;
+			iTeam2TempScore += isBeloteAnnoucedByTeam2 ? 20 : 0;
+			var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
+			var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
+			var iTeam1NewScore = iTeam1Score + iTeam1TempScore;
+			var iTeam2NewScore = iTeam2Score + iTeam2TempScore;
 
-				firebase.database().ref(this._tablePath + "/NTeams/0").update({
-					Score: iTeam1NewScore,
-					TempScore: 0
-				});
-				firebase.database().ref(this._tablePath + "/NTeams/1").update({
-					Score: iTeam2NewScore,
-					TempScore: 0
-				});
-				//Check score limit
-				var iScoreLimit = oModel.getProperty("/PlayTable/ScoreLimit")
-				var bGameOver = (iTeam1NewScore >= iScoreLimit || iTeam2NewScore >= iScoreLimit) && iTeam1NewScore !== iTeam2NewScore ? true : false;
-				if (bGameOver) {
+			firebase.database().ref(this._tablePath + "/NTeams/0").update({
+				Score: iTeam1NewScore,
+				TempScore: 0
+			});
+			firebase.database().ref(this._tablePath + "/NTeams/1").update({
+				Score: iTeam2NewScore,
+				TempScore: 0
+			});
+		
+			//Check score limit
+			var iScoreLimit = oModel.getProperty("/PlayTable/ScoreLimit")
+			var bGameOver = (iTeam1NewScore >= iScoreLimit || iTeam2NewScore >= iScoreLimit) && iTeam1NewScore !== iTeam2NewScore ? true :
+				false;
+			if (bGameOver) {
 				var iWinnerTeam = iTeam1NewScore > iTeam2NewScore ? 0 : 1;
-				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1);
-				this.util._sendMessageToPlayers(sMessage, this._tablePath) {
-				}
-				
+				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1));
+				this.util._sendMessageToPlayers(sMessage, this._tablePath);
 
 				// Define next distributor
 				var sDistributor = oModel.getProperty("/PlayTable/Distributor");

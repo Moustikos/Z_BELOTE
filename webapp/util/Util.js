@@ -100,11 +100,11 @@ sap.ui.define([], function () {
 				}
 			}
 
-			if (oEntry.NTeams[1].NFolds) {
+			if (oEntry.NTeams[1].NFolds) { 
 				var aKeysNFolds2 = Object.keys(oEntry.NTeams[1].NFolds);
 				for (var f2 = 0; f2 < aKeysNFolds2.length; f2++) {
 					aFoldTeam2.push({
-						"Name": oEntry.NTeams[0].NFolds[aKeysNFolds2[f2]].cardName
+						"Name": oEntry.NTeams[1].NFolds[aKeysNFolds2[f2]].cardName
 					});
 				}
 			}

@@ -209,9 +209,9 @@ sap.ui.define([], function () {
 				} else {
 
 					// Handle deck join
-					var aFoldTeam1DB = oLocalModel.getProperty("/PlayingCards/NTeams/0/NFolds");
+					var aFoldTeam1DB = oLocalModel.getProperty("/PlayTable/NTeams/0/NFolds");
 					var aFoldTeam1 = [];
-					var aFoldTeam2DB = oLocalModel.getProperty("/PlayingCards/NTeams/1/NFolds");
+					var aFoldTeam2DB = oLocalModel.getProperty("/PlayTable/NTeams/1/NFolds");
 					var aFoldTeam2 = [];
 
 					if (aFoldTeam1DB) {

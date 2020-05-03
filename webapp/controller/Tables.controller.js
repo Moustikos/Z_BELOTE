@@ -102,6 +102,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				DistributionTour: 1,
 				Distributor: "",
 				IsShuffleNeeded: true,
+				IsFirstDone: true,
 				Preneur: "",
 				SuggestedCard: "",
 				NTeams : aNTeams

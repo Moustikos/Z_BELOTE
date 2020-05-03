@@ -67,7 +67,24 @@ sap.ui.define([], function () {
 						oEntry["NOrdererPlayers"] = aNOrderedPlayers;
 						oEntry["OrderedPlayerIndex"] = p;
 					} else if (oProperty.key === "NTeams") {
+						var aFoldTeam1 = [];
+						var aFoldTeam2 = [];
+
 						oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1]];
+
+						if (oEntry[oProperty.key][0].NFolds) {
+							for (var ft1 = 0; ft1 < Object.keys(oEntry[oProperty.key][0].NFolds).length; ft1++) {
+								aFoldTeam1.push(oEntry[oProperty.key][0].NFolds[Object.keys(oEntry[oProperty.key][0].NFolds)[ft1]]);
+							}
+							oEntry[oProperty.key][0].NFolds = aFoldTeam1;
+						}
+
+						if (oEntry[oProperty.key][1].NFolds) {
+							for (var ft2 = 0; ft2 < Object.keys(oEntry[oProperty.key][1].NFolds).length; ft2++) {
+								aFoldTeam2.push(oEntry[oProperty.key][1].NFolds[Object.keys(oEntry[oProperty.key][1].NFolds)[ft2]]);
+							}
+							oEntry[oProperty.key][1].NFolds = aFoldTeam2;
+						}
 					} else if (oProperty.key === "NRemainingCards") {
 						oEntry[oProperty.key] = [oProperty.toJSON()[0], oProperty.toJSON()[1], oProperty.toJSON()[2], oProperty.toJSON()[3], oProperty.toJSON()[
 								4], oProperty.toJSON()[5], oProperty.toJSON()[6], oProperty.toJSON()[7], oProperty.toJSON()[8], oProperty.toJSON()[9],
@@ -92,65 +109,10 @@ sap.ui.define([], function () {
 		_shuffleCards: function (that) {
 			// Get local model
 			var oLocalModel = that.getView().getModel("localModel");
-			// return;
+			var updates = {};
 
-
-
-
-
-
-			// // Handle deck join
-			// var aFoldTeam1 = [];
-			// var aFoldTeam2 = [];
-			// var aFullDeck = [];
-
-			// if (oEntry.NTeams[0].NFolds) {
-			// 	var aKeysNFolds1 = Object.keys(oEntry.NTeams[0].NFolds);
-			// 	for (var f1 = 0; f1 < aKeysNFolds1.length; f1++) {
-			// 		aFoldTeam1.push({
-			// 			"Name": oEntry.NTeams[0].NFolds[aKeysNFolds1[f1]].cardName
-			// 		});
-			// 	}
-			// }
-
-			// if (oEntry.NTeams[1].NFolds) { 
-			// 	var aKeysNFolds2 = Object.keys(oEntry.NTeams[1].NFolds);
-			// 	for (var f2 = 0; f2 < aKeysNFolds2.length; f2++) {
-			// 		aFoldTeam2.push({
-			// 			"Name": oEntry.NTeams[1].NFolds[aKeysNFolds2[f2]].cardName
-			// 		});
-			// 	}
-			// }
-
-			// aFullDeck = aFoldTeam1.concat(aFoldTeam2);
-
-			// // Handle coupe
-			// if (oEntry.IndexCoupe) {
-			// 	aFullDeck = aFullDeck.slice(IndexCoupe).concat(aFullDeck.slice(0, IndexCoupe));
-			// }
-
-			// oEntry["NPlayingCards"] = aFullDeck;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			// Get playing cards or initiale the deck
-			if (oLocalModel.getProperty("/NPlayingCards") && oLocalModel.getProperty("/NPlayingCards") !== []) {
-				aCard = oLocalModel.getProperty("/NPlayingCards");
-			} else {
+			// Handle case of first done
+			if (oLocalModel.getProperty("/PlayTable/IsFirstDone")) {
 				// Create card array
 				var aCard = [{
 					"Name": "Coeur-7"
@@ -234,10 +196,54 @@ sap.ui.define([], function () {
 				}
 
 				oLocalModel.setProperty("/PlayingCards", aCard);
+				updates["IsFirstDone"] = false;
 			}
 
-			// Start firebase updates
-			var updates = {};
+			// If cards have already been distributed once
+			else {
+				var aFullDeck = [];
+				
+				// If everybody said "2" during previous round
+				if (oLocalModel.getProperty("/PlayingCards/DoneFailed")) {
+					oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(oLocalModel.getProperty("/PlayTable/NRemainingCards"))
+				} else {
+
+					// Handle deck join
+					var aFoldTeam1DB = oLocalModel.getProperty("/PlayingCards/NTeams/0/NFolds");
+					var aFoldTeam1 = [];
+					var aFoldTeam2DB = oLocalModel.getProperty("/PlayingCards/NTeams/1/NFolds");
+					var aFoldTeam2 = [];
+
+					if (aFoldTeam1DB) {
+						for (var ft1 = 0; ft1 < aFoldTeam1DB.length; ft1++) {
+							aFoldTeam1.push({
+								"Name": aFoldTeam1DB[ft1].cardName
+							});
+						}
+					}
+
+					if (aFoldTeam2DB) {
+						for (var ft2 = 0; ft2 < aFoldTeam2DB.length; ft2++) {
+							aFoldTeam2.push({
+								"Name": aFoldTeam2DB[ft2].cardName
+							});
+						}
+					}
+
+					aFullDeck = aFoldTeam1.concat(aFoldTeam2);
+				}
+				
+				var iRandomCoupe = Math.floor(Math.random() * (28 - 4 + 1)) + 4;
+
+				// Handle coupe
+				aFullDeck = aFullDeck.slice(iRandomCoupe).concat(aFullDeck.slice(0, iRandomCoupe));
+				oLocalModel.setProperty("/PlayingCards", aFullDeck);
+			}
+
+			// Get playing cards or initiale the deck
+			if (oLocalModel.getProperty("/NPlayingCards") && oLocalModel.getProperty("/NPlayingCards") !== []) {
+				aCard = oLocalModel.getProperty("/NPlayingCards");
+			}
 
 			// Three first cards
 			for (var i = 0; i < 3; i++) {

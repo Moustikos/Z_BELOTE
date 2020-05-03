@@ -107,7 +107,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				SuggestedCard: "",
 				NTeams: aNTeams
 			});
-			var updates = [];
+			var updates = {};
 			updates['/NTeams/0/ID'] = 0;
 			updates['/NTeams/1/ID'] = 1;
 			updates['/NTeams/0/Score'] = 0;

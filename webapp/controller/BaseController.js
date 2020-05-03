@@ -24,11 +24,15 @@ function (Controller, UIComponent, BindFirebase, Formatter, Util) {
 		
 		// Triggered when the user updates his/her displayed name
 		onUpdateUserName: function () {
+			if (this.byId("idUpdateUsername").getValue() !== "" && this.byId("idUpdateUsername").getValue() !== undefined) {
 			firebase.auth().currentUser.updateProfile({
 				displayName: this.byId("idUpdateUsername").getValue()
 			});
-
 			this._oUserPopup.close();
+			this._getRouter().navTo("Tables");
+			} else {
+				sap.m.MessageToast.show("Please enter a user name");
+			}
 		}
 	});
 });

@@ -421,7 +421,7 @@ sap.ui.define([], function () {
 			}
 
 			// check if first card of fold -> all cards allowed
-			if (sRequestedColor === "") {
+			if (sRequestedColor === "" || sRequestedColor === undefined ) {
 				return true;
 			}
 

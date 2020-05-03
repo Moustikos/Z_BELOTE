@@ -323,6 +323,9 @@ sap.ui.define([], function () {
 			updates["/IndexCoupe"] = "";
 			updates["/IsShuffleNeeded"] = false;
 			updates["/DoneFailed"] = false;
+			updates["/DoneFailed"] = false;
+			updates["/NTeams/0/NFolds"] = 0;
+			updates["/NTeams/1/NFolds"] = 0;
 
 			firebase.database().ref(that._tablePath).update(updates);
 		},

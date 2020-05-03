@@ -208,6 +208,9 @@ sap.ui.define([], function () {
 					aFullDeck = oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards"))
 						.concat(oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(
 							oLocalModel.getProperty("/PlayTable/NRemainingCards"));
+					aFullDeck.push({
+						Name : oLocalModel.getProperty("/PlayTable/SuggestedCard")
+					});
 				} else {
 
 					// Handle deck join

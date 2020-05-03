@@ -270,6 +270,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex + "/NCards/" +
 						oModel.getProperty(oEvent.getSource().getBindingContext(
 							"localModel").getPath()).ID).remove();
+							
 					firebase.database().ref(this._tablePath).update(updates);
 
 					//define the master
@@ -347,25 +348,11 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			// update current player
 			var sCurrentPlayer = oMasterPlayer.Name;
 			var iWinningTeam = oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 0 : 1;
-
-			// firebase.database().ref(this._tablePath).update({
-			// 	CurrentPlayer: sCurrentPlayer,
-			// 	Requestor: sCurrentPlayer,
-			// 	NLastFold: aCardsPlayed
-			// });
-
+			
 			updates['/CurrentPlayer'] = sCurrentPlayer;
 			updates['/Requestor'] = sCurrentPlayer;
 			updates['/NLastFold'] = aCardsPlayed;
 			updates['/RequestedColor'] = "";
-
-			// firebase.database().ref(this._tablePath).update({
-			// 	Requestor: sCurrentPlayer
-			// });
-			// //save Last fold
-			// firebase.database().ref(this._tablePath).update({
-			// 	NLastFold: aCardsPlayed
-			// });
 
 			//Save fold
 			var NFoldsWinningTeam = [];
@@ -380,6 +367,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					NFoldsWinningTeam.push(aPreviousFolds[key]);
 				}
 			}
+			updates['/NTeams/' + iWinningTeam + '/NFolds'] = NFoldsWinningTeam;
 			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/NFolds", NFoldsWinningTeam);
 
 			//update temporary score
@@ -391,14 +379,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			}
 			var iNewScore = iWinningTeam === 0 ? iTeam1TempScore + iScore : iTeam2TempScore + iScore;
 			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/TempScore", iNewScore);
-
 			updates['/NTeams/' + iWinningTeam + '/TempScore'] = iNewScore;
-			updates['/NTeams/' + iWinningTeam + '/NFolds'] = NFoldsWinningTeam;
-
-			// firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
-			// 	TempScore: iNewScore,
-			// 	NFolds: NFoldsWinningTeam
-			// });
 
 			//Check if the card selected is the last one
 			if (iRemaningCardsBeforeThisTurn === 1) {
@@ -475,17 +456,8 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 			updates['/NTeams/0/Score'] = iTeam1NewScore;
 			updates['/NTeams/0/TempScore'] = 0;
-			// firebase.database().ref(this._tablePath + "/NTeams/0").update({
-			// 	Score: iTeam1NewScore,
-			// 	TempScore: 0
-			// });
 			updates['/NTeams/1/Score'] = iTeam2NewScore;
 			updates['/NTeams/1/TempScore'] = 0;
-
-			// firebase.database().ref(this._tablePath + "/NTeams/1").update({
-			// 	Score: iTeam2NewScore,
-			// 	TempScore: 0
-			// });
 
 			//Check score limit
 			var iScoreLimit = oModel.getProperty("/PlayTable/ScoreLimit")
@@ -511,8 +483,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 				updates['/Distributor'] = sNewDistributorName;
 				updates['/CurrentPlayer'] = sNewCurrentPlayerName;
-				// updates['/MasterPlayer/Name'] = sNewCurrentPlayerName;
-				// updates['/MasterPlayer/ID'] = iNewCurrentPlayerID;
 				updates['/IsShuffleNeeded'] = true;
 				updates['/DoneFinished'] = false;
 				updates['/DistributionTour'] = 1;
@@ -572,9 +542,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 						}
 					}, this);
 				bIsBelotePossible = bIsKing && bIsQueen ? true : false;
-				// firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex).update({
-				// 	BelotePossible: bIsBelotePossible
-				// });
 				updates['/NPlayers/' + iPlayerIndex + '/BelotePossible'] = bIsBelotePossible;
 				oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BelotePossible", bIsBelotePossible);
 			}
@@ -610,7 +577,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var oLocalModel = this.getView().getModel("localModel");
 			var oButton = oEvent.getSource();
 			// create popover
-			if (!this._oPopover) {
+			if (!this._oPopover) { 
 				Fragment.load({
 					name: "com.belote.fragment.scorePopOver",
 					controller: this

@@ -234,8 +234,9 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				var sCardName = oModel.getProperty(oEvent.getSource().getBindingContext("localModel").getPath()).Name;
 				var sAtout = oModel.getProperty("/PlayTable/Atout");
 				var sRequestedColor = oModel.getProperty("/PlayTable/RequestedColor");
-				var bCardAllowed = this.util._isCardAllowed(oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor, oMasterPlayer, aPlayerHand)
-			
+				var bCardAllowed = this.util._isCardAllowed(oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor,
+					oMasterPlayer, aPlayerHand)
+
 				if (bCardAllowed !== false) {
 					var updates = {};
 					//clear table in case of new turn
@@ -269,9 +270,10 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex + "/NCards/" +
 						oModel.getProperty(oEvent.getSource().getBindingContext(
 							"localModel").getPath()).ID).remove();
-					//	firebase.database().ref(this._tablePath).update(updates);
+					firebase.database().ref(this._tablePath).update(updates);
 
 					//define the master
+					updates = {};
 					var sRequestor = oModel.getProperty("/PlayTable/Requestor");
 					if (sPlayerName === sRequestor) {
 						sRequestedColor = this.util._getCardSymbol(sCardName);
@@ -285,7 +287,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					}
 					oModel.setProperty("/PlayTable/Player" + iPlayerIndex + "Card", sCardName);
 					this.setMasterPlayer(iRemaningCardsBeforeThisTurn, updates);
-				} 
+				}
 			} else {
 				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NotYourTurn"));
 			}
@@ -452,8 +454,8 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			//Capot
 			var NFoldsTeam1 = oModel.getProperty("/PlayTable/NTeams/0/NFolds");
 			var NFoldsTeam2 = oModel.getProperty("/PlayTable/NTeams/1/NFolds");
-			var bIsTeam1Capot = NFoldsTeam1 === undefined ? true : false;
-			var bIsTeam2Capot = NFoldsTeam2 === undefined ? true : false;
+			var bIsTeam1Capot = NFoldsTeam1 === 0 ? true : false;
+			var bIsTeam2Capot = NFoldsTeam2 === 0 ? true : false;
 
 			if (bIsTeam1Capot) {
 				iTeam1TempScore = 0;
@@ -541,7 +543,12 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				firebase.database().ref(this._tablePath + "/NPlayers/" + i + "/BeloteAnnounced").remove();
 			}
 			firebase.database().ref(this._tablePath + "/NLastFold").remove();
-
+			firebase.database().ref(this._tablePath + "/NTeams/0").update({
+				NFolds: 0
+			});
+			firebase.database().ref(this._tablePath + "/NTeams/1").update({
+				NFolds: 0
+			});
 		},
 
 		isBelotePossible: function (iPlayerIndex, updates) {

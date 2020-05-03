@@ -202,10 +202,12 @@ sap.ui.define([], function () {
 			// If cards have already been distributed once
 			else {
 				var aFullDeck = [];
-				
+
 				// If everybody said "2" during previous round
 				if (oLocalModel.getProperty("/PlayTable/DoneFailed")) {
-					oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(oLocalModel.getProperty("/PlayTable/NRemainingCards"))
+					oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards")).concat(
+						oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(
+						oLocalModel.getProperty("/PlayTable/NRemainingCards"))
 				} else {
 
 					// Handle deck join
@@ -232,7 +234,7 @@ sap.ui.define([], function () {
 
 					aFullDeck = aFoldTeam1.concat(aFoldTeam2);
 				}
-				
+
 				var iRandomCoupe = Math.floor(Math.random() * (28 - 4 + 1)) + 4;
 
 				// Handle coupe
@@ -398,5 +400,153 @@ sap.ui.define([], function () {
 				displayIt: false
 			});
 		},
+
+		_isCardAllowed: function (oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor, oMasterPlayer, aPlayerHand) {
+			var sCardColor = this._getCardSymbol(sCardName);
+			var sCardValue = this._getCardValue(sCardName);
+			var bPlayerTeamIsMaster = iPlayerIndex === (oMasterPlayer.ID + 2) % 4 ? true : false;
+			var aPlayedCards = [];
+			//declaration of variables
+			var bCanAscend;
+			var iBestAtoutRanking;
+			var iBestAtoutInHand;
+			var iRanking;
+			var sPlayedCardValue; 
+			
+			//get cards already played
+			for (var i = 0; i < 4; i++) {
+				var sCardPlayed = oModel.getProperty("/PlayTable/Player" + i + "Card");
+				if (sCardPlayed !== undefined)
+					aPlayedCards.push(sCardPlayed);
+			}
+
+			// check if first card of fold -> all cards allowed
+			if (sRequestedColor === "") {
+				return true;
+			}
+
+			//check if current player has one of requested color card
+			var bPlayerHasRequestedColor = false;
+			for (var iCardIndex in aPlayerHand) {
+				if (this._getCardSymbol(aPlayerHand[iCardIndex].Name) === sRequestedColor)
+					bPlayerHasRequestedColor = true;
+			}
+			if (bPlayerHasRequestedColor && (sCardColor !== sRequestedColor)) {
+				sap.m.MessageToast.show(oI18nModel.getProperty("CanPlayRequestedColor"));
+				return false;
+			}
+
+			// in case of atout requested, check if player can ascend to it
+			if (bPlayerHasRequestedColor && sRequestedColor.toUpperCase() === sAtout.toUpperCase() && sCardColor.toUpperCase() === sAtout.toUpperCase()) {
+				bCanAscend = false;
+				// get the best atout ranking already played
+				iBestAtoutRanking = 0;
+				iRanking = 0;
+				sPlayedCardValue ="";
+				for (iCardIndex in aPlayedCards) {
+					if (this._getCardSymbol(aPlayedCards[iCardIndex]).toUpperCase() === sAtout.toUpperCase()) {
+						sPlayedCardValue = this._getCardValue(aPlayedCards[iCardIndex]);
+						iRanking = oScoreModel.getProperty("/Atout/" + sPlayedCardValue + "/Ranking");
+						if (iRanking > iBestAtoutRanking) {
+							iBestAtoutRanking = iRanking;
+						}
+					}
+				}
+
+				// get the best atout ranking of atout in player hand
+				iBestAtoutInHand = 0;
+				iRanking = 0;
+				for (iCardIndex in aPlayerHand) {
+					if (this._getCardSymbol(aPlayerHand[iCardIndex].Name).toUpperCase() === sAtout.toUpperCase()) {
+						var sHandCardValue = this._getCardValue(aPlayerHand[iCardIndex].Name);
+						iRanking = oScoreModel.getProperty("/Atout/" + sHandCardValue + "/Ranking");
+						if (iRanking > iBestAtoutInHand) {
+							iBestAtoutInHand = iRanking;
+						}
+					}
+				}
+
+				if (iBestAtoutInHand > iBestAtoutRanking) {
+					bCanAscend = true;
+				}
+
+				if (bCanAscend && oScoreModel.getProperty("/Atout/" + sCardValue + "/Ranking") < iBestAtoutRanking) {
+					sap.m.MessageToast.show(oI18nModel.getProperty("CanAscend"));				
+					return false;
+				}
+			}
+
+			//in case of player has not requested color, check if atout has to be played
+			if (!bPlayerHasRequestedColor) {
+				// case team is master, no need to play atout
+				if (bPlayerTeamIsMaster) {
+					// every cards are allowed
+					return true;
+				} else {
+					// if player has atout, he has to play atout
+					var bPlayerHasAtout = false;
+					for (iCardIndex in aPlayerHand) {
+						var sHandCardColor = this._getCardSymbol(aPlayerHand[iCardIndex].Name);
+						if (sHandCardColor.toUpperCase() === sAtout.toUpperCase()) {
+							bPlayerHasAtout = true;
+						}
+					}
+
+					if (bPlayerHasAtout && sCardColor.toUpperCase() !== sAtout.toUpperCase()) {
+						sap.m.MessageToast.show(oI18nModel.getProperty("HaveToPlayAtout"));	
+						return false;
+					}
+
+					// in case player has to play atout, check if player should ascend
+					// check if atout has been played
+
+					bCanAscend = false;
+					var bIsAnAtoutPlayed = false;
+					for (iCardIndex in aPlayedCards) {
+						var sPlayedCardColor = this._getCardSymbol(aPlayedCards[iCardIndex]);
+						if (sPlayedCardColor.toUpperCase() === sAtout.toUpperCase()) {
+							bIsAnAtoutPlayed = true;
+						}
+					}
+
+					if (bIsAnAtoutPlayed) {
+						// get the best atout ranking already played
+						iBestAtoutRanking = 0;
+						sPlayedCardValue = "";
+						iRanking = 0;
+						for (iCardIndex in aPlayedCards) {
+							if (this._getCardSymbol(aPlayedCards[iCardIndex]).toUpperCase() === sAtout.toUpperCase()) {
+								sPlayedCardValue = this._getCardValue(aPlayedCards[iCardIndex]);
+								iRanking = oScoreModel.getProperty("/Atout/" + sPlayedCardValue + "/Ranking");
+								if (iRanking > iBestAtoutRanking) {
+									iBestAtoutRanking = iRanking;
+								}
+							}
+						}
+						// get the best atout ranking in player hand
+						iBestAtoutInHand = 0;
+						sHandCardValue = "";
+						iRanking = 0;
+						for (iCardIndex in aPlayerHand) {
+							sHandCardValue = this._getCardValue(aPlayerHand[iCardIndex].Name);
+							iRanking = oScoreModel.getProperty("/Atout/" + sHandCardValue + "/Ranking");
+							if (iRanking > iBestAtoutInHand) {
+								iBestAtoutInHand = iRanking;
+							}
+						}
+
+						if (iBestAtoutInHand > iBestAtoutRanking) {
+							bCanAscend = true;
+						}
+
+						if (bCanAscend && oScoreModel.getProperty("/Atout/" + sCardValue + "/Ranking") < iBestAtoutRanking) {
+							sap.m.MessageToast.show(oI18nModel.getProperty("CanAscend"));	
+							return false;
+						}
+					}
+				}
+			}
+		}
+
 	};
 });

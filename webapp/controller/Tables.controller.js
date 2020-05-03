@@ -75,7 +75,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var sNewTableDesc = this.byId("idNewTableNameDesc").getValue();
 			var sScoreLimit = this.byId("idNewTableScoreLimit").getValue();
 			var iScoreLimit = sScoreLimit !== "" ? parseInt(sScoreLimit, 10) : 1000;
-			
+
 			if (!sNewTableName) {
 				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NoTableName"));
 				return;
@@ -105,10 +105,20 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 				IsFirstDone: true,
 				Preneur: "",
 				SuggestedCard: "",
-				NTeams : aNTeams
+				NTeams: aNTeams
 			});
-		},
+			var updates = [];
+			updates['/NTeams/0/ID'] = 0;
+			updates['/NTeams/1/ID'] = 1;
+			updates['/NTeams/0/Score'] = 0;
+			updates['/NTeams/0/TempScore'] = 0;
+			updates['/NTeams/1/TempScore'] = 0;
+			updates['/NTeams/1/Score'] = 0;
+			updates['/NTeams/1/NFolds'] = [];
+			updates['/NTeams/0/NFolds'] = [];
 
+			firebase.database().ref("ETTableSet/" + iNewTableKey).set(updates);
+		},
 		onPressTableListItem: function (oEvent) {
 			var oModel = this.getView().getModel("localModel");
 			var sBindingPath = oEvent.getSource().getBindingContextPath();

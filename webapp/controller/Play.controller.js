@@ -76,6 +76,9 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var aData = this.getView().getModel("localModel").getProperty("/PlayTable");
 			var sDistributor = aData.Distributor;
 			var iCurrentPlayerIndex;
+			var sUserName = firebase.auth().currentUser.displayName;
+			var sSuggestedAtout = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
+			
 
 			for (var i = 0; i < aData.NPlayers.length; i++) {
 				if (aData.NPlayers[i].Name === sDistributor) {
@@ -90,6 +93,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
 			updates["/Preneur"] = firebase.auth().currentUser.displayName;
 			updates["/DoneFinished"] = true;
+			this.util._sendMessageToPlayers(sUserName + " take card, atout is " + sSuggestedAtout, this._tablePath);
 			this._distributeRemainingCards(updates);
 			firebase.database().ref(this._tablePath).update(updates);
 		},
@@ -215,6 +219,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				updates["/Atout"] = sChoice.toLowerCase();
 				updates["/Preneur"] = firebase.auth().currentUser.displayName;
 				updates["/DoneFinished"] = true;
+				this.util._sendMessageToPlayers(sUserName + " choose atout " + sChoice.toLowerCase(), this._tablePath);
 				this._distributeRemainingCards(updates);
 				firebase.database().ref(this._tablePath).update(updates);
 			}

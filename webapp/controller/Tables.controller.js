@@ -114,8 +114,8 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			updates['/NTeams/0/TempScore'] = 0;
 			updates['/NTeams/1/TempScore'] = 0;
 			updates['/NTeams/1/Score'] = 0;
-			updates['/NTeams/1/NFolds'] = [];
-			updates['/NTeams/0/NFolds'] = [];
+			updates['/NTeams/1/NFolds'] = 0;
+			updates['/NTeams/0/NFolds'] = 0;
 
 			firebase.database().ref("ETTableSet/" + iNewTableKey).set(updates);
 		},

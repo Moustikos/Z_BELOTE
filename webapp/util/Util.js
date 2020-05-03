@@ -404,7 +404,7 @@ sap.ui.define([], function () {
 		_isCardAllowed: function (oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor, oMasterPlayer, aPlayerHand) {
 			var sCardColor = this._getCardSymbol(sCardName);
 			var sCardValue = this._getCardValue(sCardName);
-			var bPlayerTeamIsMaster = iPlayerIndex === (oMasterPlayer.ID + 2) % 4 ? true : false;
+			var bPlayerTeamIsMaster = iPlayerIndex === (oMasterPlayer.index + 2) % 4 ? true : false;
 			var aPlayedCards = [];
 			//declaration of variables
 			var bCanAscend;

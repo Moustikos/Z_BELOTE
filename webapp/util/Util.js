@@ -205,7 +205,9 @@ sap.ui.define([], function () {
 
 				// If everybody said "2" during previous round
 				if (oLocalModel.getProperty("/PlayTable/DoneFailed")) {
-					aFullDeck = oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(oLocalModel.getProperty("/PlayTable/NRemainingCards"));
+					aFullDeck = oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards"))
+						.concat(oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(
+							oLocalModel.getProperty("/PlayTable/NRemainingCards"));
 				} else {
 
 					// Handle deck join
@@ -409,8 +411,8 @@ sap.ui.define([], function () {
 			var iBestAtoutRanking;
 			var iBestAtoutInHand;
 			var iRanking;
-			var sPlayedCardValue; 
-			
+			var sPlayedCardValue;
+
 			//get cards already played
 			for (var i = 0; i < 4; i++) {
 				var sCardPlayed = oModel.getProperty("/PlayTable/Player" + i + "Card");
@@ -440,7 +442,7 @@ sap.ui.define([], function () {
 				// get the best atout ranking already played
 				iBestAtoutRanking = 0;
 				iRanking = 0;
-				sPlayedCardValue ="";
+				sPlayedCardValue = "";
 				for (iCardIndex in aPlayedCards) {
 					if (this._getCardSymbol(aPlayedCards[iCardIndex]).toUpperCase() === sAtout.toUpperCase()) {
 						sPlayedCardValue = this._getCardValue(aPlayedCards[iCardIndex]);
@@ -469,7 +471,7 @@ sap.ui.define([], function () {
 				}
 
 				if (bCanAscend && oScoreModel.getProperty("/Atout/" + sCardValue + "/Ranking") < iBestAtoutRanking) {
-					sap.m.MessageToast.show(oI18nModel.getProperty("CanAscend"));				
+					sap.m.MessageToast.show(oI18nModel.getProperty("CanAscend"));
 					return false;
 				}
 			}
@@ -491,7 +493,7 @@ sap.ui.define([], function () {
 					}
 
 					if (bPlayerHasAtout && sCardColor.toUpperCase() !== sAtout.toUpperCase()) {
-						sap.m.MessageToast.show(oI18nModel.getProperty("HaveToPlayAtout"));	
+						sap.m.MessageToast.show(oI18nModel.getProperty("HaveToPlayAtout"));
 						return false;
 					}
 
@@ -526,10 +528,12 @@ sap.ui.define([], function () {
 						sHandCardValue = "";
 						iRanking = 0;
 						for (iCardIndex in aPlayerHand) {
-							sHandCardValue = this._getCardValue(aPlayerHand[iCardIndex].Name);
-							iRanking = oScoreModel.getProperty("/Atout/" + sHandCardValue + "/Ranking");
-							if (iRanking > iBestAtoutInHand) {
-								iBestAtoutInHand = iRanking;
+							if (this._getCardSymbol(aPlayerHand[iCardIndex].Name).toUpperCase() === sAtout.toUpperCase()) {
+								sHandCardValue = this._getCardValue(aPlayerHand[iCardIndex].Name);
+								iRanking = oScoreModel.getProperty("/Atout/" + sHandCardValue + "/Ranking");
+								if (iRanking > iBestAtoutInHand) {
+									iBestAtoutInHand = iRanking;
+								}
 							}
 						}
 
@@ -538,7 +542,7 @@ sap.ui.define([], function () {
 						}
 
 						if (bCanAscend && oScoreModel.getProperty("/Atout/" + sCardValue + "/Ranking") < iBestAtoutRanking) {
-							sap.m.MessageToast.show(oI18nModel.getProperty("CanAscend"));	
+							sap.m.MessageToast.show(oI18nModel.getProperty("CanAscend"));
 							return false;
 						}
 					}

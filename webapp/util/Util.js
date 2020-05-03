@@ -241,8 +241,8 @@ sap.ui.define([], function () {
 			}
 
 			// Get playing cards or initiale the deck
-			if (oLocalModel.getProperty("/NPlayingCards") && oLocalModel.getProperty("/NPlayingCards") !== []) {
-				aCard = oLocalModel.getProperty("/NPlayingCards");
+			if (oLocalModel.getProperty("/PlayingCards") && oLocalModel.getProperty("/PlayingCards") !== []) {
+				aCard = oLocalModel.getProperty("/PlayingCards");
 			}
 
 			// Three first cards

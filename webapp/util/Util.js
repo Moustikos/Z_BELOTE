@@ -204,7 +204,7 @@ sap.ui.define([], function () {
 				var aFullDeck = [];
 				
 				// If everybody said "2" during previous round
-				if (oLocalModel.getProperty("/PlayingCards/DoneFailed")) {
+				if (oLocalModel.getProperty("/PlayTable/DoneFailed")) {
 					oLocalModel.getProperty("/PlayTable/NPlayers/0/NCards").concat(oLocalModel.getProperty("/PlayTable/NPlayers/1/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/2/NCards")).concat(oLocalModel.getProperty("/PlayTable/NPlayers/3/NCards")).concat(oLocalModel.getProperty("/PlayTable/NRemainingCards"))
 				} else {
 

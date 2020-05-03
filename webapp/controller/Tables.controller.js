@@ -90,24 +90,36 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 
 		addNewTable: function (sNewTableName, sNewTableDesc, iScoreLimit) {
 			var aTables = this.getView().getModel("localModel").getProperty("/ETTables");
-			var aNTeams = [0, 1];
+			// var aNTeams = [0, 1];
 			var iNewTableKey = aTables.indexOf(aTables[aTables.length - 1]) + 1;
-			firebase.database().ref("ETTableSet/" + iNewTableKey).set({
-				Name: sNewTableName,
-				ID: iNewTableKey,
-				ScoreLimit: iScoreLimit,
-				Description: sNewTableDesc,
-				Atout: "",
-				CurrentPlayer: "",
-				DistributionTour: 1,
-				Distributor: "",
-				IsShuffleNeeded: true,
-				IsFirstDone: true,
-				Preneur: "",
-				SuggestedCard: "",
-				NTeams: aNTeams
-			});
+			// firebase.database().ref("ETTableSet/" + iNewTableKey).set({
+			// 	Name: sNewTableName,
+			// 	ID: iNewTableKey,
+			// 	ScoreLimit: iScoreLimit,
+			// 	Description: sNewTableDesc,
+			// 	Atout: "",
+			// 	CurrentPlayer: "",
+			// 	DistributionTour: 1,
+			// 	Distributor: "",
+			// 	IsShuffleNeeded: true,
+			// 	IsFirstDone: true,
+			// 	Preneur: "",
+			// 	SuggestedCard: ""
+			// });
+			
 			var updates = {};
+			updates['/Name']  = sNewTableName;
+			updates['/ID']  = iNewTableKey;
+			updates['/ScoreLimit']  = iScoreLimit;
+			updates['/Description']  = sNewTableDesc;
+			updates['/Atout']  = "";
+			updates['/CurrentPlayer']  = "";
+			updates['/DistributionTour']  = 1;
+			updates['/Distributor']  = "";
+			updates['/IsShuffleNeeded']  = true;
+			updates['/IsFirstDone']  = true;
+			updates['/Preneur']  = "";
+			updates['/SuggestedCard']  = "";
 			updates['/NTeams/0/ID'] = 0;
 			updates['/NTeams/1/ID'] = 1;
 			updates['/NTeams/0/Score'] = 0;
@@ -115,9 +127,9 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			updates['/NTeams/1/TempScore'] = 0;
 			updates['/NTeams/1/Score'] = 0;
 			updates['/NTeams/1/NFolds'] = 0;
-			updates['/NTeams/0/NFolds'] = 0;
+			updates['/NTeams/0/NFolds'] = 0;		
 
-			firebase.database().ref("ETTableSet/" + iNewTableKey).set(updates);
+			firebase.database().ref("ETTableSet/" + iNewTableKey).update(updates);
 		},
 		onPressTableListItem: function (oEvent) {
 			var oModel = this.getView().getModel("localModel");

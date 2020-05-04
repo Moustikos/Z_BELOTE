@@ -78,7 +78,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var iCurrentPlayerIndex;
 			var sUserName = firebase.auth().currentUser.displayName;
 			var sSuggestedAtout = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
-			
 
 			for (var i = 0; i < aData.NPlayers.length; i++) {
 				if (aData.NPlayers[i].Name === sDistributor) {
@@ -241,6 +240,13 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				var sRequestedColor = oModel.getProperty("/PlayTable/RequestedColor");
 				var bCardAllowed = this.util._isCardAllowed(oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor,
 					oMasterPlayer, aPlayerHand)
+				var aPlayedCards = []
+
+				for (var i = 0; i < 4; i++) {
+					var sCardPlayed = oModel.getProperty("/PlayTable/Player" + i + "Card");
+					if (sCardPlayed !== undefined)
+						aPlayedCards.push(sCardPlayed);
+				}
 
 				if (bCardAllowed !== false) {
 					var updates = {};
@@ -276,8 +282,12 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 						oModel.getProperty(oEvent.getSource().getBindingContext(
 							"localModel").getPath()).ID).remove();
 							
-					firebase.database().ref(this._tablePath).update(updates);
+					if (aPlayedCards.length === 0) {
+						updates['/RequestedColor'] = this.uitl._getSymbol(sCardName);
+					}
 
+					firebase.database().ref(this._tablePath).update(updates);
+	
 					//define the master
 					updates = {};
 					var sRequestor = oModel.getProperty("/PlayTable/Requestor");
@@ -353,7 +363,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			// update current player
 			var sCurrentPlayer = oMasterPlayer.Name;
 			var iWinningTeam = oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 0 : 1;
-			
+
 			updates['/CurrentPlayer'] = sCurrentPlayer;
 			updates['/Requestor'] = sCurrentPlayer;
 			updates['/NLastFold'] = aCardsPlayed;
@@ -582,7 +592,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var oLocalModel = this.getView().getModel("localModel");
 			var oButton = oEvent.getSource();
 			// create popover
-			if (!this._oPopover) { 
+			if (!this._oPopover) {
 				Fragment.load({
 					name: "com.belote.fragment.scorePopOver",
 					controller: this

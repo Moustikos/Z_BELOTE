@@ -233,8 +233,9 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		onSelectCard: function (oEvent) {
 			var oModel = this.getView().getModel("localModel");
+			var sAtout = oModel.getProperty("/PlayTable/Atout");
 
-			if (oModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
+			if (oModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName && sAtout !== "") {
 				var aPlayerHand = oModel.getProperty("/PlayTable/NOrdererPlayers/0/NCards");
 				var oScoreModel = this.getView().getModel("scoreModel");
 				var oI18nModel = this.getView().getModel("i18n");
@@ -243,7 +244,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				var sPlayerName = firebase.auth().currentUser.displayName;
 				var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
 				var sCardName = oModel.getProperty(oEvent.getSource().getBindingContext("localModel").getPath()).Name;
-				var sAtout = oModel.getProperty("/PlayTable/Atout");
 				var sRequestedColor = oModel.getProperty("/PlayTable/RequestedColor");
 				var bCardAllowed = this.util._isCardAllowed(oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor,
 					oMasterPlayer, aPlayerHand)

@@ -24,6 +24,13 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var oLocalModel = this.getView().getModel("localModel");
 			oLocalModel.setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot, this));
 
+			if (oLocalModel.getProperty('/PlayTable/gameOver') === true) {
+				var that = this;
+				setTimeout(function () {
+					that._getRouter().navTo("Tables");
+				}, 3000);
+				return;
+			}
 			// Only current player can shuffle cards
 			if (oLocalModel.getProperty("/PlayTable/IsShuffleNeeded") && oLocalModel.getProperty("/PlayTable/Distributor") === firebase.auth().currentUser
 				.displayName) {
@@ -510,6 +517,9 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					that.clearDoneData();
 					firebase.database().ref(that._tablePath).update(updates);
 					if (bGameOver) {
+						firebase.database().ref(that._tablePath).update({
+							gameOver: true
+						});
 						setTimeout(function () {
 							firebase.database().ref(that._tablePath).remove();
 							that._getRouter().navTo("Tables");

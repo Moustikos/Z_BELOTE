@@ -31,8 +31,8 @@ sap.ui.define([], function () {
 			return iTour === 1;
 		},
 
-		getCustomColorTakeVisible: function (iTour) {
-			return iTour === 2;
+		getCustomColorTakeVisible: function (iTour, bDoneFinished) {
+			return (iTour === 2 && bDoneFinished === false) ;
 		},
 
 		getPlayerVisible: function (Player) {
@@ -118,6 +118,14 @@ sap.ui.define([], function () {
 				}
 			}
 			return iCounter;
+		},
+		
+		getPlayerNameFromIndex : function(iIndex) {
+			return this.util._getPlayerNameByID(iIndex, this.getView().getModel("localModel").getProperty("/PlayTable/NPlayers"));          
+		},
+		
+		getWarningMessageVisible : function(bIsPhone, bIsPortrait) {
+			return bIsPhone && bIsPortrait;
 		}
 	};
 });

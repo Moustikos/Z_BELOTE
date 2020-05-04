@@ -16,10 +16,25 @@ jQuery.sap.setObject("com.belote.util.ClassFormatter", {
     	
     	if(sReturn === "carreau" || sReturn === "coeur") {
     		this.getParent().getParent().addStyleClass("Redcard");
+    		if(this.getMetadata().getName() === "sap.ui.core.Icon") {
+    			this.setColor("red");
+    		}
     	} else if(sReturn === "pique" || sReturn === "trefle") {
     		this.getParent().getParent().addStyleClass("Blackcard");
+    		if(this.getMetadata().getName() === "sap.ui.core.Icon") {
+    			this.setColor("black");
+    		}
     	}
     	
     	return "sap-icon://customfont/" + sReturn;
+    },
+    
+    getCurrentPlayerNameAnimation : function(sName, sCurrentPlayer) {
+    	if(sName === sCurrentPlayer) {
+			this.addStyleClass("currentPlayer");
+    	} else {
+    		this.removeStyleClass("currentPlayer");
+    	}
+    	return sName;
     }
 });

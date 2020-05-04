@@ -9,26 +9,25 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		},
 
 		_onRouteMatched: function () {
+			this.bindFireBase._addTableEntityListener(this);
+			// this.getTablesList(oModel);
+		},
+
+		// triggered each time the entity ETTableSet is updated. refresh the table list
+		_onTableEntityReceived: function (snapshot) {
 			var oModel = this.getView().getModel("localModel");
-			this.getTablesList(oModel);
+			var aTables = snapshot.val();
+			oModel.setProperty("/ETTables", aTables);
+			this.checkIfTableIsFull(oModel);
 		},
 
-		getTablesList: function (oModel) {
-			var that = this;
-			var aTables;
-			firebase.database().ref("ETTableSet").on("value", function (snapshot) {
-				aTables = snapshot.val();
-				oModel.setProperty("/ETTables", aTables);
-				that.checkIfTableIsFull(oModel);
-			});
-		},
-
+		// triggered when a user is added to a table. Navigate to play view if table is full and if current user is part of this table
 		checkIfTableIsFull: function (oModel) {
 			var aTables = oModel.getProperty("/ETTables");
 			var iCounter;
 			var bCurrentPlayerisInTable = false;
 			var sPlayerName = firebase.auth().currentUser.displayName;
-			for (var i = 0; i < aTables.length; i++) {
+			for (var i in aTables) {
 				if (aTables[i]) {
 					if (aTables[i].NPlayers) {
 						iCounter = 0;
@@ -52,7 +51,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 									Name: aTables[i].NPlayers[1].Name,
 									ID: aTables[i].NPlayers[1].ID
 								});
-								
+
 								this._getRouter().navTo("Play", {
 									teamPath: "ETTableSet-" + i
 								});
@@ -74,11 +73,14 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		onPressCreateNewTable: function () {
 			var sNewTableName = this.byId("idNewTableName").getValue();
 			var sNewTableDesc = this.byId("idNewTableNameDesc").getValue();
+			var sScoreLimit = this.byId("idNewTableScoreLimit").getValue();
+			var iScoreLimit = sScoreLimit !== "" ? parseInt(sScoreLimit, 10) : 1000;
+
 			if (!sNewTableName) {
-				sap.m.MessageToast.show("Please enter at least a table name");
+				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NoTableName"));
 				return;
 			}
-			this.addNewTable(sNewTableName, sNewTableDesc);
+			this.addNewTable(sNewTableName, sNewTableDesc, iScoreLimit);
 			this._oCreateTablePopup.close();
 		},
 
@@ -86,27 +88,51 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			this._oCreateTablePopup.close();
 		},
 
-		addNewTable: function (sNewTableName, sNewTableDesc) {
+		addNewTable: function (sNewTableName, sNewTableDesc, iScoreLimit) {
 			var aTables = this.getView().getModel("localModel").getProperty("/ETTables");
+			// var aNTeams = [0, 1];
 			var iNewTableKey = aTables.indexOf(aTables[aTables.length - 1]) + 1;
-			firebase.database().ref("ETTableSet/" + iNewTableKey).set({
-				Name: sNewTableName,
-				ID: iNewTableKey,
-				Description: sNewTableDesc,
-				Atout: "",
-				CurrentPlayer: "",
-				DistributionTour: 1,
-				Distributor: "",
-				IsShuffleNeeded: true,
-				Preneur: "",
-				SuggestedCard: ""
-			});
-		},
+			// firebase.database().ref("ETTableSet/" + iNewTableKey).set({
+			// 	Name: sNewTableName,
+			// 	ID: iNewTableKey,
+			// 	ScoreLimit: iScoreLimit,
+			// 	Description: sNewTableDesc,
+			// 	Atout: "",
+			// 	CurrentPlayer: "",
+			// 	DistributionTour: 1,
+			// 	Distributor: "",
+			// 	IsShuffleNeeded: true,
+			// 	IsFirstDone: true,
+			// 	Preneur: "",
+			// 	SuggestedCard: ""
+			// });
+			
+			var updates = {};
+			updates['/Name']  = sNewTableName;
+			updates['/ID']  = iNewTableKey;
+			updates['/ScoreLimit']  = iScoreLimit;
+			updates['/Description']  = sNewTableDesc;
+			updates['/Atout']  = "";
+			updates['/CurrentPlayer']  = "";
+			updates['/DistributionTour']  = 1;
+			updates['/Distributor']  = "";
+			updates['/IsShuffleNeeded']  = true;
+			updates['/IsFirstDone']  = true;
+			updates['/Preneur']  = "";
+			updates['/SuggestedCard']  = "";
+			updates['/NTeams/0/ID'] = 0;
+			updates['/NTeams/1/ID'] = 1;
+			updates['/NTeams/0/Score'] = 0;
+			updates['/NTeams/0/TempScore'] = 0;
+			updates['/NTeams/1/TempScore'] = 0;
+			updates['/NTeams/1/Score'] = 0;
+			updates['/NTeams/1/NFolds'] = 0;
+			updates['/NTeams/0/NFolds'] = 0;		
 
+			firebase.database().ref("ETTableSet/" + iNewTableKey).update(updates);
+		},
 		onPressTableListItem: function (oEvent) {
 			var oModel = this.getView().getModel("localModel");
-			var iTableId = oEvent.getSource().getBindingContextPath().split('/')[oEvent.getSource().getBindingContextPath().split('/').length -
-				1];
 			var sBindingPath = oEvent.getSource().getBindingContextPath();
 			if (!this._oJoinTeamPopup) {
 				this._oJoinTeamPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.joinTeam", this);
@@ -123,6 +149,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			this._oJoinTeamPopup = undefined;
 		},
 
+		//Return list of all players assigned to a table
 		getPlayersAssignedToATable: function () {
 			var aTables = this.getView().getModel("localModel").getProperty("/ETTables");
 			var aPlayersAssignedToATable = [];
@@ -164,7 +191,7 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 			var iPlayerID;
 			for (var j = 0; j < aAssignedPlayers.length; j++) {
 				if (aAssignedPlayers[j].playerName === sPlayerName) {
-					sap.m.MessageToast.show("You are already assigned to table " + aAssignedPlayers[j].tableName);
+					sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("AlreadyAssigned") + " " + aAssignedPlayers[j].tableName);
 					return;
 				}
 			}
@@ -196,47 +223,19 @@ sap.ui.define(["com/belote/controller/BaseController"], function (BaseController
 		onLeaveTeam: function () {
 			var aTables = this.getView().getModel("localModel").getProperty("/ETTables");
 			var sPlayerName = firebase.auth().currentUser.displayName;
-			var aPlayersAssignedToATable = [];
 			for (var i = 0; i < aTables.length; i++) {
-				if (aTables[i])
+				if (aTables[i]) {
 					if (aTables[i].NPlayers) {
 						for (var j = 0; j < aTables[i].NPlayers.length; j++) {
 							if (aTables[i].NPlayers[j] && aTables[i].NPlayers[j].Name) {
 								if (aTables[i].NPlayers[j].Name === sPlayerName) {
-									firebase.database().ref('/ETTableSet/' + i + "/NPlayers/" + j).remove();
+									firebase.database().ref("/ETTableSet/" + i + "/NPlayers/" + j).remove();
 								}
 							}
 						}
 					}
+				}
 			}
 		}
-
-		/**
-		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
-		 * (NOT before the first rendering! onInit() is used for that one!).
-		 * @memberOf com.belote.view.Tables
-		 */
-		//	onBeforeRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
-		 * This hook is the same one that SAPUI5 controls get after being rendered.
-		 * @memberOf com.belote.view.Tables
-		 */
-		//	onAfterRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-		 * @memberOf com.belote.view.Tables
-		 */
-		//	onExit: function() {
-		//
-		//	}
-
 	});
-
 });

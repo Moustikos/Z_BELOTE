@@ -5,6 +5,8 @@
 			<Input id="idNewTableName" placeholder="Enter table name" required="required"/>
 			<Label text="Table descritpion" labelFor="idNewTableNameDesc"/>
 			<Input id="idNewTableNameDesc" placeholder="Enter description"/>
+			<Label text="Limit Score" labelFor="idNewTableScoreLimit"/>
+			<Input id="idNewTableScoreLimit" placeholder="Enter limit score"/>
 		</content>
 		<buttons>
 			<Button text="Cancel" press="onPressCancelNewTable"/>

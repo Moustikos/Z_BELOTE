@@ -101,10 +101,6 @@
 				"pattern": "Tables",
 				"name": "Tables",
 				"target": "Tables"
-			}, {
-				"pattern": "TableDetails",
-				"name": "TableDetails",
-				"target": "TableDetails"
 			}],
 			"targets": {
 				"Connection": {
@@ -127,14 +123,6 @@
 					"clearControlAggregation": false,
 					"viewId": "Tables",
 					"viewName": "Tables"
-					
-				},
-				"TableDetails": {
-					"viewType": "XML",
-					"transition": "slide",
-					"viewName": "TableDetails",
-					"clearControlAggregation": false,
-					"viewId": "TableDetails"
 					
 				}
 			}

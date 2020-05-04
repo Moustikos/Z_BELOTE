@@ -19,15 +19,14 @@ sap.ui.define([], function() {
 
             // If user is recognized, ask for display name is not already mentioned or display welcome message
             if (user) {
-                this._getRouter().navTo("Tables");
                 if (user && (firebase.auth().currentUser.displayName === "" || !firebase.auth().currentUser.displayName)) {
                     if (!this._oUserPopup) {
                         this._oUserPopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.updateUserName", this);
                         this.getView().addDependent(this._oUserPopup);
                     }
-
                     this._oUserPopup.open();
                 } else {
+                	this._getRouter().navTo("Tables");
                     if(this.getView().getModel("i18n")) {
                     	sap.m.MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("Connection.WelcomeBack", firebase.auth().currentUser.displayName), {
 	                        width: "40rem"
@@ -52,6 +51,8 @@ sap.ui.define([], function() {
         _addUserTableEntityListener : function(that) {
         	var table = firebase.database().ref(that._tablePath);
             table.on("value", that._onTableEntityReceived.bind(that));
+            var message = firebase.database().ref(that._tablePath + "/Message");
+            message.on("value", that._onMessageEntityReceived.bind(that));
         }
     };
 });

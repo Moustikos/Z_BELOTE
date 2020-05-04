@@ -24,10 +24,29 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var oLocalModel = this.getView().getModel("localModel");
 			oLocalModel.setProperty("/PlayTable", this.util._convertFirebaseToJSON(snapshot, this));
 
+			if (oLocalModel.getProperty('/PlayTable/gameOver') === true) {
+				var that = this;
+				setTimeout(function () {
+					that._getRouter().navTo("Tables");
+				}, 3000);
+				return;
+			}
 			// Only current player can shuffle cards
 			if (oLocalModel.getProperty("/PlayTable/IsShuffleNeeded") && oLocalModel.getProperty("/PlayTable/Distributor") === firebase.auth().currentUser
 				.displayName) {
 				this.util._shuffleCards(this);
+			}
+		},
+
+		_onMessageEntityReceived: function (snapshot) {
+			var oMessage = snapshot.val();
+			if (oMessage) {
+				var sSender = oMessage.sender;
+				var sText = oMessage.text;
+				var bDisplayIt = oMessage.displayIt;
+				if (bDisplayIt) {
+					sap.m.MessageToast.show(sSender + " say : " + sText);
+				}
 			}
 		},
 
@@ -61,11 +80,26 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		// Triggered if user accepts the suggested card
 		onSuggestionSelected: function () {
+			var aData = this.getView().getModel("localModel").getProperty("/PlayTable");
+			var sDistributor = aData.Distributor;
+			var iCurrentPlayerIndex;
+			var sUserName = firebase.auth().currentUser.displayName;
+			var sSuggestedAtout = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
+
+			for (var i = 0; i < aData.NPlayers.length; i++) {
+				if (aData.NPlayers[i].Name === sDistributor) {
+					iCurrentPlayerIndex = (aData.NPlayers[i].ID + 1) % 4;
+					break;
+				}
+			}
+
 			var updates = {};
 			updates["/SuggestedCard"] = "";
+			updates["/CurrentPlayer"] = aData.NPlayers[iCurrentPlayerIndex].Name;
 			updates["/Atout"] = this.getView().getModel("localModel").getProperty("/PlayTable/SuggestedCard").split("-")[0].toLowerCase();
 			updates["/Preneur"] = firebase.auth().currentUser.displayName;
 			updates["/DoneFinished"] = true;
+			this.util._sendMessageToPlayers(sUserName + " take card, atout is " + sSuggestedAtout, this._tablePath);
 			this._distributeRemainingCards(updates);
 			firebase.database().ref(this._tablePath).update(updates);
 		},
@@ -154,6 +188,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			var sChoice = aSplit[aSplit.length - 1];
 			var oLocalModel = this.getView().getModel("localModel");
 			var aPlayers = oLocalModel.getProperty("/PlayTable/NPlayers");
+			var sDistributor = oLocalModel.getProperty("/PlayTable/Distributor");
 
 			var updates = {};
 			if (sChoice === "decline") {
@@ -168,15 +203,29 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 							updates["/Distributor"] = aPlayers[iNextPlayerId].Name;
 							updates["/CurrentPlayer"] = aPlayers[(iNextPlayerId + 1) % 4].Name;
 							updates["/IsShuffleNeeded"] = true;
+							updates["/DoneFinished"] = false;
+							updates["/DoneFailed"] = true;
 						}
 						firebase.database().ref(this._tablePath).update(updates);
 						break;
 					}
 				}
 			} else {
+				var iCurrentPlayerIndex;
+
+				for (var i = 0; i < aPlayers.length; i++) {
+					if (aPlayers[i].Name === sDistributor) {
+						iCurrentPlayerIndex = (aPlayers[i].ID + 1) % 4;
+						break;
+					}
+				}
+
+				updates["/CurrentPlayer"] = aPlayers[iCurrentPlayerIndex].Name;
 				updates["/SuggestedCard"] = "";
 				updates["/Atout"] = sChoice.toLowerCase();
 				updates["/Preneur"] = firebase.auth().currentUser.displayName;
+				updates["/DoneFinished"] = true;
+				this.util._sendMessageToPlayers(sUserName + " choose atout " + sChoice.toLowerCase(), this._tablePath);
 				this._distributeRemainingCards(updates);
 				firebase.database().ref(this._tablePath).update(updates);
 			}
@@ -184,44 +233,91 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 
 		onSelectCard: function (oEvent) {
 			var oModel = this.getView().getModel("localModel");
-			var iRemaningCardsBeforeThisTurn = oModel.getProperty('/PlayTable/NOrdererPlayers/0/NCards').length
-			var oMasterPlayer = oModel.getProperty("/PlayTable/MasterPlayer");
-			var sPlayerName = firebase.auth().currentUser.displayName;
-			if (oModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName) {
+			var sAtout = oModel.getProperty("/PlayTable/Atout");
+
+			if (oModel.getProperty("/PlayTable/CurrentPlayer") === firebase.auth().currentUser.displayName && sAtout !== "") {
+				var aPlayerHand = oModel.getProperty("/PlayTable/NOrdererPlayers/0/NCards");
+				var oScoreModel = this.getView().getModel("scoreModel");
+				var oI18nModel = this.getView().getModel("i18n");
+				var iRemaningCardsBeforeThisTurn = aPlayerHand.length;
+				var oMasterPlayer = oModel.getProperty("/PlayTable/MasterPlayer");
+				var sPlayerName = firebase.auth().currentUser.displayName;
 				var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
 				var sCardName = oModel.getProperty(oEvent.getSource().getBindingContext("localModel").getPath()).Name;
-				var updates = {};
+				var sRequestedColor = oModel.getProperty("/PlayTable/RequestedColor");
+				var bCardAllowed = this.util._isCardAllowed(oModel, oScoreModel, oI18nModel, sCardName, iPlayerIndex, sAtout, sRequestedColor,
+					oMasterPlayer, aPlayerHand)
+				var aPlayedCards = []
 
-				//clear table in case of new turn
-				if (sPlayerName === oMasterPlayer.Name) {
-					this.clearTable();
+				for (var i = 0; i < 4; i++) {
+					var sCardPlayed = oModel.getProperty("/PlayTable/Player" + i + "Card");
+					if (sCardPlayed !== undefined)
+						aPlayedCards.push(sCardPlayed);
 				}
 
-				updates["/Player" + iPlayerIndex + "Card"] = sCardName;
-				updates["/CurrentPlayer"] = oModel.getProperty("/PlayTable/NOrdererPlayers/1/Name");
-				firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex + "/NCards/" + oModel.getProperty(oEvent.getSource().getBindingContext(
-					"localModel").getPath()).ID).remove();
-				firebase.database().ref(this._tablePath).update(updates);
+				if (bCardAllowed !== false) {
+					var updates = {};
+					//clear table in case of new turn
+					if (sPlayerName === oMasterPlayer.Name) {
+						this.clearTable();
+					}
 
-				//define the master
-				var sRequestor = oModel.getProperty("/PlayTable/Requestor");
-				if (sPlayerName === sRequestor) {
-					var sRequestedColor = this.util._getCardSymbol(sCardName);
-					firebase.database().ref(this._tablePath).update({
-						RequestedColor: sRequestedColor
-					});
-					oModel.setProperty("/PlayTable/RequestedColor", sRequestedColor);
+					//trigger belote announcement
+					updates = this.isBelotePossible(iPlayerIndex, updates);
+					var bIsBelotePossible = oModel.getProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BelotePossible")
+					var bIsBeloteAnnouced = oModel.getProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced");
+					if ((this.util._getCardSymbol(sCardName).toUpperCase() === sAtout.toUpperCase()) && (this.util._getCardValue(sCardName) === "R" ||
+							this.util._getCardValue(sCardName) === "D")) {
+						if (bIsBelotePossible && bIsBeloteAnnouced === undefined) {
+							// tigger popup to choose to announce belote
+							if (!this._oAnnounceBelotePopup) {
+								this._oAnnounceBelotePopup = sap.ui.xmlfragment(this.getView().getId(), "com.belote.fragment.announceBelote", this);
+								this.getView().addDependent(this._oAnnounceBelotePopup);
+							}
+							this._oAnnounceBelotePopup.open();
+						} else if (bIsBeloteAnnouced) {
+							// trigger snackbar to announce rebelote
+							this.util._sendMessageToPlayers(this.getView().getModel("i18n").getProperty("Rebelote"), this._tablePath);
+						}
+					}
+
+					//update cards
+					updates["/Player" + iPlayerIndex + "Card"] = sCardName;
+					updates["/CurrentPlayer"] = oModel.getProperty(
+						"/PlayTable/NOrdererPlayers/1/Name");
+					firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex + "/NCards/" +
+						oModel.getProperty(oEvent.getSource().getBindingContext(
+							"localModel").getPath()).ID).remove();
+
+					if (aPlayedCards.length === 0) {
+						updates['/RequestedColor'] = this.util._getCardSymbol(sCardName);
+					}
+
+					firebase.database().ref(this._tablePath).update(updates);
+
+					//define the master
+					updates = {};
+					var sRequestor = oModel.getProperty("/PlayTable/Requestor");
+					if (sPlayerName === sRequestor) {
+						sRequestedColor = this.util._getCardSymbol(sCardName);
+						updates['/RequestedColor'] = sRequestedColor;
+
+						// firebase.database().ref(this._tablePath).update({
+						// 	RequestedColor: sRequestedColor
+						// });
+
+						oModel.setProperty("/PlayTable/RequestedColor", sRequestedColor);
+					}
+					oModel.setProperty("/PlayTable/Player" + iPlayerIndex + "Card", sCardName);
+					this.setMasterPlayer(iRemaningCardsBeforeThisTurn, updates);
 				}
-				oModel.setProperty("/PlayTable/Player" + iPlayerIndex + "Card", sCardName);
-
-				this.setMasterPlayer(iRemaningCardsBeforeThisTurn);
 			} else {
 				sap.m.MessageToast.show(this.getView().getModel("i18n").getProperty("NotYourTurn"));
 			}
 
 		},
 
-		setMasterPlayer: function (iRemaningCardsBeforeThisTurn) {
+		setMasterPlayer: function (iRemaningCardsBeforeThisTurn, updates) {
 			var oModel = this.getView().getModel("localModel");
 			var sAtout = oModel.getProperty("/PlayTable/Atout");
 			var sRequestedColor = oModel.getProperty("/PlayTable/RequestedColor");
@@ -239,7 +335,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					var iCardPoints = 0;
 					if (sCardSymbol.toUpperCase() === sAtout.toUpperCase()) {
 						iCardRanking = oScoreModel.getProperty("/Atout/" + sCardValue + "/Ranking");
-						iCardPoints = oScoreModel.getProperty("/Atout/" + sCardValue + "/Points")
+						iCardPoints = oScoreModel.getProperty("/Atout/" + sCardValue + "/Points");
 					} else if (sCardSymbol === sRequestedColor) {
 						iCardRanking = oScoreModel.getProperty("/NonAtout/" + sCardValue + "/Ranking");
 						iCardPoints = oScoreModel.getProperty("/NonAtout/" + sCardValue + "/Points");
@@ -259,31 +355,42 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			aCardsPlayed.sort(this.util._sortByRanking);
 			oMasterPlayer.index = aCardsPlayed[0].playerIndex;
 			oMasterPlayer.Name = this.util._getPlayerNameByID(oMasterPlayer.index, NPlayers);
-			// update model
-			firebase.database().ref(this._tablePath).update({
-				MasterPlayer: oMasterPlayer
-			});
+			updates['/MasterPlayer'] = oMasterPlayer
 
 			// end of fold
 			if (aCardsPlayed.length === 4) {
-				this.handleEndOfFold(oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn)
+				this.handleEndOfFold(oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn, updates);
+			} else {
+				// update firebase
+				firebase.database().ref(this._tablePath).update(updates);
 			}
 		},
 
-		handleEndOfFold: function (oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn) {
+		handleEndOfFold: function (oMasterPlayer, aCardsPlayed, oModel, iRemaningCardsBeforeThisTurn, updates) {
 			// update current player
 			var sCurrentPlayer = oMasterPlayer.Name;
-			firebase.database().ref(this._tablePath).update({
-				CurrentPlayer: sCurrentPlayer
-			});
-			firebase.database().ref(this._tablePath).update({
-				Requestor: sCurrentPlayer
-			});
+			var iWinningTeam = oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 0 : 1;
 
-			//save fold
-			firebase.database().ref(this._tablePath).update({
-				NLastFold: aCardsPlayed
-			});
+			updates['/CurrentPlayer'] = sCurrentPlayer;
+			updates['/Requestor'] = sCurrentPlayer;
+			updates['/NLastFold'] = aCardsPlayed;
+			updates['/RequestedColor'] = "";
+
+			//Save fold
+			var NFoldsWinningTeam = [];
+			var aPreviousFolds = oModel.getProperty("/PlayTable/NTeams/" + iWinningTeam + "/NFolds");
+
+			for (var j = 0; j < aCardsPlayed.length; j++) {
+				NFoldsWinningTeam.push(aCardsPlayed[j]);
+			}
+			// add previous folds
+			if (aPreviousFolds !== undefined && aPreviousFolds !== 0) {
+				for (var key in aPreviousFolds) {
+					NFoldsWinningTeam.push(aPreviousFolds[key]);
+				}
+			}
+			updates['/NTeams/' + iWinningTeam + '/NFolds'] = NFoldsWinningTeam;
+			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/NFolds", NFoldsWinningTeam);
 
 			//update temporary score
 			var iScore = 0;
@@ -292,54 +399,205 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			for (var i = 0; i < aCardsPlayed.length; i++) {
 				iScore += aCardsPlayed[i].points;
 			}
-			var iWinningTeam = oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 0 : 1;
 			var iNewScore = iWinningTeam === 0 ? iTeam1TempScore + iScore : iTeam2TempScore + iScore;
-			firebase.database().ref(this._tablePath + "/NTeams/" + iWinningTeam).update({
-				TempScore: iNewScore
-			});
 			oModel.setProperty("/PlayTable/NTeams/" + iWinningTeam + "/TempScore", iNewScore);
+			updates['/NTeams/' + iWinningTeam + '/TempScore'] = iNewScore;
 
-			//update global scrore in case of final fold
+			//Check if the card selected is the last one
 			if (iRemaningCardsBeforeThisTurn === 1) {
-				var iTeam1AdditionalPoints = 0;
-				var iTeam2AdditionalPoints = 0;
-				// dix de dèr
-				iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0
-				iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0
-					//belote et rebelotes ---> to be defined
+				this.handleEndOfDone(oModel, oMasterPlayer, updates);
+			} else {
+				firebase.database().ref(this._tablePath).update(updates);
+			}
+		},
 
-				var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
-				var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
-				iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
-				iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
-				var iTeam1NewScore = iTeam1Score + iTeam1TempScore + iTeam1AdditionalPoints;
-				var iTeam2NewScore = iTeam2Score + iTeam2TempScore + iTeam2AdditionalPoints;
+		// Triggered when the last card is selected
+		handleEndOfDone: function (oModel, oMasterPlayer, updates) {
+			var NPlayers = oModel.getProperty("/PlayTable/NPlayers");
+			var sPreneur = oModel.getProperty("/PlayTable/Preneur");
+			var iTeam1TempScore = oModel.getProperty("/PlayTable/NTeams/0/TempScore") || 0;
+			var iTeam2TempScore = oModel.getProperty("/PlayTable/NTeams/1/TempScore") || 0;
+			var iPreneurTeamID = this.util._getTeamIdByPlayerId(this.util._getPlayerIdByName(sPreneur, NPlayers));
+			var iTeam1AdditionalPoints = 0;
+			var iTeam2AdditionalPoints = 0;
 
-				firebase.database().ref(this._tablePath + "/NTeams/0").update({
-					Score: iTeam1NewScore,
-					TempScore: 0
-				});
-				firebase.database().ref(this._tablePath + "/NTeams/1").update({
-					Score: iTeam2NewScore,
-					TempScore: 0
-				});
-				
-				//clear current fold and perform a new done
-			
+			// dix de dèr
+			iTeam1AdditionalPoints += oMasterPlayer.index === 0 || oMasterPlayer.index === 2 ? 10 : 0;
+			iTeam2AdditionalPoints += oMasterPlayer.index === 1 || oMasterPlayer.index === 3 ? 10 : 0;
+
+			//belote et rebelotes 
+			var isBeloteAnnoucedByTeam1 = oModel.getProperty("/PlayTable/NPlayers/0/BeloteAnnouced") || oModel.getProperty(
+				"/PlayTable/NPlayers/2/BeloteAnnouced") ? true : false;
+			var isBeloteAnnoucedByTeam2 = oModel.getProperty("/PlayTable/NPlayers/1/BeloteAnnouced") || oModel.getProperty(
+				"/PlayTable/NPlayers/3/BeloteAnnouced") ? true : false;
+
+			// Contrat 
+			var iContrat = isBeloteAnnoucedByTeam1 || isBeloteAnnoucedByTeam2 ? 91 : 81;
+
+			//TempScore
+			iTeam1TempScore += iTeam1AdditionalPoints;
+			iTeam2TempScore += iTeam2AdditionalPoints;
+
+			// Dedans
+			var bTeam1Dedans = false;
+			var bTeam2Dedans = false;
+			if (iPreneurTeamID === 0) {
+				bTeam1Dedans = iTeam1TempScore < iContrat ? true : false;
+			} else {
+				bTeam2Dedans = iTeam2TempScore < iContrat ? true : false;
+			}
+			if (bTeam1Dedans) {
+				iTeam1TempScore = 0;
+				iTeam2TempScore = 162;
+			} else if (bTeam2Dedans) {
+				iTeam1TempScore = 162;
+				iTeam2TempScore = 0;
+			}
+
+			//Capot
+			var NFoldsTeam1 = oModel.getProperty("/PlayTable/NTeams/0/NFolds");
+			var NFoldsTeam2 = oModel.getProperty("/PlayTable/NTeams/1/NFolds");
+			var bIsTeam1Capot = NFoldsTeam1 === 0 || NFoldsTeam1 === undefined ? true : false;
+			var bIsTeam2Capot = NFoldsTeam2 === 0 || NFoldsTeam2 === undefined ? true : false;
+
+			if (bIsTeam1Capot) {
+				iTeam1TempScore = 0;
+				iTeam2TempScore = 250;
+			} else if (bIsTeam2Capot) {
+				iTeam1TempScore = 250;
+				iTeam2TempScore = 0;
+			}
+
+			//add belote points
+			iTeam1TempScore += isBeloteAnnoucedByTeam1 ? 20 : 0;
+			iTeam2TempScore += isBeloteAnnoucedByTeam2 ? 20 : 0;
+			var iTeam1Score = oModel.getProperty("/PlayTable/NTeams/0/Score") || 0;
+			var iTeam2Score = oModel.getProperty("/PlayTable/NTeams/1/Score") || 0;
+			var iTeam1NewScore = iTeam1Score + iTeam1TempScore;
+			var iTeam2NewScore = iTeam2Score + iTeam2TempScore;
+
+			updates['/NTeams/0/Score'] = iTeam1NewScore;
+			updates['/NTeams/0/TempScore'] = 0;
+			updates['/NTeams/1/Score'] = iTeam2NewScore;
+			updates['/NTeams/1/TempScore'] = 0;
+
+			//Check score limit
+			var iScoreLimit = oModel.getProperty("/PlayTable/ScoreLimit")
+			var bGameOver = (iTeam1NewScore >= iScoreLimit || iTeam2NewScore >= iScoreLimit) && iTeam1NewScore !== iTeam2NewScore ? true :
+				false;
+
+			if (bGameOver) {
+				// handle end of game
+				var iWinnerTeam = iTeam1NewScore > iTeam2NewScore ? 0 : 1;
+				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1));
+				updates['gameOver'] = true;
+				firebase.database().ref(this._tablePath).update(updates);
+				this.util._sendMessageToPlayers(sMessage, this._tablePath);
+				var that = this;
 				setTimeout(function () {
-					this.clearTable();
-					firebase.database().ref(this._tablePath).update({
-					IsShuffleNeeded: true
-				}.bind(this));
-				}, 3000)
+					firebase.database().ref(that._tablePath).remove();
+					that._getRouter().navTo("Tables");
+				}, 2500);
+
+			} else {
+				// Define next distributor
+				var sDistributor = oModel.getProperty("/PlayTable/Distributor");
+				var iDistributorID = this.util._getPlayerIdByName(sDistributor, NPlayers);
+				var iNewDistributorID = (iDistributorID + 1) % 4;
+				var sNewDistributorName = this.util._getPlayerNameByID(iNewDistributorID, NPlayers);
+				var iNewCurrentPlayerID = (iNewDistributorID + 1) % 4;
+				var sNewCurrentPlayerName = this.util._getPlayerNameByID(iNewCurrentPlayerID, NPlayers);
+
+				updates['/Distributor'] = sNewDistributorName;
+				updates['/CurrentPlayer'] = sNewCurrentPlayerName;
+				updates['/IsShuffleNeeded'] = true;
+				updates['/DoneFinished'] = false;
+				updates['/DistributionTour'] = 1;
+				updates['/Atout'] = "";
+
+				//clear current fold and perform a new done
+				var that = this;
+				setTimeout(function () {
+					that.clearTable();
+					that.clearDoneData();
+					firebase.database().ref(that._tablePath).update(updates);
+				}, 3000);
 			}
 		},
 
 		clearTable: function () {
-			firebase.database().ref(this._tablePath + "/Player0Card").remove();
-			firebase.database().ref(this._tablePath + "/Player1Card").remove();
-			firebase.database().ref(this._tablePath + "/Player2Card").remove();
-			firebase.database().ref(this._tablePath + "/Player3Card").remove();
+			for (var i = 0; i < 4; i++) {
+				//remove played cards
+				firebase.database().ref(this._tablePath + "/Player" + i + "Card").remove();
+
+			}
+		},
+
+		clearDoneData: function () {
+			// remove belote
+			for (var i = 0; i < 4; i++) {
+				firebase.database().ref(this._tablePath + "/NPlayers/" + i + "/BelotePossible").remove();
+				firebase.database().ref(this._tablePath + "/NPlayers/" + i + "/BeloteAnnounced").remove();
+			}
+			firebase.database().ref(this._tablePath + "/NLastFold").remove();
+			// firebase.database().ref(this._tablePath + "/NTeams/0").update({
+			// 	NFolds: 0
+			// });
+			// firebase.database().ref(this._tablePath + "/NTeams/1").update({
+			// 	NFolds: 0
+			// });
+		},
+
+		isBelotePossible: function (iPlayerIndex, updates) {
+			var oModel = this.getView().getModel("localModel");
+			var sAtout = oModel.getProperty("/PlayTable/Atout");
+			var aPlayerCards = oModel.getProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/NCards");
+			var bIsKing = false;
+			var bIsQueen = false
+			var bIsBelotePossible = oModel.getProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BelotePossible");
+			if (bIsBelotePossible === undefined) {
+				aPlayerCards.forEach(
+					function (oCard) {
+						var sColor = this.util._getCardSymbol(oCard.Name);
+						var sValue = this.util._getCardValue(oCard.Name);
+						if (sColor.toUpperCase() === sAtout.toUpperCase()) {
+							if (sValue === "R") {
+								bIsKing = true;
+							} else if (sValue === "D") {
+								bIsQueen = true;
+							}
+						}
+					}, this);
+				bIsBelotePossible = bIsKing && bIsQueen ? true : false;
+				updates['/NPlayers/' + iPlayerIndex + '/BelotePossible'] = bIsBelotePossible;
+				oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BelotePossible", bIsBelotePossible);
+			}
+			return updates;
+		},
+
+		onPressYesAnnounceBelote: function () {
+			var oModel = this.getView().getModel("localModel");
+			var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
+			firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex).update({
+				BeloteAnnouced: true
+			});
+			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnounced", true);
+			this.util._sendMessageToPlayers(this.getView().getModel("i18n").getProperty("Belote"), this._tablePath);
+			this._oAnnounceBelotePopup.close();
+			this._oAnnounceBelotePopup.destroy();
+			this._oAnnounceBelotePopup = undefined;
+		},
+
+		onPressNoAnnounceBelote: function () {
+			var oModel = this.getView().getModel("localModel");
+			var iPlayerIndex = oModel.getProperty("/PlayTable/NOrdererPlayers/0/ID");
+			firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex).update({
+				BeloteAnnouced: false
+			});
+			oModel.setProperty("/PlayTable/NPlayers/" + iPlayerIndex + "/BeloteAnnouced", false);
+			this._oAnnounceBelotePopup.close();
+			this._oAnnounceBelotePopup.destroy();
+			this._oAnnounceBelotePopup = undefined;
 		},
 
 		handleScorePopoverPress: function (oEvent) {
@@ -362,9 +620,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 			}
 		},
 
-		handleCloseScorePress: function () {
-			this._oPopover.close();
-		},
 		// Update team temporary score after each set of 4 cards
 		_updateScore: function (aCards) {
 			var iScore = 0;

@@ -511,7 +511,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					firebase.database().ref(that._tablePath).update(updates);
 					if (bGameOver) {
 						setTimeout(function () {
-							firebase.database().ref(that._tablePath).remove(that._tablePath);
+							firebase.database().ref(that._tablePath).remove();
 							that._getRouter().navTo("Tables");
 						}, 3000);
 					}

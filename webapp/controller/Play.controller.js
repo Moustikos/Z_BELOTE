@@ -281,13 +281,13 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					firebase.database().ref(this._tablePath + "/NPlayers/" + iPlayerIndex + "/NCards/" +
 						oModel.getProperty(oEvent.getSource().getBindingContext(
 							"localModel").getPath()).ID).remove();
-							
+
 					if (aPlayedCards.length === 0) {
 						updates['/RequestedColor'] = this.util._getCardSymbol(sCardName);
 					}
 
 					firebase.database().ref(this._tablePath).update(updates);
-	
+
 					//define the master
 					updates = {};
 					var sRequestor = oModel.getProperty("/PlayTable/Requestor");
@@ -509,6 +509,12 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					that.clearTable();
 					that.clearDoneData();
 					firebase.database().ref(that._tablePath).update(updates);
+					if (bGameOver) {
+						setTimeout(function () {
+							firebase.database().ref(that._tablePath).remove(that._tablePath);
+							that._getRouter().navTo("Tables");
+						}, 3000);
+					}
 				}, 3000);
 			}
 		},

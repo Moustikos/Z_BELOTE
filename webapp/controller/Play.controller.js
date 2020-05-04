@@ -490,9 +490,14 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 				// handle end of game
 				var iWinnerTeam = iTeam1NewScore > iTeam2NewScore ? 0 : 1;
 				var sMessage = (this.getView().getModel("i18n").getProperty("Winner") + " " + (iWinnerTeam + 1));
-
+				updates['gameOver'] = true;
 				firebase.database().ref(this._tablePath).update(updates);
 				this.util._sendMessageToPlayers(sMessage, this._tablePath);
+				var that = this;
+				setTimeout(function () {
+					firebase.database().ref(that._tablePath).remove();
+					that._getRouter().navTo("Tables");
+				}, 2500);
 
 			} else {
 				// Define next distributor
@@ -516,15 +521,6 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 					that.clearTable();
 					that.clearDoneData();
 					firebase.database().ref(that._tablePath).update(updates);
-					if (bGameOver) {
-						firebase.database().ref(that._tablePath).update({
-							gameOver: true
-						});
-						setTimeout(function () {
-							firebase.database().ref(that._tablePath).remove();
-							that._getRouter().navTo("Tables");
-						}, 3000);
-					}
 				}, 3000);
 			}
 		},

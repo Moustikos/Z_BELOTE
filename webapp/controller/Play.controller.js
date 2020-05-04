@@ -283,7 +283,7 @@ sap.ui.define(["com/belote/controller/BaseController", "sap/ui/core/Fragment"], 
 							"localModel").getPath()).ID).remove();
 							
 					if (aPlayedCards.length === 0) {
-						updates['/RequestedColor'] = this.util._getSymbol(sCardName);
+						updates['/RequestedColor'] = this.util._getCardSymbol(sCardName);
 					}
 
 					firebase.database().ref(this._tablePath).update(updates);
